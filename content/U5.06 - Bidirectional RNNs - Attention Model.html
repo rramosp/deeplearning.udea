@@ -1,0 +1,2384 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>5.6 Bidirectional RNNs &#8212; Fundamentos de Deep Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-43235448-3"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'UA-43235448-3');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'UA-43235448-3');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/U5.06 - Bidirectional RNNs - Attention Model';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.7 ELMo" href="U5.07%20-%20ELMo%20-%20NER.html" />
+    <link rel="prev" title="5.5 Sequences generation" href="U5.05%20-%20Sequences%20generation%20using%20LSTM.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/fudea.jpg" class="logo__image only-light" alt="Fundamentos de Deep Learning - Home"/>
+    <script>document.write(`<img src="../_static/fudea.jpg" class="logo__image only-dark" alt="Fundamentos de Deep Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="M00_20252_pre.html">Info 2025.2 - UdeA</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M01.html">01 - INTRODUCTION</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U1.01%20-%20DL%20Overview.html">1.1 - DL Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1.02%20-%20Modelos%20derivados%20de%20los%20datos.html">1.2 - Models derived from data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1.03%20-%20Como%20se%20disena%20un%20algoritmo%20de%20Machine%20Learning.html">1.3 - ML algorithm design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1%20LAB%2001%20-%20WARMUP.html">LAB 01.01 - WARM UP</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M02.html">02 - NEURAL NETWORKS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U2.01%20-%20The%20Perceptron.html">2.1 - The Perceptron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.02%20-%20The%20Multilayer%20Perceptron.html">2.2 - The Multilayer Perceptron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.03%20-%20Overfitting%20and%20regularization.html">2.3 - Overfitting and regularization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.04%20-%20Loss%20functions.html">2.4 - Loss functions in Tensorflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.05%20-%20Network%20Architectures%20-%20Autoencoders.html">2.5 - Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.06%20-%20Network%20Architectures%20-%20Multimodal%20information.html">2.6 - Multimodal architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.07%20-%20Vanishing%20gradients.html">2.7 - Vanishing gradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.08%20-%20Weights%20initialization.html">2.8 - Weights initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2001%20-%20Customized%20loss%20functions%20and%20regularization.html">LAB 2.1 - Customized loss function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2002%20-%20Autoencoders.html">LAB 2.2 - Sparse Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2003%20-%20Pairwise%20image%20classification.html">LAB 2.3 - Pairwise classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2004%20-%20Model%20instrumentation%20and%20monitoring.html">LAB 2.4 - Model instrumentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M03.html">03 - TENSORFLOW CORE</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U3.01%20-%20Simbolic%20computing%20for%20ML.html">3.1 - Symbolic computing for ML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.02%20-%20TF%20for%20symbolic%20computing.html">3.2 - TF symbolic engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.03%20-%20Using%20tf.function.html">3.3 - Using <code class="docutils literal notranslate"><span class="pre">tf.function</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.04%20-%20Batch%20Normalization.html">3.4 - Batch normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3%20LAB%2001%20-%20Tensorflow%20model%20subclassing.html">LAB 3.1 - TF model subclassing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3%20LAB%2002%20-%20Low%20level%20Tensorflow.html">LAB 3.2 - Low level <code class="docutils literal notranslate"><span class="pre">tensorflow</span></code></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M04.html">04 - CONVOLUTIONAL NETWORKS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U4.01%20-%20Convolutions.html">4.1 - Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.02%20-%20Convolutional%20Neural%20Networks.html">4.2 - Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.03%20-%20Dropout%2C%20pooling.html">4.3 - Dropout, pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.04%20-%20CNN%20Architectures.html">4.4 - CNN Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.05%20-%20Transfer%20learning.html">4.5 - Transfer learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.06%20-%20Object%20Detection.html">4.6 - Object detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.07%20-%20Transposed%20convolutions.html">4.7 - Transposed convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.08%20-%20UNet%20image%20segmentation.html"><strong>4.8</strong> - UNet Image segmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.09%20-%20Atrous%20convolutions.html">4.9 - Atrous convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2001%20-%20Convolutions.html">LAB 4.1 - Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2002%20-%20Transfer%20Learning.html">LAB 4.2 - Transfer learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2003%20-%20Object%20Detection.html">LAB 4.3 - Object detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2004%20-%20Semantic%20segmentation.html">LAB 4.4 - Semantic segmentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="M05.html">05 - SEQUENCE MODELS</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="U5.00%20-%20Intro%20time%20series.html">5.0 Crossvalidation in time series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.01%20-%20Recurrent%20Neural%20Networks.html">5.1 Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.02%20-%20Long%20Short%20Term%20Memory%20RNN.html">5.2 LSTM and GRU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.03%20-%20Truncated%20BPTT.html">5.3 Truncated BPTT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.04%20-%20Basic%20concepts%20of%20text%20processing.html">5.4 Text processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.05%20-%20Sequences%20generation%20using%20LSTM.html">5.5 Sequences generation</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">5.6 Bidirectional RNNs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.07%20-%20ELMo%20-%20NER.html">5.7 ELMo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.08%20-%20Self-Attention%20-%20Transformer%20-%20BERT.html">5.8 Transformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.09%20-%20CNN-LSTM%20architectures.html">5.9  CNN-LSTM architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2001%20-%20Multivariate%20time%20series%20prediction.html">LAB 5.1 - Time series prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2002%20-%20Padding%2C%20Masking%20-%20Sentiment%20Analysis.html">LAB 5.2 - Padding - Masking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2003%20-%20Sentiment%20Analysis%20using%20BERT.html">LAB 5.3 - Transformer - BERT</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/rramosp/2021.deeplearning/blob/master/content/U5.06 - Bidirectional RNNs - Attention Model.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/content/U5.06 - Bidirectional RNNs - Attention Model.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>5.6 Bidirectional RNNs</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-machine-translation">Neural Machine Translation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tokenize">Tokenize</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optional">Optional</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-tf-data-dataset">Create a tf.data dataset</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-rnn-network">Simple RNN network</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-word2vec">Using word2vec</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bidirectional-rnn">Bidirectional RNN</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#encoder-decoder">Encoder-decoder</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-machine-translation-with-attention">Neural machine translation with attention</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metrics-in-a-real-context">Metrics in a real context</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="bidirectional-rnns">
+<h1>5.6 Bidirectional RNNs<a class="headerlink" href="#bidirectional-rnns" title="Link to this heading">#</a></h1>
+<p>Course’s materials require a <code class="docutils literal notranslate"><span class="pre">tensorflow</span></code> version lower than the default one used in Google Colab. Run the following cell to downgrade TensorFlow accordingly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">downgrade_tf_version</span><span class="p">():</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;!yes | pip uninstall -y tensorflow&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;!yes | pip install tensorflow==2.12.0&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">downgrade_tf_version</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>wget<span class="w"> </span>-nc<span class="w"> </span>--no-cache<span class="w"> </span>-O<span class="w"> </span>init.py<span class="w"> </span>-q<span class="w"> </span>https://raw.githubusercontent.com/rramosp/2021.deeplearning/main/content/init.py
+<span class="kn">import</span><span class="w"> </span><span class="nn">init</span><span class="p">;</span> <span class="n">init</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">);</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="k">if</span> <span class="s1">&#39;google.colab&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;setting tensorflow version in colab&quot;</span><span class="p">)</span>
+    <span class="o">%</span><span class="k">tensorflow_version</span> 2.x
+    <span class="o">%</span><span class="k">load_ext</span> tensorboard
+<span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
+<span class="n">tf</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.ticker</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ticker</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">unicodedata</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">Sequential</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.layers</span><span class="w"> </span><span class="kn">import</span> <span class="n">GRU</span><span class="p">,</span> <span class="n">LSTM</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">TimeDistributed</span><span class="p">,</span> <span class="n">Embedding</span><span class="p">,</span> <span class="n">Activation</span><span class="p">,</span> <span class="n">RepeatVector</span><span class="p">,</span> <span class="n">Bidirectional</span><span class="p">,</span> <span class="n">Concatenate</span><span class="p">,</span> <span class="n">Dot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.layers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Embedding</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Adam</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.losses</span><span class="w"> </span><span class="kn">import</span> <span class="n">sparse_categorical_crossentropy</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.compat.v1</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigProto</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.compat.v1</span><span class="w"> </span><span class="kn">import</span> <span class="n">InteractiveSession</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">ConfigProto</span><span class="p">()</span>
+<span class="n">config</span><span class="o">.</span><span class="n">gpu_options</span><span class="o">.</span><span class="n">allow_growth</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">InteractiveSession</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>In some problems the information required to make a prediction in one point of a sequence, includes not only pass information but also “future” information, i.e., information before and after of the target point in the sequence. This also implies that such informaction must be available to make the perdictions. For instance, in translation problems usually you need to know an entire sentence beforhand in order to translate it correctly.   The bidirectional RNNs are a modification of the standard RNNs that incorporate additional layers which transmit the information from the time <span class="math notranslate nohighlight">\(t+1\)</span> to the time <span class="math notranslate nohighlight">\(t\)</span>. The forward and backward layers do not have any conextion among them.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;local/imgs/RNN_arc_3.png&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">)</span>
+<span class="c1">#![alt text](./Images/RNN_arc_3.png &quot;Neuronas&quot;)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/c5fb7017c9fd98d0988b1a87f42c04fd5d3cfab7221d71da3d5d5be95dc8fdec.png"><img alt="../_images/c5fb7017c9fd98d0988b1a87f42c04fd5d3cfab7221d71da3d5d5be95dc8fdec.png" src="../_images/c5fb7017c9fd98d0988b1a87f42c04fd5d3cfab7221d71da3d5d5be95dc8fdec.png" style="width: 1200px;" />
+</a>
+</div>
+</div>
+<section id="neural-machine-translation">
+<h2>Neural Machine Translation<a class="headerlink" href="#neural-machine-translation" title="Link to this heading">#</a></h2>
+<p>This example is based on the Machine Translation material included in the Deep Learning Specilization offered by Coursera: <a class="reference external" href="https://es.coursera.org/specializations/deep-learning">https://es.coursera.org/specializations/deep-learning</a></p>
+<p>The following model architecture could be used for a full language translation problem, however it would require hundred of thousands of texts, a big computational power (GPU) and hundreds of hours in order to get a fairly accurate model. Therefore, we are going to use a medium sized datase that includes 118964 sentences in English and Spanish.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download the file</span>
+<span class="n">path_to_zip</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_file</span><span class="p">(</span>
+    <span class="s1">&#39;spa-eng.zip&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;http://storage.googleapis.com/download.tensorflow.org/data/spa-eng.zip&#39;</span><span class="p">,</span>
+    <span class="n">extract</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">path_to_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path_to_zip</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;/spa-eng/spa.txt&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Converts the unicode file to ascii</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">unicode_to_ascii</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s1">&#39;NFD&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">category</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Mn&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">preprocess_sentence</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">unicode_to_ascii</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="c1"># creating a space between a word and the punctuation following it</span>
+    <span class="c1"># eg: &quot;he is a boy.&quot; =&gt; &quot;he is a boy .&quot;</span>
+    <span class="c1"># Reference:- https://stackoverflow.com/questions/3645931/python-padding-punctuation-with-white-spaces-keeping-punctuation</span>
+
+    <span class="n">w</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([?.!,¿])&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; \1 &quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[&quot; &quot;]+&#39;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    
+    <span class="c1"># replacing everything with space except (a-z, A-Z, &quot;.&quot;, &quot;?&quot;, &quot;!&quot;, &quot;,&quot;)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^a-zA-Z?.!,¿]+&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    
+    <span class="c1"># adding a start and an end token to the sentence</span>
+    <span class="c1"># so that the model know when to start and stop predicting.</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="s1">&#39;&lt;start&gt; &#39;</span> <span class="o">+</span> <span class="n">w</span> <span class="o">+</span> <span class="s1">&#39; &lt;end&gt;&#39;</span>
+    <span class="k">return</span> <span class="n">w</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">en_sentence</span> <span class="o">=</span> <span class="sa">u</span><span class="s2">&quot;May I borrow this book?&quot;</span>
+<span class="n">sp_sentence</span> <span class="o">=</span> <span class="sa">u</span><span class="s2">&quot;¿Puedo tomar prestado este libro?&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">preprocess_sentence</span><span class="p">(</span><span class="n">en_sentence</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">preprocess_sentence</span><span class="p">(</span><span class="n">sp_sentence</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;start&gt; may i borrow this book ? &lt;end&gt;
+b&#39;&lt;start&gt; \xc2\xbf puedo tomar prestado este libro ? &lt;end&gt;&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Remove the accents</span>
+<span class="c1"># 2. Clean the sentences</span>
+<span class="c1"># 3. Return word pairs in the format: [ENGLISH, SPANISH]</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_dataset</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">num_examples</span><span class="p">):</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">word_pairs</span> <span class="o">=</span> <span class="p">[[</span><span class="n">preprocess_sentence</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)]</span>  <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[:</span><span class="n">num_examples</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">word_pairs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">en</span><span class="p">,</span> <span class="n">sp</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">path_to_file</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">en</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;start&gt; if you want to sound like a native speaker , you must be willing to practice saying the same sentence over and over in the same way that banjo players practice the same phrase over and over until they can play it correctly and at the desired tempo . &lt;end&gt;
+&lt;start&gt; si quieres sonar como un hablante nativo , debes estar dispuesto a practicar diciendo la misma frase una y otra vez de la misma manera en que un musico de banjo practica el mismo fraseo una y otra vez hasta que lo puedan tocar correctamente y en el tiempo esperado . &lt;end&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">en</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(118964, 118964)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">max_length</span><span class="p">(</span><span class="n">tensor</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tensor</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="tokenize">
+<h3>Tokenize<a class="headerlink" href="#tokenize" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">tokenize</span><span class="p">(</span><span class="n">lang</span><span class="p">):</span>
+    <span class="n">lang_tokenizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Tokenizer</span><span class="p">(</span>
+      <span class="n">filters</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">lang_tokenizer</span><span class="o">.</span><span class="n">fit_on_texts</span><span class="p">(</span><span class="n">lang</span><span class="p">)</span>
+    <span class="n">tensor</span> <span class="o">=</span> <span class="n">lang_tokenizer</span><span class="o">.</span><span class="n">texts_to_sequences</span><span class="p">(</span><span class="n">lang</span><span class="p">)</span>
+    <span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">sequence</span><span class="o">.</span><span class="n">pad_sequences</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span>
+                                                         <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;post&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">lang_tokenizer</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">load_dataset</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">num_examples</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># creating cleaned input, output pairs</span>
+    <span class="n">targ_lang</span><span class="p">,</span> <span class="n">inp_lang</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">num_examples</span><span class="p">)</span>
+    <span class="n">input_tensor</span><span class="p">,</span> <span class="n">inp_lang_tokenizer</span> <span class="o">=</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">inp_lang</span><span class="p">)</span>
+    <span class="n">target_tensor</span><span class="p">,</span> <span class="n">targ_lang_tokenizer</span> <span class="o">=</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">targ_lang</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">input_tensor</span><span class="p">,</span> <span class="n">target_tensor</span><span class="p">,</span> <span class="n">inp_lang_tokenizer</span><span class="p">,</span> <span class="n">targ_lang_tokenizer</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="optional">
+<h3>Optional<a class="headerlink" href="#optional" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Try experimenting with the size of that dataset</span>
+<span class="n">num_examples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">en</span><span class="p">)</span><span class="c1">#30000</span>
+<span class="n">input_tensor</span><span class="p">,</span> <span class="n">target_tensor</span><span class="p">,</span> <span class="n">inp_lang</span><span class="p">,</span> <span class="n">targ_lang</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="n">path_to_file</span><span class="p">,</span> <span class="n">num_examples</span><span class="p">)</span>
+
+<span class="c1"># Calculate max_length of the target tensors</span>
+<span class="n">max_length_targ</span><span class="p">,</span> <span class="n">max_length_inp</span> <span class="o">=</span> <span class="n">max_length</span><span class="p">(</span><span class="n">target_tensor</span><span class="p">),</span> <span class="n">max_length</span><span class="p">(</span><span class="n">input_tensor</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Creating training and validation sets using an 80-20 split</span>
+<span class="n">input_tensor_train</span><span class="p">,</span> <span class="n">input_tensor_val</span><span class="p">,</span> <span class="n">target_tensor_train</span><span class="p">,</span> <span class="n">target_tensor_val</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">input_tensor</span><span class="p">,</span> <span class="n">target_tensor</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="c1"># Show length</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">input_tensor_train</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_tensor_train</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_tensor_val</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_tensor_val</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>95171 95171 23793 23793
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">inp_lang</span><span class="o">.</span><span class="n">index_word</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>24793
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">targ_lang</span><span class="o">.</span><span class="n">index_word</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>12933
+</pre></div>
+</div>
+</div>
+</div>
+<p>In order to see the actual Spanish translation, it is necessary to define a function to decode the network’s output.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">convert</span><span class="p">(</span><span class="n">lang</span><span class="p">,</span> <span class="n">tensor</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tensor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">t</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> ----&gt; </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">lang</span><span class="o">.</span><span class="n">index_word</span><span class="p">[</span><span class="n">t</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Input Language; index to word mapping&quot;</span><span class="p">)</span>
+<span class="n">convert</span><span class="p">(</span><span class="n">inp_lang</span><span class="p">,</span> <span class="n">input_tensor_train</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span> <span class="p">()</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Target Language; index to word mapping&quot;</span><span class="p">)</span>
+<span class="n">convert</span><span class="p">(</span><span class="n">targ_lang</span><span class="p">,</span> <span class="n">target_tensor_train</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Input Language; index to word mapping
+1 ----&gt; &lt;start&gt;
+20 ----&gt; por
+1929 ----&gt; supuesto
+84 ----&gt; !
+2 ----&gt; &lt;end&gt;
+
+Target Language; index to word mapping
+1 ----&gt; &lt;start&gt;
+18 ----&gt; of
+1209 ----&gt; course
+119 ----&gt; !
+2 ----&gt; &lt;end&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">input_tensor_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">target_tensor_train</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>((95171, 53), (95171, 51))
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">input_tensor_train</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(95171, 53, 1)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="create-a-tf-data-dataset">
+<h3>Create a tf.data dataset<a class="headerlink" href="#create-a-tf-data-dataset" title="Link to this heading">#</a></h3>
+<p>For the simplest models, the size of input and output sequences must be equal!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">BUFFER_SIZE</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_tensor_train</span><span class="p">)</span>
+<span class="n">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">steps_per_epoch</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_tensor_train</span><span class="p">)</span><span class="o">//</span><span class="n">BATCH_SIZE</span>
+<span class="n">embedding_dim</span> <span class="o">=</span> <span class="mi">256</span>
+<span class="n">units</span> <span class="o">=</span> <span class="mi">1024</span>
+<span class="n">vocab_inp_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inp_lang</span><span class="o">.</span><span class="n">word_index</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+<span class="n">vocab_tar_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">targ_lang</span><span class="o">.</span><span class="n">word_index</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_tensor_slices</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">input_tensor_train</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">target_tensor_train</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">target_tensor_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">input_tensor_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">target_tensor_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)))</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">BUFFER_SIZE</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">BATCH_SIZE</span><span class="p">,</span> <span class="n">drop_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">example_input_batch</span><span class="p">,</span> <span class="n">example_target_batch</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dataset</span><span class="p">))</span>
+<span class="n">example_input_batch</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">example_target_batch</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(TensorShape([64, 53, 1]), TensorShape([64, 53, 1]))
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">evaluate1</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span><span class="n">model</span><span class="p">):</span>
+    
+    <span class="n">attention_plot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">max_length_targ</span><span class="p">,</span> <span class="n">max_length_inp</span><span class="p">))</span>
+    <span class="n">sentence</span> <span class="o">=</span> <span class="n">preprocess_sentence</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+    
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">inp_lang</span><span class="o">.</span><span class="n">word_index</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)]</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">sequence</span><span class="o">.</span><span class="n">pad_sequences</span><span class="p">([</span><span class="n">inputs</span><span class="p">],</span>
+                                                           <span class="n">maxlen</span><span class="o">=</span><span class="n">max_length_inp</span><span class="p">,</span>
+                                                           <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;post&#39;</span><span class="p">)</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">t</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">targ_lang</span><span class="o">.</span><span class="n">index_word</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="simple-rnn-network">
+<h3>Simple RNN network<a class="headerlink" href="#simple-rnn-network" title="Link to this heading">#</a></h3>
+<p>Pay attention to the output format and the loss function.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">input_tensor_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>53
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">simple_model</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">output_sequence_length</span><span class="p">,</span> <span class="n">spanish_vocab_size</span><span class="p">,</span> <span class="n">english_vocab_size</span><span class="p">):</span>
+    <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.001</span>
+    <span class="n">input_seq</span> <span class="o">=</span> <span class="n">Input</span><span class="p">([</span><span class="n">input_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">rnn</span> <span class="o">=</span> <span class="n">LSTM</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">return_sequences</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)(</span><span class="n">input_seq</span><span class="p">)</span>
+    <span class="n">logits</span> <span class="o">=</span> <span class="n">TimeDistributed</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">english_vocab_size</span><span class="p">))(</span><span class="n">rnn</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">input_seq</span><span class="p">,</span> <span class="n">Activation</span><span class="p">(</span><span class="s1">&#39;softmax&#39;</span><span class="p">)(</span><span class="n">logits</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span> <span class="o">=</span> <span class="s1">&#39;sparse_categorical_crossentropy&#39;</span><span class="p">,</span> 
+                 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">model</span>
+
+<span class="c1"># Train the neural network</span>
+<span class="n">simple_rnn_model</span> <span class="o">=</span> <span class="n">simple_model</span><span class="p">(</span>
+    <span class="n">input_tensor_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+    <span class="n">target_tensor_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">vocab_inp_size</span><span class="p">,</span>
+    <span class="n">vocab_tar_size</span><span class="p">)</span>
+<span class="n">simple_rnn_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch 1/50
+1487/1487 [==============================] - 21s 13ms/step - loss: 1.7278
+Epoch 2/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.8353
+Epoch 3/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.8065
+Epoch 4/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.7849
+Epoch 5/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.7667
+Epoch 6/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.7551
+Epoch 7/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.7422
+Epoch 8/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.7314
+Epoch 9/50
+1487/1487 [==============================] - 18s 12ms/step - loss: 0.7216
+Epoch 10/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.7123
+Epoch 11/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.7078
+Epoch 12/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.7031
+Epoch 13/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6971
+Epoch 14/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6919
+Epoch 15/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6891
+Epoch 16/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6833
+Epoch 17/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6787
+Epoch 18/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6776
+Epoch 19/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6745
+Epoch 20/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6708
+Epoch 21/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6684
+Epoch 22/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6634
+Epoch 23/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6624
+Epoch 24/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6604
+Epoch 25/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6584
+Epoch 26/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6555
+Epoch 27/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6545
+Epoch 28/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6490
+Epoch 29/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6521
+Epoch 30/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6474
+Epoch 31/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6473
+Epoch 32/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6452
+Epoch 33/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6443
+Epoch 34/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6427
+Epoch 35/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6403
+Epoch 36/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6395
+Epoch 37/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6381
+Epoch 38/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6379
+Epoch 39/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6338
+Epoch 40/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6348
+Epoch 41/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6333
+Epoch 42/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6308
+Epoch 43/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6324
+Epoch 44/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6304
+Epoch 45/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6276
+Epoch 46/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6285
+Epoch 47/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6293
+Epoch 48/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6260
+Epoch 49/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6260
+Epoch 50/50
+1487/1487 [==============================] - 19s 13ms/step - loss: 0.6241
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;tensorflow.python.keras.callbacks.History at 0x7f08f0c0e190&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">simple_rnn_model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model: &quot;model&quot;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_1 (InputLayer)         [(None, 53, 1)]           0         
+_________________________________________________________________
+lstm (LSTM)                  (None, 53, 128)           66560     
+_________________________________________________________________
+time_distributed (TimeDistri (None, 53, 12934)         1668486   
+_________________________________________________________________
+activation (Activation)      (None, 53, 12934)         0         
+=================================================================
+Total params: 1,735,046
+Trainable params: 1,735,046
+Non-trainable params: 0
+_________________________________________________________________
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sentence</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;hace mucho frio en este lugar.&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">preprocess_sentence</span><span class="p">(</span><span class="n">sentence</span><span class="p">))</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">evaluate1</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span><span class="n">simple_rnn_model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;start&gt; hace mucho frio en este lugar . &lt;end&gt;
+&lt;start&gt; i ve never in in in . . 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sentence</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;esta es mi vida.&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">preprocess_sentence</span><span class="p">(</span><span class="n">sentence</span><span class="p">))</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">evaluate1</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span><span class="n">simple_rnn_model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;start&gt; esta es mi vida . &lt;end&gt;
+&lt;start&gt; i is my dog . &lt;end&gt; 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="using-word2vec">
+<h2>Using word2vec<a class="headerlink" href="#using-word2vec" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">embed_model</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">output_sequence_length</span><span class="p">,</span> <span class="n">spanish_vocab_size</span><span class="p">,</span> <span class="n">english_vocab_size</span><span class="p">):</span>
+    <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.001</span>
+    <span class="n">rnn</span> <span class="o">=</span> <span class="n">LSTM</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">return_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">)</span>
+    
+    <span class="n">embedding</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span><span class="n">spanish_vocab_size</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">input_length</span><span class="o">=</span><span class="n">input_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> 
+    <span class="n">logits</span> <span class="o">=</span> <span class="n">TimeDistributed</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">english_vocab_size</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;softmax&quot;</span><span class="p">))</span>
+    
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+    <span class="c1">#em can only be used in first layer --&gt; Keras Documentation</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rnn</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;sparse_categorical_crossentropy&#39;</span><span class="p">,</span>
+                  <span class="n">optimizer</span><span class="o">=</span><span class="n">Adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">model</span>
+
+
+<span class="n">embeded_model</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span>
+    <span class="n">input_tensor_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+    <span class="n">target_tensor_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">vocab_inp_size</span><span class="p">,</span>
+    <span class="n">vocab_tar_size</span><span class="p">)</span>
+
+<span class="n">embeded_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING:tensorflow:Layer lstm_1 will not use cuDNN kernel since it doesn&#39;t meet the cuDNN kernel criteria. It will use generic GPU kernel as fallback when running on GPU
+Epoch 1/50
+1487/1487 [==============================] - 64s 42ms/step - loss: 1.8983
+Epoch 2/50
+1487/1487 [==============================] - 63s 42ms/step - loss: 0.8322
+Epoch 3/50
+1487/1487 [==============================] - 61s 41ms/step - loss: 0.7871
+Epoch 4/50
+1487/1487 [==============================] - 61s 41ms/step - loss: 0.7457
+Epoch 5/50
+1487/1487 [==============================] - 61s 41ms/step - loss: 0.6958
+Epoch 6/50
+1487/1487 [==============================] - 61s 41ms/step - loss: 0.7349
+Epoch 7/50
+1487/1487 [==============================] - 61s 41ms/step - loss: 0.6359
+Epoch 8/50
+1487/1487 [==============================] - 61s 41ms/step - loss: 0.6000
+Epoch 9/50
+1487/1487 [==============================] - 61s 41ms/step - loss: 0.6514
+Epoch 10/50
+1487/1487 [==============================] - 61s 41ms/step - loss: 0.5742
+Epoch 11/50
+1487/1487 [==============================] - 61s 41ms/step - loss: 0.5382
+Epoch 12/50
+1487/1487 [==============================] - 61s 41ms/step - loss: 0.5120
+Epoch 13/50
+1487/1487 [==============================] - 56s 37ms/step - loss: 0.4876
+Epoch 14/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.4689
+Epoch 15/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.4456
+Epoch 16/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.4239
+Epoch 17/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.4042
+Epoch 18/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.3902
+Epoch 19/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.3726
+Epoch 20/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.4074
+Epoch 21/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.4412
+Epoch 22/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.4736
+Epoch 23/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.3713
+Epoch 24/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.3520
+Epoch 25/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.3399
+Epoch 26/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.3268
+Epoch 27/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.3204
+Epoch 28/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.3127
+Epoch 29/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.3055
+Epoch 30/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.3009
+Epoch 31/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.2975
+Epoch 32/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.2906
+Epoch 33/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.2853
+Epoch 34/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.2817
+Epoch 35/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.2798
+Epoch 36/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.2704
+Epoch 37/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.6574
+Epoch 38/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.6323
+Epoch 39/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.5575
+Epoch 40/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.5642
+Epoch 41/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 4.0330
+Epoch 42/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 1.1101
+Epoch 43/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.7931
+Epoch 44/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.7545
+Epoch 45/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.6761
+Epoch 46/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.7052
+Epoch 47/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.6167
+Epoch 48/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.6019
+Epoch 49/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.5874
+Epoch 50/50
+1487/1487 [==============================] - 55s 37ms/step - loss: 0.5286
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;tensorflow.python.keras.callbacks.History at 0x7f08f098e810&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sentence</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;hace mucho frio en este lugar.&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">preprocess_sentence</span><span class="p">(</span><span class="n">sentence</span><span class="p">))</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">evaluate1</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span><span class="n">embeded_model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;start&gt; hace mucho frio en este lugar . &lt;end&gt;
+&lt;start&gt; i many cold in in . . &lt;end&gt; 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sentence</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;esta es mi vida.&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">preprocess_sentence</span><span class="p">(</span><span class="n">sentence</span><span class="p">))</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">evaluate1</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span><span class="n">embeded_model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;start&gt; esta es mi vida . &lt;end&gt;
+&lt;start&gt; this is my life . &lt;end&gt; 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="bidirectional-rnn">
+<h2>Bidirectional RNN<a class="headerlink" href="#bidirectional-rnn" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">bd_model</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">output_sequence_length</span><span class="p">,</span> <span class="n">spanish_vocab_size</span><span class="p">,</span> <span class="n">english_vocab_size</span><span class="p">):</span>
+   
+    <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.001</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Embedding</span><span class="p">(</span><span class="n">spanish_vocab_size</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">input_length</span><span class="o">=</span><span class="n">input_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> 
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Bidirectional</span><span class="p">(</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">return_sequences</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">dropout</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">TimeDistributed</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">english_vocab_size</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;softmax&#39;</span><span class="p">)))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span> <span class="o">=</span> <span class="n">sparse_categorical_crossentropy</span><span class="p">,</span> 
+                 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">model</span>
+
+<span class="n">bidi_model</span> <span class="o">=</span> <span class="n">bd_model</span><span class="p">(</span>
+    <span class="n">input_tensor_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+    <span class="n">target_tensor_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">vocab_inp_size</span><span class="p">,</span>
+    <span class="n">vocab_tar_size</span><span class="p">)</span>
+
+<span class="n">bidi_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch 1/50
+1487/1487 [==============================] - 67s 44ms/step - loss: 1.5199
+Epoch 2/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.7412
+Epoch 3/50
+1487/1487 [==============================] - 65s 43ms/step - loss: 0.6230
+Epoch 4/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.5487
+Epoch 5/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.4892
+Epoch 6/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.4481
+Epoch 7/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.4140
+Epoch 8/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.3863
+Epoch 9/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.3629
+Epoch 10/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.3422
+Epoch 11/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.3274
+Epoch 12/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.3117
+Epoch 13/50
+1487/1487 [==============================] - 65s 43ms/step - loss: 0.2999
+Epoch 14/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.2901
+Epoch 15/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.2811
+Epoch 16/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.2730
+Epoch 17/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.2665
+Epoch 18/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.2599
+Epoch 19/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.2557
+Epoch 20/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.2493
+Epoch 21/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.2458
+Epoch 22/50
+1487/1487 [==============================] - 65s 43ms/step - loss: 0.2396
+Epoch 23/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.2357
+Epoch 24/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.2335
+Epoch 25/50
+1487/1487 [==============================] - 65s 43ms/step - loss: 0.2286
+Epoch 26/50
+1487/1487 [==============================] - 65s 43ms/step - loss: 0.2256
+Epoch 27/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.2230
+Epoch 28/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.2189
+Epoch 29/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.2168
+Epoch 30/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.2144
+Epoch 31/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.2108
+Epoch 32/50
+1487/1487 [==============================] - 65s 43ms/step - loss: 0.2097
+Epoch 33/50
+1487/1487 [==============================] - 65s 44ms/step - loss: 0.2074
+Epoch 34/50
+1487/1487 [==============================] - 65s 43ms/step - loss: 0.2054
+Epoch 35/50
+1487/1487 [==============================] - 65s 43ms/step - loss: 0.2029
+Epoch 36/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.2003
+Epoch 37/50
+1487/1487 [==============================] - 65s 43ms/step - loss: 0.1982
+Epoch 38/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.1988
+Epoch 39/50
+1487/1487 [==============================] - 65s 43ms/step - loss: 0.1975
+Epoch 40/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.1945
+Epoch 41/50
+1487/1487 [==============================] - 65s 43ms/step - loss: 0.1936
+Epoch 42/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.1934
+Epoch 43/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.1913
+Epoch 44/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.1890
+Epoch 45/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.1880
+Epoch 46/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.1882
+Epoch 47/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.1855
+Epoch 48/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.1848
+Epoch 49/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.1843
+Epoch 50/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.1821
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;tensorflow.python.keras.callbacks.History at 0x7f08eb5d0cd0&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bidi_model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model: &quot;sequential_1&quot;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+embedding_1 (Embedding)      (None, 53, 64)            1586816   
+_________________________________________________________________
+bidirectional (Bidirectional (None, 53, 256)           197632    
+_________________________________________________________________
+time_distributed_2 (TimeDist (None, 53, 12934)         3324038   
+=================================================================
+Total params: 5,108,486
+Trainable params: 5,108,486
+Non-trainable params: 0
+_________________________________________________________________
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sentence</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;hace mucho frio en este lugar.&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">preprocess_sentence</span><span class="p">(</span><span class="n">sentence</span><span class="p">))</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">evaluate1</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span><span class="n">bidi_model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;start&gt; hace mucho frio en este lugar . &lt;end&gt;
+&lt;start&gt; it s is cold of this place . &lt;end&gt; 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sentence</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;esta es mi vida.&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">preprocess_sentence</span><span class="p">(</span><span class="n">sentence</span><span class="p">))</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">evaluate1</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span><span class="n">bidi_model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;start&gt; esta es mi vida . &lt;end&gt;
+&lt;start&gt; this is my life . &lt;end&gt; 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="encoder-decoder">
+<h2>Encoder-decoder<a class="headerlink" href="#encoder-decoder" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;local/imgs/EDA.png&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">)</span>
+<span class="c1">#![alt text](./Images/EDA.png &quot;Encoder-Decoder&quot;)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/99d7f146dc79ad7ac07e44207930637b585b08bf9f2649f0000fbe8a6a1367e8.png"><img alt="../_images/99d7f146dc79ad7ac07e44207930637b585b08bf9f2649f0000fbe8a6a1367e8.png" src="../_images/99d7f146dc79ad7ac07e44207930637b585b08bf9f2649f0000fbe8a6a1367e8.png" style="width: 1200px;" />
+</a>
+</div>
+</div>
+<p>Image taken from: <a class="reference external" href="https://towardsdatascience.com/light-on-math-ml-attention-with-keras-dc8dbc1fad39">https://towardsdatascience.com/light-on-math-ml-attention-with-keras-dc8dbc1fad39</a></p>
+<p>This model is able to deal with input and output sequences of different length!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">BUFFER_SIZE</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_tensor_train</span><span class="p">)</span>
+<span class="n">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">steps_per_epoch</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_tensor_train</span><span class="p">)</span><span class="o">//</span><span class="n">BATCH_SIZE</span>
+<span class="n">embedding_dim</span> <span class="o">=</span> <span class="mi">256</span>
+<span class="n">units</span> <span class="o">=</span> <span class="mi">1024</span>
+<span class="n">vocab_inp_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inp_lang</span><span class="o">.</span><span class="n">word_index</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+<span class="n">vocab_tar_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">targ_lang</span><span class="o">.</span><span class="n">word_index</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_tensor_slices</span><span class="p">((</span><span class="n">input_tensor_train</span><span class="p">,</span> <span class="n">target_tensor_train</span><span class="p">))</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">BUFFER_SIZE</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">BATCH_SIZE</span><span class="p">,</span> <span class="n">drop_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">example_input_batch</span><span class="p">,</span> <span class="n">example_target_batch</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dataset</span><span class="p">))</span>
+<span class="n">example_input_batch</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">example_target_batch</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(TensorShape([64, 53]), TensorShape([64, 51]))
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">encdec_model</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">output_sequence_length</span><span class="p">,</span> <span class="n">english_vocab_size</span><span class="p">,</span> <span class="n">spanish_vocab_size</span><span class="p">):</span>
+  
+    <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.001</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Embedding</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="n">english_vocab_size</span><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">input_length</span><span class="o">=</span><span class="n">input_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> 
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Bidirectional</span><span class="p">(</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="n">return_sequences</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">RepeatVector</span><span class="p">(</span><span class="n">output_sequence_length</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="n">return_sequences</span> <span class="o">=</span> <span class="kc">True</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">TimeDistributed</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">spanish_vocab_size</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;softmax&#39;</span><span class="p">)))</span>
+    
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span> <span class="o">=</span> <span class="s1">&#39;sparse_categorical_crossentropy&#39;</span><span class="p">,</span> 
+                 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">model</span>
+
+
+<span class="n">encodeco_model</span> <span class="o">=</span> <span class="n">encdec_model</span><span class="p">(</span>
+    <span class="n">input_tensor_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+    <span class="n">target_tensor_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">vocab_inp_size</span><span class="p">,</span>
+    <span class="n">vocab_tar_size</span><span class="p">)</span>
+
+<span class="n">encodeco_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch 1/50
+1487/1487 [==============================] - 78s 51ms/step - loss: 1.5090
+Epoch 2/50
+1487/1487 [==============================] - 75s 50ms/step - loss: 0.9854
+Epoch 3/50
+1487/1487 [==============================] - 72s 49ms/step - loss: 0.9288
+Epoch 4/50
+1487/1487 [==============================] - 71s 48ms/step - loss: 0.8489
+Epoch 5/50
+1487/1487 [==============================] - 71s 48ms/step - loss: 0.7870
+Epoch 6/50
+1487/1487 [==============================] - 71s 48ms/step - loss: 0.7361
+Epoch 7/50
+1487/1487 [==============================] - 71s 48ms/step - loss: 0.6871
+Epoch 8/50
+1487/1487 [==============================] - 71s 48ms/step - loss: 0.6398
+Epoch 9/50
+1487/1487 [==============================] - 71s 48ms/step - loss: 0.5965
+Epoch 10/50
+1487/1487 [==============================] - 68s 46ms/step - loss: 0.5552
+Epoch 11/50
+1487/1487 [==============================] - 69s 47ms/step - loss: 0.5217
+Epoch 12/50
+1487/1487 [==============================] - 72s 48ms/step - loss: 0.4909
+Epoch 13/50
+1487/1487 [==============================] - 71s 48ms/step - loss: 0.4607
+Epoch 14/50
+1487/1487 [==============================] - 71s 48ms/step - loss: 0.4374
+Epoch 15/50
+1487/1487 [==============================] - 72s 48ms/step - loss: 0.4122
+Epoch 16/50
+1487/1487 [==============================] - 70s 47ms/step - loss: 0.3900
+Epoch 17/50
+1487/1487 [==============================] - 71s 48ms/step - loss: 0.3716
+Epoch 18/50
+1487/1487 [==============================] - 71s 48ms/step - loss: 0.3542
+Epoch 19/50
+1487/1487 [==============================] - 71s 47ms/step - loss: 0.3386
+Epoch 20/50
+1487/1487 [==============================] - 71s 47ms/step - loss: 0.3265
+Epoch 21/50
+1487/1487 [==============================] - 69s 46ms/step - loss: 0.3133
+Epoch 22/50
+1487/1487 [==============================] - 68s 46ms/step - loss: 0.3032
+Epoch 23/50
+1487/1487 [==============================] - 68s 46ms/step - loss: 0.2893
+Epoch 24/50
+1487/1487 [==============================] - 68s 45ms/step - loss: 0.2798
+Epoch 25/50
+1487/1487 [==============================] - 68s 45ms/step - loss: 0.2705
+Epoch 26/50
+1487/1487 [==============================] - 68s 45ms/step - loss: 0.2635
+Epoch 27/50
+1487/1487 [==============================] - 68s 46ms/step - loss: 0.2529
+Epoch 28/50
+1487/1487 [==============================] - 68s 46ms/step - loss: 0.2468
+Epoch 29/50
+1487/1487 [==============================] - 71s 48ms/step - loss: 0.2389
+Epoch 30/50
+1487/1487 [==============================] - 70s 47ms/step - loss: 0.2343
+Epoch 31/50
+1487/1487 [==============================] - 71s 48ms/step - loss: 0.2282
+Epoch 32/50
+1487/1487 [==============================] - 73s 49ms/step - loss: 0.2216
+Epoch 33/50
+1487/1487 [==============================] - 73s 49ms/step - loss: 0.2154
+Epoch 34/50
+1487/1487 [==============================] - 76s 51ms/step - loss: 0.2085
+Epoch 35/50
+1487/1487 [==============================] - 75s 50ms/step - loss: 0.2047
+Epoch 36/50
+1487/1487 [==============================] - 64s 43ms/step - loss: 0.1993
+Epoch 37/50
+1487/1487 [==============================] - 66s 44ms/step - loss: 0.1968
+Epoch 38/50
+1487/1487 [==============================] - 68s 46ms/step - loss: 0.1902
+Epoch 39/50
+1487/1487 [==============================] - 70s 47ms/step - loss: 0.1858
+Epoch 40/50
+1487/1487 [==============================] - 70s 47ms/step - loss: 0.1813
+Epoch 41/50
+1487/1487 [==============================] - 69s 46ms/step - loss: 0.1783
+Epoch 42/50
+1487/1487 [==============================] - 66s 44ms/step - loss: 0.1739
+Epoch 43/50
+1487/1487 [==============================] - 62s 42ms/step - loss: 0.1682
+Epoch 44/50
+1487/1487 [==============================] - 62s 42ms/step - loss: 0.1661
+Epoch 45/50
+1487/1487 [==============================] - 62s 42ms/step - loss: 0.1622
+Epoch 46/50
+1487/1487 [==============================] - 62s 42ms/step - loss: 0.1596
+Epoch 47/50
+1487/1487 [==============================] - 62s 42ms/step - loss: 0.1572
+Epoch 48/50
+1487/1487 [==============================] - 62s 42ms/step - loss: 0.1535
+Epoch 49/50
+1487/1487 [==============================] - 62s 42ms/step - loss: 0.1501
+Epoch 50/50
+1487/1487 [==============================] - 62s 42ms/step - loss: 0.1486
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;tensorflow.python.keras.callbacks.History at 0x7f09d45b0390&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">encodeco_model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model: &quot;sequential_2&quot;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+embedding_2 (Embedding)      (None, 53, 64)            1586816   
+_________________________________________________________________
+bidirectional_1 (Bidirection (None, 512)               657408    
+_________________________________________________________________
+repeat_vector (RepeatVector) (None, 51, 512)           0         
+_________________________________________________________________
+lstm_4 (LSTM)                (None, 51, 256)           787456    
+_________________________________________________________________
+time_distributed_3 (TimeDist (None, 51, 12934)         3324038   
+=================================================================
+Total params: 6,355,718
+Trainable params: 6,355,718
+Non-trainable params: 0
+_________________________________________________________________
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sentence</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;hace mucho frio en este lugar.&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">preprocess_sentence</span><span class="p">(</span><span class="n">sentence</span><span class="p">))</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">evaluate1</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span><span class="n">encodeco_model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;start&gt; hace mucho frio en este lugar . &lt;end&gt;
+&lt;start&gt; it artist is cold this this this . &lt;end&gt; 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sentence</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;esta es mi vida.&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">preprocess_sentence</span><span class="p">(</span><span class="n">sentence</span><span class="p">))</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">evaluate1</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span><span class="n">encodeco_model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;start&gt; esta es mi vida . &lt;end&gt;
+&lt;start&gt; this is my life . &lt;end&gt; 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="neural-machine-translation-with-attention">
+<h2>Neural machine translation with attention<a class="headerlink" href="#neural-machine-translation-with-attention" title="Link to this heading">#</a></h2>
+<p>One of the problems of the previous model is the fact that the model has to memorize the entire sentence before start to translate it. The attention model introduces and additional layer that weight the contribution of the first bidirectional RNN layer’s outputs to be feed into the last recurrent layer.</p>
+<p>Dzmitry Bahdanau, Kyunghyun Cho, Yoshua Bengio , Neural Machine Translation by Jointly Learning to Align and Translate. <a class="reference external" href="https://arxiv.org/abs/1409.0473">https://arxiv.org/abs/1409.0473</a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;local/imgs/attn_model.png&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/69af1dc830c45e8d9ebc1d60d5dcbec70d1da2f6c0fe73896af713850031f7d9.png"><img alt="../_images/69af1dc830c45e8d9ebc1d60d5dcbec70d1da2f6c0fe73896af713850031f7d9.png" src="../_images/69af1dc830c45e8d9ebc1d60d5dcbec70d1da2f6c0fe73896af713850031f7d9.png" style="width: 800px;" />
+</a>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;local/imgs/attn_mechanism.png&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/5be039ab61ed159d1597f980675f18952f80afd2bc42a61b2440a9e468eae8a0.png"><img alt="../_images/5be039ab61ed159d1597f980675f18952f80afd2bc42a61b2440a9e468eae8a0.png" src="../_images/5be039ab61ed159d1597f980675f18952f80afd2bc42a61b2440a9e468eae8a0.png" style="width: 800px;" />
+</a>
+</div>
+</div>
+<p>In the following you can see the implementation of the attention model. Each component of the model is defined independently: Encoder, BahdanauAttention and Decoder. During training, the Encoder is called one time, and the decoder is called recursively once per word in the target language.</p>
+<p>Example taken from: <a class="reference external" href="https://www.tensorflow.org/tutorials/text/nmt_with_attention">link</a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Encoder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">,</span> <span class="n">enc_units</span><span class="p">,</span> <span class="n">batch_sz</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Encoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_sz</span> <span class="o">=</span> <span class="n">batch_sz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enc_units</span> <span class="o">=</span> <span class="n">enc_units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gru</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">GRU</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enc_units</span><span class="p">,</span>
+                                       <span class="n">return_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">recurrent_initializer</span><span class="o">=</span><span class="s1">&#39;glorot_uniform&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">hidden</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">output</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gru</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">initial_state</span> <span class="o">=</span> <span class="n">hidden</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">state</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize_hidden_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_sz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">enc_units</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">encoder</span> <span class="o">=</span> <span class="n">Encoder</span><span class="p">(</span><span class="n">vocab_inp_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+
+<span class="c1"># sample input</span>
+<span class="n">sample_hidden</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">initialize_hidden_state</span><span class="p">()</span>
+<span class="n">sample_output</span><span class="p">,</span> <span class="n">sample_hidden</span> <span class="o">=</span> <span class="n">encoder</span><span class="p">(</span><span class="n">example_input_batch</span><span class="p">,</span> <span class="n">sample_hidden</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;Encoder output shape: (batch size, sequence length, units) </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sample_output</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;Encoder Hidden state shape: (batch size, units) </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sample_hidden</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Encoder output shape: (batch size, sequence length, units) (64, 53, 1024)
+Encoder Hidden state shape: (batch size, units) (64, 1024)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">BahdanauAttention</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BahdanauAttention</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">V</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        
+    <span class="k">def</span><span class="w"> </span><span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="c1"># query hidden state shape == (batch_size, hidden size)</span>
+        <span class="c1"># query_with_time_axis shape == (batch_size, 1, hidden size)</span>
+        <span class="c1"># values shape == (batch_size, max_len, hidden size)</span>
+        <span class="c1"># we are doing this to broadcast addition along the time axis to calculate the score</span>
+        <span class="n">query_with_time_axis</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        
+        <span class="c1"># score shape == (batch_size, max_length, 1)</span>
+        <span class="c1"># we get 1 at the last axis because we are applying score to self.V</span>
+        <span class="c1"># the shape of the tensor before applying self.V is (batch_size, max_length, units)</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">V</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W1</span><span class="p">(</span><span class="n">query_with_time_axis</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">(</span><span class="n">values</span><span class="p">)))</span>
+        
+        <span class="c1"># attention_weights shape == (batch_size, max_length, 1)</span>
+        <span class="n">attention_weights</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="c1"># context_vector shape after sum == (batch_size, hidden_size)</span>
+        <span class="n">context_vector</span> <span class="o">=</span> <span class="n">attention_weights</span> <span class="o">*</span> <span class="n">values</span>
+        <span class="n">context_vector</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">context_vector</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">context_vector</span><span class="p">,</span> <span class="n">attention_weights</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">attention_layer</span> <span class="o">=</span> <span class="n">BahdanauAttention</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">attention_result</span><span class="p">,</span> <span class="n">attention_weights</span> <span class="o">=</span> <span class="n">attention_layer</span><span class="p">(</span><span class="n">sample_hidden</span><span class="p">,</span> <span class="n">sample_output</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Attention result shape: (batch size, units) </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attention_result</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Attention weights shape: (batch_size, sequence_length, 1) </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attention_weights</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attention result shape: (batch size, units) (64, 1024)
+Attention weights shape: (batch_size, sequence_length, 1) (64, 53, 1)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Decoder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">,</span> <span class="n">dec_units</span><span class="p">,</span> <span class="n">batch_sz</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Decoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_sz</span> <span class="o">=</span> <span class="n">batch_sz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dec_units</span> <span class="o">=</span> <span class="n">dec_units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gru</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">GRU</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dec_units</span><span class="p">,</span>
+                                       <span class="n">return_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">recurrent_initializer</span><span class="o">=</span><span class="s1">&#39;glorot_uniform&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">)</span>
+        
+        <span class="c1"># used for attention</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attention</span> <span class="o">=</span> <span class="n">BahdanauAttention</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dec_units</span><span class="p">)</span>
+        
+        
+    <span class="k">def</span><span class="w"> </span><span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">hidden</span><span class="p">,</span> <span class="n">enc_output</span><span class="p">):</span>
+        <span class="c1"># enc_output shape == (batch_size, max_length, hidden_size)</span>
+        <span class="n">context_vector</span><span class="p">,</span> <span class="n">attention_weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attention</span><span class="p">(</span><span class="n">hidden</span><span class="p">,</span> <span class="n">enc_output</span><span class="p">)</span>
+        
+        
+        <span class="c1"># x shape after passing through embedding == (batch_size, 1, embedding_dim)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># x shape after concatenation == (batch_size, 1, embedding_dim + hidden_size</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">tf</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">context_vector</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">x</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="c1"># passing the concatenated vector to the GRU</span>
+        <span class="n">output</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gru</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># output shape == (batch_size * 1, hidden_size)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        
+        <span class="c1"># output shape == (batch_size, vocab)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">attention_weights</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">decoder</span> <span class="o">=</span> <span class="n">Decoder</span><span class="p">(</span><span class="n">vocab_tar_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+
+<span class="n">sample_decoder_output</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">((</span><span class="n">BATCH_SIZE</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+                                      <span class="n">sample_hidden</span><span class="p">,</span> <span class="n">sample_output</span><span class="p">)</span>
+
+<span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;Decoder output shape: (batch_size, vocab size) </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sample_decoder_output</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Decoder output shape: (batch_size, vocab size) (64, 12934)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">()</span>
+<span class="n">loss_object</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">SparseCategoricalCrossentropy</span><span class="p">(</span>
+    <span class="n">from_logits</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">loss_function</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">pred</span><span class="p">):</span>
+    
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">loss_</span> <span class="o">=</span> <span class="n">loss_object</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span>
+    
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">loss_</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">loss_</span> <span class="o">*=</span> <span class="n">mask</span>
+    
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">loss_</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">checkpoint_dir</span> <span class="o">=</span> <span class="s1">&#39;./training_checkpoints&#39;</span>
+<span class="n">checkpoint_prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">checkpoint_dir</span><span class="p">,</span> <span class="s2">&quot;ckpt&quot;</span><span class="p">)</span>
+<span class="n">checkpoint</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Checkpoint</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+                                 <span class="n">encoder</span><span class="o">=</span><span class="n">encoder</span><span class="p">,</span>
+                                 <span class="n">decoder</span><span class="o">=</span><span class="n">decoder</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@tf</span><span class="o">.</span><span class="n">function</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">train_step</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">enc_hidden</span><span class="p">):</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>
+        <span class="n">enc_output</span><span class="p">,</span> <span class="n">enc_hidden</span> <span class="o">=</span> <span class="n">encoder</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">enc_hidden</span><span class="p">)</span>
+        <span class="n">dec_hidden</span> <span class="o">=</span> <span class="n">enc_hidden</span>
+        
+        <span class="n">dec_input</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">([</span><span class="n">targ_lang</span><span class="o">.</span><span class="n">word_index</span><span class="p">[</span><span class="s1">&#39;&lt;start&gt;&#39;</span><span class="p">]]</span> <span class="o">*</span> <span class="n">BATCH_SIZE</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        
+        <span class="c1"># Teacher forcing - feeding the target as the next input</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">targ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="c1"># passing enc_output to the decoder</span>
+            <span class="n">predictions</span><span class="p">,</span> <span class="n">dec_hidden</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">(</span><span class="n">dec_input</span><span class="p">,</span> <span class="n">dec_hidden</span><span class="p">,</span> <span class="n">enc_output</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">+=</span> <span class="n">loss_function</span><span class="p">(</span><span class="n">targ</span><span class="p">[:,</span> <span class="n">t</span><span class="p">],</span> <span class="n">predictions</span><span class="p">)</span>
+            <span class="c1"># using teacher forcing</span>
+            <span class="n">dec_input</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">targ</span><span class="p">[:,</span> <span class="n">t</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+            
+    <span class="n">batch_loss</span> <span class="o">=</span> <span class="p">(</span><span class="n">loss</span> <span class="o">/</span> <span class="nb">int</span><span class="p">(</span><span class="n">targ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">variables</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">trainable_variables</span> <span class="o">+</span> <span class="n">decoder</span><span class="o">.</span><span class="n">trainable_variables</span>
+    <span class="n">gradients</span> <span class="o">=</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">variables</span><span class="p">)</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">gradients</span><span class="p">,</span> <span class="n">variables</span><span class="p">))</span>
+            
+    <span class="k">return</span> <span class="n">batch_loss</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">EPOCHS</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">EPOCHS</span><span class="p">):</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    
+    <span class="n">enc_hidden</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">initialize_hidden_state</span><span class="p">()</span>
+    <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">for</span> <span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">targ</span><span class="p">))</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">steps_per_epoch</span><span class="p">)):</span>
+        <span class="n">batch_loss</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">enc_hidden</span><span class="p">)</span>
+        <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">batch_loss</span>
+        
+        <span class="k">if</span> <span class="n">batch</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">{}</span><span class="s1"> Batch </span><span class="si">{}</span><span class="s1"> Loss </span><span class="si">{:.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                                         <span class="n">batch</span><span class="p">,</span>
+                                                         <span class="n">batch_loss</span><span class="o">.</span><span class="n">numpy</span><span class="p">()))</span>
+    <span class="c1"># saving (checkpoint) the model every 2 epochs</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">checkpoint</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file_prefix</span> <span class="o">=</span> <span class="n">checkpoint_prefix</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">{}</span><span class="s1"> Loss </span><span class="si">{:.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                        <span class="n">total_loss</span> <span class="o">/</span> <span class="n">steps_per_epoch</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Time taken for 1 epoch </span><span class="si">{}</span><span class="s1"> sec</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch 1 Batch 0 Loss 1.7346
+Epoch 1 Batch 100 Loss 0.8601
+Epoch 1 Batch 200 Loss 0.7552
+Epoch 1 Batch 300 Loss 0.8281
+Epoch 1 Batch 400 Loss 0.6538
+Epoch 1 Batch 500 Loss 0.6904
+Epoch 1 Batch 600 Loss 0.5495
+Epoch 1 Batch 700 Loss 0.5438
+Epoch 1 Batch 800 Loss 0.5842
+Epoch 1 Batch 900 Loss 0.5163
+Epoch 1 Batch 1000 Loss 0.5993
+Epoch 1 Batch 1100 Loss 0.4308
+Epoch 1 Batch 1200 Loss 0.4373
+Epoch 1 Batch 1300 Loss 0.4032
+Epoch 1 Batch 1400 Loss 0.3693
+Epoch 1 Loss 0.6021
+Time taken for 1 epoch 476.49583768844604 sec
+
+Epoch 2 Batch 0 Loss 0.3239
+Epoch 2 Batch 100 Loss 0.2871
+Epoch 2 Batch 200 Loss 0.3192
+Epoch 2 Batch 300 Loss 0.3301
+Epoch 2 Batch 400 Loss 0.2794
+Epoch 2 Batch 500 Loss 0.2810
+Epoch 2 Batch 600 Loss 0.2682
+Epoch 2 Batch 700 Loss 0.2927
+Epoch 2 Batch 800 Loss 0.2909
+Epoch 2 Batch 900 Loss 0.2823
+Epoch 2 Batch 1000 Loss 0.2315
+Epoch 2 Batch 1100 Loss 0.2200
+Epoch 2 Batch 1200 Loss 0.2360
+Epoch 2 Batch 1300 Loss 0.3076
+Epoch 2 Batch 1400 Loss 0.2552
+Epoch 2 Loss 0.2948
+Time taken for 1 epoch 443.41202902793884 sec
+
+Epoch 3 Batch 0 Loss 0.2245
+Epoch 3 Batch 100 Loss 0.1588
+Epoch 3 Batch 200 Loss 0.2158
+Epoch 3 Batch 300 Loss 0.1791
+Epoch 3 Batch 400 Loss 0.2155
+Epoch 3 Batch 500 Loss 0.1926
+Epoch 3 Batch 600 Loss 0.1355
+Epoch 3 Batch 700 Loss 0.2063
+Epoch 3 Batch 800 Loss 0.1654
+Epoch 3 Batch 900 Loss 0.2098
+Epoch 3 Batch 1000 Loss 0.1720
+Epoch 3 Batch 1100 Loss 0.1925
+Epoch 3 Batch 1200 Loss 0.2301
+Epoch 3 Batch 1300 Loss 0.1985
+Epoch 3 Batch 1400 Loss 0.1597
+Epoch 3 Loss 0.1901
+Time taken for 1 epoch 442.3017530441284 sec
+
+Epoch 4 Batch 0 Loss 0.1536
+Epoch 4 Batch 100 Loss 0.1502
+Epoch 4 Batch 200 Loss 0.1614
+Epoch 4 Batch 300 Loss 0.1211
+Epoch 4 Batch 400 Loss 0.1329
+Epoch 4 Batch 500 Loss 0.1426
+Epoch 4 Batch 600 Loss 0.1953
+Epoch 4 Batch 700 Loss 0.1445
+Epoch 4 Batch 800 Loss 0.1316
+Epoch 4 Batch 900 Loss 0.1397
+Epoch 4 Batch 1000 Loss 0.1414
+Epoch 4 Batch 1100 Loss 0.1160
+Epoch 4 Batch 1200 Loss 0.1254
+Epoch 4 Batch 1300 Loss 0.1146
+Epoch 4 Batch 1400 Loss 0.1300
+Epoch 4 Loss 0.1361
+Time taken for 1 epoch 447.2612314224243 sec
+
+Epoch 5 Batch 0 Loss 0.0945
+Epoch 5 Batch 100 Loss 0.0898
+Epoch 5 Batch 200 Loss 0.0932
+Epoch 5 Batch 300 Loss 0.0998
+Epoch 5 Batch 400 Loss 0.1076
+Epoch 5 Batch 500 Loss 0.0898
+Epoch 5 Batch 600 Loss 0.0908
+Epoch 5 Batch 700 Loss 0.1156
+Epoch 5 Batch 800 Loss 0.1284
+Epoch 5 Batch 900 Loss 0.1172
+Epoch 5 Batch 1000 Loss 0.1147
+Epoch 5 Batch 1100 Loss 0.1418
+Epoch 5 Batch 1200 Loss 0.1449
+Epoch 5 Batch 1300 Loss 0.1080
+Epoch 5 Batch 1400 Loss 0.1143
+Epoch 5 Loss 0.1017
+Time taken for 1 epoch 443.46099615097046 sec
+
+Epoch 6 Batch 0 Loss 0.0676
+Epoch 6 Batch 100 Loss 0.0590
+Epoch 6 Batch 200 Loss 0.0687
+Epoch 6 Batch 300 Loss 0.0728
+Epoch 6 Batch 400 Loss 0.0694
+Epoch 6 Batch 500 Loss 0.0802
+Epoch 6 Batch 600 Loss 0.0742
+Epoch 6 Batch 700 Loss 0.0848
+Epoch 6 Batch 800 Loss 0.0692
+Epoch 6 Batch 900 Loss 0.0680
+Epoch 6 Batch 1000 Loss 0.1037
+Epoch 6 Batch 1100 Loss 0.0854
+Epoch 6 Batch 1200 Loss 0.0880
+Epoch 6 Batch 1300 Loss 0.0917
+Epoch 6 Batch 1400 Loss 0.0787
+Epoch 6 Loss 0.0801
+Time taken for 1 epoch 451.2902102470398 sec
+
+Epoch 7 Batch 0 Loss 0.0555
+Epoch 7 Batch 100 Loss 0.0473
+Epoch 7 Batch 200 Loss 0.0644
+Epoch 7 Batch 300 Loss 0.0929
+Epoch 7 Batch 400 Loss 0.0679
+Epoch 7 Batch 500 Loss 0.0831
+Epoch 7 Batch 600 Loss 0.0495
+Epoch 7 Batch 700 Loss 0.0898
+Epoch 7 Batch 800 Loss 0.0817
+Epoch 7 Batch 900 Loss 0.0727
+Epoch 7 Batch 1000 Loss 0.0696
+Epoch 7 Batch 1100 Loss 0.0620
+Epoch 7 Batch 1200 Loss 0.0658
+Epoch 7 Batch 1300 Loss 0.0600
+Epoch 7 Batch 1400 Loss 0.0772
+Epoch 7 Loss 0.0663
+Time taken for 1 epoch 444.74028038978577 sec
+
+Epoch 8 Batch 0 Loss 0.0424
+Epoch 8 Batch 100 Loss 0.0421
+Epoch 8 Batch 200 Loss 0.0640
+Epoch 8 Batch 300 Loss 0.0477
+Epoch 8 Batch 400 Loss 0.0493
+Epoch 8 Batch 500 Loss 0.0531
+Epoch 8 Batch 600 Loss 0.0471
+Epoch 8 Batch 700 Loss 0.0569
+Epoch 8 Batch 800 Loss 0.0582
+Epoch 8 Batch 900 Loss 0.0611
+Epoch 8 Batch 1000 Loss 0.0451
+Epoch 8 Batch 1100 Loss 0.0607
+Epoch 8 Batch 1200 Loss 0.0544
+Epoch 8 Batch 1300 Loss 0.0822
+Epoch 8 Batch 1400 Loss 0.0597
+Epoch 8 Loss 0.0512
+Time taken for 1 epoch 451.4748868942261 sec
+
+Epoch 9 Batch 0 Loss 0.0312
+Epoch 9 Batch 100 Loss 0.0306
+Epoch 9 Batch 200 Loss 0.0266
+Epoch 9 Batch 300 Loss 0.0255
+Epoch 9 Batch 400 Loss 0.0425
+Epoch 9 Batch 500 Loss 0.0346
+Epoch 9 Batch 600 Loss 0.0438
+Epoch 9 Batch 700 Loss 0.0360
+Epoch 9 Batch 800 Loss 0.0434
+Epoch 9 Batch 900 Loss 0.0495
+Epoch 9 Batch 1000 Loss 0.0403
+Epoch 9 Batch 1100 Loss 0.0514
+Epoch 9 Batch 1200 Loss 0.0354
+Epoch 9 Batch 1300 Loss 0.0545
+Epoch 9 Batch 1400 Loss 0.0485
+Epoch 9 Loss 0.0447
+Time taken for 1 epoch 475.8938076496124 sec
+
+Epoch 10 Batch 0 Loss 0.0410
+Epoch 10 Batch 100 Loss 0.0339
+Epoch 10 Batch 200 Loss 0.0308
+Epoch 10 Batch 300 Loss 0.0359
+Epoch 10 Batch 400 Loss 0.0359
+Epoch 10 Batch 500 Loss 0.0458
+Epoch 10 Batch 600 Loss 0.0357
+Epoch 10 Batch 700 Loss 0.0306
+Epoch 10 Batch 800 Loss 0.0564
+Epoch 10 Batch 900 Loss 0.0458
+Epoch 10 Batch 1000 Loss 0.0346
+Epoch 10 Batch 1100 Loss 0.0481
+Epoch 10 Batch 1200 Loss 0.0486
+Epoch 10 Batch 1300 Loss 0.0386
+Epoch 10 Batch 1400 Loss 0.0599
+Epoch 10 Loss 0.0396
+Time taken for 1 epoch 481.80025815963745 sec
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="n">sentence</span><span class="p">):</span>
+    
+    <span class="n">attention_plot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">max_length_targ</span><span class="p">,</span> <span class="n">max_length_inp</span><span class="p">))</span>
+    <span class="n">sentence</span> <span class="o">=</span> <span class="n">preprocess_sentence</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+    
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">inp_lang</span><span class="o">.</span><span class="n">word_index</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)]</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">sequence</span><span class="o">.</span><span class="n">pad_sequences</span><span class="p">([</span><span class="n">inputs</span><span class="p">],</span>
+                                                           <span class="n">maxlen</span><span class="o">=</span><span class="n">max_length_inp</span><span class="p">,</span>
+                                                           <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;post&#39;</span><span class="p">)</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    
+    <span class="n">hidden</span> <span class="o">=</span> <span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">units</span><span class="p">))]</span>
+    <span class="n">enc_out</span><span class="p">,</span> <span class="n">enc_hidden</span> <span class="o">=</span> <span class="n">encoder</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">hidden</span><span class="p">)</span>
+    
+    <span class="n">dec_hidden</span> <span class="o">=</span> <span class="n">enc_hidden</span>
+    <span class="n">dec_input</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">([</span><span class="n">targ_lang</span><span class="o">.</span><span class="n">word_index</span><span class="p">[</span><span class="s1">&#39;&lt;start&gt;&#39;</span><span class="p">]],</span> <span class="mi">0</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_length_targ</span><span class="p">):</span>
+        <span class="n">predictions</span><span class="p">,</span> <span class="n">dec_hidden</span><span class="p">,</span> <span class="n">attention_weights</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">(</span><span class="n">dec_input</span><span class="p">,</span>
+                                                             <span class="n">dec_hidden</span><span class="p">,</span>
+                                                             <span class="n">enc_out</span><span class="p">)</span>
+        
+        <span class="c1"># storing the attention weights to plot later on</span>
+        <span class="n">attention_weights</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">attention_weights</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">))</span>
+        <span class="n">attention_plot</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">attention_weights</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        
+        <span class="n">predicted_id</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">predictions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">targ_lang</span><span class="o">.</span><span class="n">index_word</span><span class="p">[</span><span class="n">predicted_id</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+        
+        <span class="k">if</span> <span class="n">targ_lang</span><span class="o">.</span><span class="n">index_word</span><span class="p">[</span><span class="n">predicted_id</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&lt;end&gt;&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">sentence</span><span class="p">,</span> <span class="n">attention_plot</span>
+        
+        <span class="c1"># the predicted ID is fed back into the model</span>
+        <span class="n">dec_input</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">([</span><span class="n">predicted_id</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">sentence</span><span class="p">,</span> <span class="n">attention_plot</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># function for plotting the attention weights</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_attention</span><span class="p">(</span><span class="n">attention</span><span class="p">,</span> <span class="n">sentence</span><span class="p">,</span> <span class="n">predicted_sentence</span><span class="p">):</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="n">attention</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+    
+    <span class="n">fontdict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fontsize&#39;</span><span class="p">:</span> <span class="mi">14</span><span class="p">}</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">sentence</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="n">fontdict</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">predicted_sentence</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="n">fontdict</span><span class="p">)</span>
+    
+    <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">translate</span><span class="p">(</span><span class="n">sentence</span><span class="p">):</span>
+    <span class="n">result</span><span class="p">,</span> <span class="n">sentence</span><span class="p">,</span> <span class="n">attention_plot</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Input: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sentence</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Predicted translation: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+    
+    <span class="n">attention_plot</span> <span class="o">=</span> <span class="n">attention_plot</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)),</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))]</span>
+    <span class="n">plot_attention</span><span class="p">(</span><span class="n">attention_plot</span><span class="p">,</span> <span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="n">result</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># restoring the latest checkpoint in checkpoint_dir</span>
+<span class="n">checkpoint</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">latest_checkpoint</span><span class="p">(</span><span class="n">checkpoint_dir</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;tensorflow.python.training.tracking.util.CheckpointLoadStatus at 0x7f0849fd9d90&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">translate</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;hace mucho frio aqui en este momento.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Input: &lt;start&gt; hace mucho frio aqui en este momento . &lt;end&gt;
+Predicted translation: it is very cold here in this time . &lt;end&gt; 
+</pre></div>
+</div>
+<img alt="../_images/7e3b1e31a83e862727390d22ae25019aa6b69635c973a30cb9a79bd9e43b96cc.png" src="../_images/7e3b1e31a83e862727390d22ae25019aa6b69635c973a30cb9a79bd9e43b96cc.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">translate</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;esta es mi vida.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Input: &lt;start&gt; esta es mi vida . &lt;end&gt;
+Predicted translation: this is my life . &lt;end&gt; 
+</pre></div>
+</div>
+<img alt="../_images/387ecc23b5807ebce54fab9001cf442abdbb477bdc0c7ddf1ae15fb41717a33a.png" src="../_images/387ecc23b5807ebce54fab9001cf442abdbb477bdc0c7ddf1ae15fb41717a33a.png" />
+</div>
+</div>
+</section>
+<section id="metrics-in-a-real-context">
+<h2>Metrics in a real context<a class="headerlink" href="#metrics-in-a-real-context" title="Link to this heading">#</a></h2>
+<p>From: wikipedia</p>
+<p><strong>BLEU (bilingual evaluation understudy)</strong> is an algorithm for evaluating the quality of text which has been machine-translated from one natural language to another. Quality is considered to be the correspondence between a machine’s output and that of a human: “the closer a machine translation is to a professional human translation, the better it is” – this is the central idea behind BLEU. BLEU was one of the first metrics to claim a high correlation with human judgements of quality, and remains one of the most popular automated and inexpensive metrics.</p>
+<p>Scores are calculated for individual translated segments—generally sentences—by comparing them with a set of good quality reference translations. Those scores are then averaged over the whole corpus to reach an estimate of the translation’s overall quality. Intelligibility or grammatical correctness are not taken into account</p>
+<p>NLTK provides the sentence_bleu() function for evaluating a candidate sentence against one or more reference sentences.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="U5.05%20-%20Sequences%20generation%20using%20LSTM.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">5.5 Sequences generation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="U5.07%20-%20ELMo%20-%20NER.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">5.7 ELMo</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-machine-translation">Neural Machine Translation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tokenize">Tokenize</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optional">Optional</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-tf-data-dataset">Create a tf.data dataset</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-rnn-network">Simple RNN network</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-word2vec">Using word2vec</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bidirectional-rnn">Bidirectional RNN</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#encoder-decoder">Encoder-decoder</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-machine-translation-with-attention">Neural machine translation with attention</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metrics-in-a-real-context">Metrics in a real context</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Raúl Ramos, Julián Arias / Universidad de Antioquia
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

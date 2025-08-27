@@ -1,0 +1,1946 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>5.5 Sequences generation &#8212; Fundamentos de Deep Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-43235448-3"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'UA-43235448-3');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'UA-43235448-3');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/U5.05 - Sequences generation using LSTM';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.6 Bidirectional RNNs" href="U5.06%20-%20Bidirectional%20RNNs%20-%20Attention%20Model.html" />
+    <link rel="prev" title="5.4 Text processing" href="U5.04%20-%20Basic%20concepts%20of%20text%20processing.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/fudea.jpg" class="logo__image only-light" alt="Fundamentos de Deep Learning - Home"/>
+    <script>document.write(`<img src="../_static/fudea.jpg" class="logo__image only-dark" alt="Fundamentos de Deep Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="M00_20252_pre.html">Info 2025.2 - UdeA</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M01.html">01 - INTRODUCTION</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U1.01%20-%20DL%20Overview.html">1.1 - DL Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1.02%20-%20Modelos%20derivados%20de%20los%20datos.html">1.2 - Models derived from data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1.03%20-%20Como%20se%20disena%20un%20algoritmo%20de%20Machine%20Learning.html">1.3 - ML algorithm design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1%20LAB%2001%20-%20WARMUP.html">LAB 01.01 - WARM UP</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M02.html">02 - NEURAL NETWORKS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U2.01%20-%20The%20Perceptron.html">2.1 - The Perceptron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.02%20-%20The%20Multilayer%20Perceptron.html">2.2 - The Multilayer Perceptron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.03%20-%20Overfitting%20and%20regularization.html">2.3 - Overfitting and regularization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.04%20-%20Loss%20functions.html">2.4 - Loss functions in Tensorflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.05%20-%20Network%20Architectures%20-%20Autoencoders.html">2.5 - Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.06%20-%20Network%20Architectures%20-%20Multimodal%20information.html">2.6 - Multimodal architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.07%20-%20Vanishing%20gradients.html">2.7 - Vanishing gradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.08%20-%20Weights%20initialization.html">2.8 - Weights initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2001%20-%20Customized%20loss%20functions%20and%20regularization.html">LAB 2.1 - Customized loss function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2002%20-%20Autoencoders.html">LAB 2.2 - Sparse Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2003%20-%20Pairwise%20image%20classification.html">LAB 2.3 - Pairwise classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2004%20-%20Model%20instrumentation%20and%20monitoring.html">LAB 2.4 - Model instrumentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M03.html">03 - TENSORFLOW CORE</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U3.01%20-%20Simbolic%20computing%20for%20ML.html">3.1 - Symbolic computing for ML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.02%20-%20TF%20for%20symbolic%20computing.html">3.2 - TF symbolic engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.03%20-%20Using%20tf.function.html">3.3 - Using <code class="docutils literal notranslate"><span class="pre">tf.function</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.04%20-%20Batch%20Normalization.html">3.4 - Batch normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3%20LAB%2001%20-%20Tensorflow%20model%20subclassing.html">LAB 3.1 - TF model subclassing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3%20LAB%2002%20-%20Low%20level%20Tensorflow.html">LAB 3.2 - Low level <code class="docutils literal notranslate"><span class="pre">tensorflow</span></code></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M04.html">04 - CONVOLUTIONAL NETWORKS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U4.01%20-%20Convolutions.html">4.1 - Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.02%20-%20Convolutional%20Neural%20Networks.html">4.2 - Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.03%20-%20Dropout%2C%20pooling.html">4.3 - Dropout, pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.04%20-%20CNN%20Architectures.html">4.4 - CNN Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.05%20-%20Transfer%20learning.html">4.5 - Transfer learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.06%20-%20Object%20Detection.html">4.6 - Object detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.07%20-%20Transposed%20convolutions.html">4.7 - Transposed convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.08%20-%20UNet%20image%20segmentation.html"><strong>4.8</strong> - UNet Image segmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.09%20-%20Atrous%20convolutions.html">4.9 - Atrous convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2001%20-%20Convolutions.html">LAB 4.1 - Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2002%20-%20Transfer%20Learning.html">LAB 4.2 - Transfer learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2003%20-%20Object%20Detection.html">LAB 4.3 - Object detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2004%20-%20Semantic%20segmentation.html">LAB 4.4 - Semantic segmentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="M05.html">05 - SEQUENCE MODELS</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="U5.00%20-%20Intro%20time%20series.html">5.0 Crossvalidation in time series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.01%20-%20Recurrent%20Neural%20Networks.html">5.1 Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.02%20-%20Long%20Short%20Term%20Memory%20RNN.html">5.2 LSTM and GRU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.03%20-%20Truncated%20BPTT.html">5.3 Truncated BPTT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.04%20-%20Basic%20concepts%20of%20text%20processing.html">5.4 Text processing</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">5.5 Sequences generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.06%20-%20Bidirectional%20RNNs%20-%20Attention%20Model.html">5.6 Bidirectional RNNs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.07%20-%20ELMo%20-%20NER.html">5.7 ELMo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.08%20-%20Self-Attention%20-%20Transformer%20-%20BERT.html">5.8 Transformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.09%20-%20CNN-LSTM%20architectures.html">5.9  CNN-LSTM architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2001%20-%20Multivariate%20time%20series%20prediction.html">LAB 5.1 - Time series prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2002%20-%20Padding%2C%20Masking%20-%20Sentiment%20Analysis.html">LAB 5.2 - Padding - Masking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2003%20-%20Sentiment%20Analysis%20using%20BERT.html">LAB 5.3 - Transformer - BERT</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/rramosp/2021.deeplearning/blob/master/content/U5.05 - Sequences generation using LSTM.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/content/U5.05 - Sequences generation using LSTM.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>5.5 Sequences generation</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling">Sampling</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-result-is-not-what-we-expected-mainly-because-of-three-resons">The result is not what we expected mainly because of three resons:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-a-more-complex-model-with-the-whole-dataset">Using a more complex model with the whole dataset</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="sequences-generation">
+<h1>5.5 Sequences generation<a class="headerlink" href="#sequences-generation" title="Link to this heading">#</a></h1>
+<p>Course’s materials require a <code class="docutils literal notranslate"><span class="pre">tensorflow</span></code> version lower than the default one used in Google Colab. Run the following cell to downgrade TensorFlow accordingly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">downgrade_tf_version</span><span class="p">():</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;!yes | pip uninstall -y tensorflow&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;!yes | pip install tensorflow==2.12.0&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">downgrade_tf_version</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>wget<span class="w"> </span>-nc<span class="w"> </span>--no-cache<span class="w"> </span>-O<span class="w"> </span>init.py<span class="w"> </span>-q<span class="w"> </span>https://raw.githubusercontent.com/rramosp/2021.deeplearning/main/content/init.py
+<span class="kn">import</span><span class="w"> </span><span class="nn">init</span><span class="p">;</span> <span class="n">init</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">);</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="k">if</span> <span class="s1">&#39;google.colab&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;setting tensorflow version in colab&quot;</span><span class="p">)</span>
+    <span class="o">%</span><span class="k">tensorflow_version</span> 2.x
+    <span class="o">%</span><span class="k">load_ext</span> tensorboard
+<span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
+<span class="n">tf</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="sampling">
+<h2>Sampling<a class="headerlink" href="#sampling" title="Link to this heading">#</a></h2>
+<p>A recurrence Neural Network can be used as a Generative model once it was trained. Currently this is a common practice not only to study how well a model has learned a problem, but to learn more about the problem domain itself. In fact, this approach is being used for music generation and composition.</p>
+<p>The process of generation is explained in the picture below:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;local/imgs/dinos3.png&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
+<span class="c1">#&lt;img src=&quot;local/imgs/dinos3.png&quot; style=&quot;width:500;height:300px;&quot;&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/b269af8c9f317e810314410a4056c5a7f73d84978d0cb861bea0b2627a5d9875.png"><img alt="../_images/b269af8c9f317e810314410a4056c5a7f73d84978d0cb861bea0b2627a5d9875.png" src="../_images/b269af8c9f317e810314410a4056c5a7f73d84978d0cb861bea0b2627a5d9875.png" style="width: 800px;" />
+</a>
+</div>
+</div>
+<p>Let’s do an example:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequential</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.layers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Masking</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.layers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dropout</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.layers</span><span class="w"> </span><span class="kn">import</span> <span class="n">LSTM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">RMSprop</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.callbacks</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelCheckpoint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keras.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">np_utils</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Using TensorFlow backend.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#This code is to fix a compatibility problem of TF 2.4 with some GPUs</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.compat.v1</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigProto</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.compat.v1</span><span class="w"> </span><span class="kn">import</span> <span class="n">InteractiveSession</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">ConfigProto</span><span class="p">()</span>
+<span class="n">config</span><span class="o">.</span><span class="n">gpu_options</span><span class="o">.</span><span class="n">allow_growth</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">InteractiveSession</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">nltk</span>
+<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;gutenberg&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[nltk_data] Downloading package gutenberg to /home/julian/nltk_data...
+[nltk_data]   Package gutenberg is already up-to-date!
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># load ascii text and covert to lowercase</span>
+<span class="n">raw_text</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">corpus</span><span class="o">.</span><span class="n">gutenberg</span><span class="o">.</span><span class="n">raw</span><span class="p">(</span><span class="s1">&#39;bible-kjv.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">raw_text</span><span class="p">[</span><span class="mi">100</span><span class="p">:</span><span class="mi">1000</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;Genesis\n\n\n1:1 In the beginning God created the heaven and the earth.\n\n1:2 And the earth was without form, and void; and darkness was upon\nthe face of the deep. And the Spirit of God moved upon the face of the\nwaters.\n\n1:3 And God said, Let there be light: and there was light.\n\n1:4 And God saw the light, that it was good: and God divided the light\nfrom the darkness.\n\n1:5 And God called the light Day, and the darkness he called Night.\nAnd the evening and the morning were the first day.\n\n1:6 And God said, Let there be a firmament in the midst of the waters,\nand let it divide the waters from the waters.\n\n1:7 And God made the firmament, and divided the waters which were\nunder the firmament from the waters which were above the firmament:\nand it was so.\n\n1:8 And God called the firmament Heaven. And the evening and the\nmorning were the second day.\n\n1:9 And God said, Let the waters under the heav&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># create mapping of unique chars to integers</span>
+<span class="n">chars</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">raw_text</span><span class="p">)))</span>
+<span class="n">char_to_int</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">c</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chars</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">char_to_int</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;\n&#39;: 0,
+ &#39; &#39;: 1,
+ &#39;!&#39;: 2,
+ &quot;&#39;&quot;: 3,
+ &#39;(&#39;: 4,
+ &#39;)&#39;: 5,
+ &#39;,&#39;: 6,
+ &#39;-&#39;: 7,
+ &#39;.&#39;: 8,
+ &#39;0&#39;: 9,
+ &#39;1&#39;: 10,
+ &#39;2&#39;: 11,
+ &#39;3&#39;: 12,
+ &#39;4&#39;: 13,
+ &#39;5&#39;: 14,
+ &#39;6&#39;: 15,
+ &#39;7&#39;: 16,
+ &#39;8&#39;: 17,
+ &#39;9&#39;: 18,
+ &#39;:&#39;: 19,
+ &#39;;&#39;: 20,
+ &#39;?&#39;: 21,
+ &#39;A&#39;: 22,
+ &#39;B&#39;: 23,
+ &#39;C&#39;: 24,
+ &#39;D&#39;: 25,
+ &#39;E&#39;: 26,
+ &#39;F&#39;: 27,
+ &#39;G&#39;: 28,
+ &#39;H&#39;: 29,
+ &#39;I&#39;: 30,
+ &#39;J&#39;: 31,
+ &#39;K&#39;: 32,
+ &#39;L&#39;: 33,
+ &#39;M&#39;: 34,
+ &#39;N&#39;: 35,
+ &#39;O&#39;: 36,
+ &#39;P&#39;: 37,
+ &#39;Q&#39;: 38,
+ &#39;R&#39;: 39,
+ &#39;S&#39;: 40,
+ &#39;T&#39;: 41,
+ &#39;U&#39;: 42,
+ &#39;V&#39;: 43,
+ &#39;W&#39;: 44,
+ &#39;Y&#39;: 45,
+ &#39;Z&#39;: 46,
+ &#39;[&#39;: 47,
+ &#39;]&#39;: 48,
+ &#39;a&#39;: 49,
+ &#39;b&#39;: 50,
+ &#39;c&#39;: 51,
+ &#39;d&#39;: 52,
+ &#39;e&#39;: 53,
+ &#39;f&#39;: 54,
+ &#39;g&#39;: 55,
+ &#39;h&#39;: 56,
+ &#39;i&#39;: 57,
+ &#39;j&#39;: 58,
+ &#39;k&#39;: 59,
+ &#39;l&#39;: 60,
+ &#39;m&#39;: 61,
+ &#39;n&#39;: 62,
+ &#39;o&#39;: 63,
+ &#39;p&#39;: 64,
+ &#39;q&#39;: 65,
+ &#39;r&#39;: 66,
+ &#39;s&#39;: 67,
+ &#39;t&#39;: 68,
+ &#39;u&#39;: 69,
+ &#39;v&#39;: 70,
+ &#39;w&#39;: 71,
+ &#39;x&#39;: 72,
+ &#39;y&#39;: 73,
+ &#39;z&#39;: 74}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_chars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_text</span><span class="p">)</span>
+<span class="n">n_vocab</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total Characters: &quot;</span><span class="p">,</span> <span class="n">n_chars</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total Vocab: &quot;</span><span class="p">,</span> <span class="n">n_vocab</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total Characters:  4332554
+Total Vocab:  75
+</pre></div>
+</div>
+</div>
+</div>
+<p>To train the model we are going to use sequences of 60 characters and because of the data set is too large, we are going to use only the firs 200000 sequences.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># prepare the dataset of input to output pairs encoded as integers</span>
+<span class="n">seq_length</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="n">dataX</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">dataY</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">n_chars</span> <span class="o">=</span> <span class="mi">200000</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_chars</span> <span class="o">-</span> <span class="n">seq_length</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+    <span class="n">seq_in</span> <span class="o">=</span> <span class="n">raw_text</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">seq_length</span><span class="p">]</span>
+    <span class="n">seq_out</span> <span class="o">=</span> <span class="n">raw_text</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">seq_length</span><span class="p">]</span>
+    <span class="n">dataX</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">char_to_int</span><span class="p">[</span><span class="n">char</span><span class="p">]</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">seq_in</span><span class="p">])</span>
+    <span class="n">dataY</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char_to_int</span><span class="p">[</span><span class="n">seq_out</span><span class="p">])</span>
+<span class="n">n_patterns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataX</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total Patterns: &quot;</span><span class="p">,</span> <span class="n">n_patterns</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total Patterns:  66647
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># reshape X to be [samples, time steps, features]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">dataX</span><span class="p">,</span> <span class="p">(</span><span class="n">n_patterns</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="c1"># normalize</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">X</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_vocab</span><span class="p">)</span>
+<span class="c1"># one hot encode the output variable</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np_utils</span><span class="o">.</span><span class="n">to_categorical</span><span class="p">(</span><span class="n">dataY</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">int_to_char</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chars</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(66647, 60, 1)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that the entire dataset is used for training</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch 1/200
+521/521 [==============================] - 6s 8ms/step - loss: 3.2294
+Epoch 2/200
+521/521 [==============================] - 3s 5ms/step - loss: 2.8156
+Epoch 3/200
+521/521 [==============================] - 3s 7ms/step - loss: 2.6550
+Epoch 4/200
+521/521 [==============================] - 3s 6ms/step - loss: 2.5924
+Epoch 5/200
+521/521 [==============================] - 5s 9ms/step - loss: 2.5289
+Epoch 6/200
+521/521 [==============================] - 4s 8ms/step - loss: 2.4810
+Epoch 7/200
+521/521 [==============================] - 3s 7ms/step - loss: 2.4409
+Epoch 8/200
+521/521 [==============================] - 5s 10ms/step - loss: 2.4070
+Epoch 9/200
+521/521 [==============================] - 4s 8ms/step - loss: 2.3840
+Epoch 10/200
+521/521 [==============================] - 5s 9ms/step - loss: 2.3453
+Epoch 11/200
+521/521 [==============================] - 5s 9ms/step - loss: 2.3121
+Epoch 12/200
+521/521 [==============================] - 5s 9ms/step - loss: 2.2972
+Epoch 13/200
+521/521 [==============================] - 5s 9ms/step - loss: 2.2715
+Epoch 14/200
+521/521 [==============================] - 4s 8ms/step - loss: 2.2433
+Epoch 15/200
+521/521 [==============================] - 5s 9ms/step - loss: 2.2105
+Epoch 16/200
+521/521 [==============================] - 4s 8ms/step - loss: 2.2033
+Epoch 17/200
+521/521 [==============================] - 3s 6ms/step - loss: 2.1662
+Epoch 18/200
+521/521 [==============================] - 4s 8ms/step - loss: 2.1614
+Epoch 19/200
+521/521 [==============================] - 4s 8ms/step - loss: 2.1302
+Epoch 20/200
+521/521 [==============================] - 4s 8ms/step - loss: 2.1122
+Epoch 21/200
+521/521 [==============================] - 5s 9ms/step - loss: 2.0818
+Epoch 22/200
+521/521 [==============================] - 5s 9ms/step - loss: 2.0597
+Epoch 23/200
+521/521 [==============================] - 4s 8ms/step - loss: 2.0347
+Epoch 24/200
+521/521 [==============================] - 5s 10ms/step - loss: 2.0123
+Epoch 25/200
+521/521 [==============================] - 6s 11ms/step - loss: 2.0003
+Epoch 26/200
+521/521 [==============================] - 4s 8ms/step - loss: 1.9707
+Epoch 27/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.9547
+Epoch 28/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.9284
+Epoch 29/200
+521/521 [==============================] - 4s 8ms/step - loss: 1.9163
+Epoch 30/200
+521/521 [==============================] - 3s 5ms/step - loss: 1.8940
+Epoch 31/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.8689
+Epoch 32/200
+521/521 [==============================] - 3s 5ms/step - loss: 1.8399
+Epoch 33/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.8204
+Epoch 34/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.8123
+Epoch 35/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.7942
+Epoch 36/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.7545
+Epoch 37/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.7423
+Epoch 38/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.7241
+Epoch 39/200
+521/521 [==============================] - 3s 5ms/step - loss: 1.7037
+Epoch 40/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.6715
+Epoch 41/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.6630
+Epoch 42/200
+521/521 [==============================] - 3s 5ms/step - loss: 1.6391
+Epoch 43/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.6251
+Epoch 44/200
+521/521 [==============================] - 3s 5ms/step - loss: 1.5998
+Epoch 45/200
+521/521 [==============================] - 3s 5ms/step - loss: 1.5725
+Epoch 46/200
+521/521 [==============================] - 3s 7ms/step - loss: 1.5625
+Epoch 47/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.5433
+Epoch 48/200
+521/521 [==============================] - 4s 8ms/step - loss: 1.5173
+Epoch 49/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.5175
+Epoch 50/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.4908
+Epoch 51/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.4646
+Epoch 52/200
+521/521 [==============================] - 3s 5ms/step - loss: 1.4495
+Epoch 53/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.4396
+Epoch 54/200
+521/521 [==============================] - 3s 7ms/step - loss: 1.4203
+Epoch 55/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.4160
+Epoch 56/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.3794
+Epoch 57/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.3661
+Epoch 58/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.3628
+Epoch 59/200
+521/521 [==============================] - 5s 9ms/step - loss: 1.3514
+Epoch 60/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.3292
+Epoch 61/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.3190
+Epoch 62/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.3168
+Epoch 63/200
+521/521 [==============================] - 5s 9ms/step - loss: 1.2908
+Epoch 64/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.2733
+Epoch 65/200
+521/521 [==============================] - 4s 8ms/step - loss: 1.2741
+Epoch 66/200
+521/521 [==============================] - 4s 8ms/step - loss: 1.2581
+Epoch 67/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.2615
+Epoch 68/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.3300
+Epoch 69/200
+521/521 [==============================] - 3s 5ms/step - loss: 1.3073
+Epoch 70/200
+521/521 [==============================] - 3s 5ms/step - loss: 1.2368
+Epoch 71/200
+521/521 [==============================] - 3s 5ms/step - loss: 1.2135
+Epoch 72/200
+521/521 [==============================] - 4s 8ms/step - loss: 1.1927
+Epoch 73/200
+521/521 [==============================] - 4s 8ms/step - loss: 1.1833
+Epoch 74/200
+521/521 [==============================] - 4s 8ms/step - loss: 1.1753
+Epoch 75/200
+521/521 [==============================] - 4s 8ms/step - loss: 1.1791
+Epoch 76/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.1697
+Epoch 77/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.1770
+Epoch 78/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.1577
+Epoch 79/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.1238
+Epoch 80/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.1283
+Epoch 81/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.1239
+Epoch 82/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.1071
+Epoch 83/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.1245
+Epoch 84/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.0958
+Epoch 85/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.0738
+Epoch 86/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.0657
+Epoch 87/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.0716
+Epoch 88/200
+521/521 [==============================] - 4s 8ms/step - loss: 1.0861
+Epoch 89/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.0640
+Epoch 90/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.0391
+Epoch 91/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.0259
+Epoch 92/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.0702
+Epoch 93/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.0005
+Epoch 94/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.0025
+Epoch 95/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.9959
+Epoch 96/200
+521/521 [==============================] - 3s 5ms/step - loss: 0.9941
+Epoch 97/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.9868
+Epoch 98/200
+521/521 [==============================] - 4s 7ms/step - loss: 1.0211
+Epoch 99/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.9525
+Epoch 100/200
+521/521 [==============================] - 5s 9ms/step - loss: 0.9613
+Epoch 101/200
+521/521 [==============================] - 5s 9ms/step - loss: 0.9612
+Epoch 102/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.9432
+Epoch 103/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.9590
+Epoch 104/200
+521/521 [==============================] - 5s 9ms/step - loss: 0.9434
+Epoch 105/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.9466
+Epoch 106/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.9258
+Epoch 107/200
+521/521 [==============================] - 5s 9ms/step - loss: 0.9225
+Epoch 108/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.9239
+Epoch 109/200
+521/521 [==============================] - 5s 9ms/step - loss: 0.9067
+Epoch 110/200
+521/521 [==============================] - 5s 11ms/step - loss: 0.8950
+Epoch 111/200
+521/521 [==============================] - 5s 9ms/step - loss: 0.9142
+Epoch 112/200
+521/521 [==============================] - 5s 10ms/step - loss: 0.8786
+Epoch 113/200
+521/521 [==============================] - 5s 9ms/step - loss: 0.8703
+Epoch 114/200
+521/521 [==============================] - 5s 10ms/step - loss: 0.8730
+Epoch 115/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.8649
+Epoch 116/200
+521/521 [==============================] - 5s 9ms/step - loss: 0.8649
+Epoch 117/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.8481
+Epoch 118/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.8408
+Epoch 119/200
+521/521 [==============================] - 5s 9ms/step - loss: 0.8518
+Epoch 120/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.8585
+Epoch 121/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.8506
+Epoch 122/200
+521/521 [==============================] - 5s 9ms/step - loss: 0.8088
+Epoch 123/200
+521/521 [==============================] - 5s 10ms/step - loss: 0.8321
+Epoch 124/200
+521/521 [==============================] - 5s 9ms/step - loss: 0.8818
+Epoch 125/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.8057
+Epoch 126/200
+521/521 [==============================] - 5s 10ms/step - loss: 0.8122
+Epoch 127/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.8208
+Epoch 128/200
+521/521 [==============================] - 5s 9ms/step - loss: 0.7973
+Epoch 129/200
+521/521 [==============================] - 5s 9ms/step - loss: 0.7867
+Epoch 130/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.8401
+Epoch 131/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.8098
+Epoch 132/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.7664
+Epoch 133/200
+521/521 [==============================] - 3s 7ms/step - loss: 0.7790
+Epoch 134/200
+521/521 [==============================] - 3s 7ms/step - loss: 0.7787
+Epoch 135/200
+521/521 [==============================] - 6s 11ms/step - loss: 0.7645
+Epoch 136/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.8066
+Epoch 137/200
+521/521 [==============================] - 5s 9ms/step - loss: 0.8463
+Epoch 138/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.7783
+Epoch 139/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.7693
+Epoch 140/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.7327
+Epoch 141/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.7230
+Epoch 142/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.7498
+Epoch 143/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.7597
+Epoch 144/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.7823
+Epoch 145/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.7268
+Epoch 146/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.7482
+Epoch 147/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.7101
+Epoch 148/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.7199
+Epoch 149/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.7128
+Epoch 150/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.7161
+Epoch 151/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.7046
+Epoch 152/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.6901
+Epoch 153/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.7059
+Epoch 154/200
+521/521 [==============================] - 3s 5ms/step - loss: 0.6859
+Epoch 155/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.7286
+Epoch 156/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.7667
+Epoch 157/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.6656
+Epoch 158/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.6651
+Epoch 159/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.6823
+Epoch 160/200
+521/521 [==============================] - 3s 6ms/step - loss: 1.1258
+Epoch 161/200
+521/521 [==============================] - 3s 5ms/step - loss: 0.6587
+Epoch 162/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.6688
+Epoch 163/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.6616
+Epoch 164/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.6522
+Epoch 165/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.6574
+Epoch 166/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.6765
+Epoch 167/200
+521/521 [==============================] - 3s 5ms/step - loss: 0.6188
+Epoch 168/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.6417
+Epoch 169/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.6775
+Epoch 170/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.7435
+Epoch 171/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.6036
+Epoch 172/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.6266
+Epoch 173/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.6163
+Epoch 174/200
+521/521 [==============================] - 3s 5ms/step - loss: 0.6069
+Epoch 175/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.6732
+Epoch 176/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.6543
+Epoch 177/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.6134
+Epoch 178/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.5893
+Epoch 179/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.6064
+Epoch 180/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.6139
+Epoch 181/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.7111
+Epoch 182/200
+521/521 [==============================] - 3s 7ms/step - loss: 0.6698
+Epoch 183/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.6161
+Epoch 184/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.5821
+Epoch 185/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.5722
+Epoch 186/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.5964
+Epoch 187/200
+521/521 [==============================] - 3s 5ms/step - loss: 0.5999
+Epoch 188/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.6639
+Epoch 189/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.5951
+Epoch 190/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.6253
+Epoch 191/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.5794
+Epoch 192/200
+521/521 [==============================] - 3s 6ms/step - loss: 0.5785
+Epoch 193/200
+521/521 [==============================] - 3s 5ms/step - loss: 0.5747
+Epoch 194/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.5823
+Epoch 195/200
+521/521 [==============================] - 3s 7ms/step - loss: 0.5734
+Epoch 196/200
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>521/521 [==============================] - 4s 9ms/step - loss: 0.5941
+Epoch 197/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.8470
+Epoch 198/200
+521/521 [==============================] - 4s 8ms/step - loss: 0.5750
+Epoch 199/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.5531
+Epoch 200/200
+521/521 [==============================] - 4s 7ms/step - loss: 0.5230
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;tensorflow.python.keras.callbacks.History at 0x7fc1405288d0&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">int_to_char</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chars</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># pick a random seed</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataX</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">pattern</span> <span class="o">=</span> <span class="n">dataX</span><span class="p">[</span><span class="n">start</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Seed:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">int_to_char</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">pattern</span><span class="p">]),</span> <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># generate characters</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_vocab</span><span class="p">)</span>
+    <span class="n">prediction</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">int_to_char</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">seq_in</span> <span class="o">=</span> <span class="p">[</span><span class="n">int_to_char</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">pattern</span><span class="p">]</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="n">pattern</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="n">pattern</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Done.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Seed:
+&quot; s, saying, Jacob hath taken
+away all that was our father&#39;s;  &quot;
+and he hoeeml in uher ph thi liude tf mrte iv mes.hrst. 
+20:3 And the senea tayt,ov Suonpha, whei sho ln hed teme upene thkt the gare of thed, 
+6::7 Tnenef tha woin oa Sebha Icble tee Bumpae,ii Noarcrhr, 
+26:2 And Eoruel dngu, and Hamaa&#39; and Jaiae, and Jahlap, and Jedmah, and Tekah,
+and Tekaha, and Teblhc: 36:1 And AnzaNa aid Bihi tii teie  shecn ia haa mam, and toet hem: ant there Ara cadh hamk aw uhr fnadmt&#39;onth mi  and seee in pas  end hete it
+unto mh.
+and siat kere hete tham
+ 
+20:61 Nnt mhe elies wf Loau,w gifser Gamoh  ae shen N bayerees tvto the eeyh of my cirthed.
+and dare nl uhe
+drd  and hit iind fo?thor hidst, and he tas teet it wate
+tp tef khrhe if mae wo hr deci;s aarhmt. 
+15:54 And the men woie oht wwon thes hs the coes of Rodn: anr the same grsmd mor finye fir 
+and hes is c phlel sf dr ters woan
+fo hanher; aea uh tyelk ny sinv  wha hrued afuer hfm,
+
+32:18 And the men woie on ham tien, sh c mivt ma dadkte to doean thth my, theke wer betsle grmme abseer rnw thy natterts,
+tha
+Done.
+</pre></div>
+</div>
+</div>
+</div>
+<section id="the-result-is-not-what-we-expected-mainly-because-of-three-resons">
+<h3>The result is not what we expected mainly because of three resons:<a class="headerlink" href="#the-result-is-not-what-we-expected-mainly-because-of-three-resons" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>The model requires to be trained with a larger dataset in order to better capture the dynamics of the language.</p></li>
+<li><p>During validation it is not recommendable to select the output with maximum probability but to use the output distribution as parameters to sample from a multinomial distribution. This avoid the model to get stuck in a loop.</p></li>
+<li><p>A more flexible model with more data could get better results.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="c1"># helper function to sample an index from a probability array</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span> <span class="o">/</span> <span class="n">temperature</span>
+    <span class="n">exp_preds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">exp_preds</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exp_preds</span><span class="p">)</span>
+    <span class="n">probas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">preds</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">probas</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="using-a-more-complex-model-with-the-whole-dataset">
+<h2>Using a more complex model with the whole dataset<a class="headerlink" href="#using-a-more-complex-model-with-the-whole-dataset" title="Link to this heading">#</a></h2>
+<p>This problem is complex computationally speaking, so the next model was run using GPU.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">return_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="mf">0.2</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">256</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="mf">0.2</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>More data could produce memory erros so we have to create a data_generator function for the problem:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">KerasBatchGenerator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">vocabulary</span><span class="p">,</span> <span class="n">skip_step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_steps</span> <span class="o">=</span> <span class="n">num_steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocabulary</span> <span class="o">=</span> <span class="n">vocabulary</span>
+        <span class="c1"># this will track the progress of the batches sequentially through the</span>
+        <span class="c1"># data set - once the data reaches the end of the data set it will reset</span>
+        <span class="c1"># back to zero</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># skip_step is the number of words which will be skipped before the next</span>
+        <span class="c1"># batch is skimmed from the data set</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip_step</span> <span class="o">=</span> <span class="n">skip_step</span>
+        
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_steps</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocabulary</span><span class="p">))</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_steps</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+                    <span class="c1"># reset the index back to the start of the data set</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">seq_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_steps</span><span class="p">]</span>
+                <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">char_to_int</span><span class="p">[</span><span class="n">char</span><span class="p">]</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">seq_in</span><span class="p">])</span><span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_vocab</span><span class="p">)</span>
+                <span class="n">seq_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_steps</span><span class="p">]</span>
+                <span class="n">temp_y</span> <span class="o">=</span> <span class="n">char_to_int</span><span class="p">[</span><span class="n">seq_out</span><span class="p">]</span>
+                <span class="c1"># convert all of temp_y into a one hot representation</span>
+                <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np_utils</span><span class="o">.</span><span class="n">to_categorical</span><span class="p">(</span><span class="n">temp_y</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vocabulary</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_step</span>
+            <span class="k">yield</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">train_data_generator</span> <span class="o">=</span> <span class="n">KerasBatchGenerator</span><span class="p">(</span><span class="n">raw_text</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">n_vocab</span><span class="p">,</span> <span class="n">skip_step</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#model.fit_generator(train_data_generator.generate(), epochs=30, steps_per_epoch=n_chars/batch_size)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch 1/200
+2083/2083 [==============================] - 26s 12ms/step - loss: 3.0367
+Epoch 2/200
+2083/2083 [==============================] - 24s 11ms/step - loss: 2.5037
+Epoch 3/200
+2083/2083 [==============================] - 25s 12ms/step - loss: 2.3439
+Epoch 4/200
+2083/2083 [==============================] - 27s 13ms/step - loss: 2.2347
+Epoch 5/200
+2083/2083 [==============================] - 26s 12ms/step - loss: 2.1483
+Epoch 6/200
+2083/2083 [==============================] - 24s 11ms/step - loss: 2.0631
+Epoch 7/200
+2083/2083 [==============================] - 23s 11ms/step - loss: 1.9892
+Epoch 8/200
+2083/2083 [==============================] - 27s 13ms/step - loss: 1.9368
+Epoch 9/200
+2083/2083 [==============================] - 32s 16ms/step - loss: 1.8735
+Epoch 10/200
+2083/2083 [==============================] - 28s 13ms/step - loss: 1.8218
+Epoch 11/200
+2083/2083 [==============================] - 29s 14ms/step - loss: 1.7650
+Epoch 12/200
+2083/2083 [==============================] - 26s 12ms/step - loss: 1.7209
+Epoch 13/200
+2083/2083 [==============================] - 34s 16ms/step - loss: 1.6791
+Epoch 14/200
+2083/2083 [==============================] - 29s 14ms/step - loss: 1.6435
+Epoch 15/200
+2083/2083 [==============================] - 22s 11ms/step - loss: 1.5907
+Epoch 16/200
+2083/2083 [==============================] - 28s 14ms/step - loss: 1.5612
+Epoch 17/200
+2083/2083 [==============================] - 21s 10ms/step - loss: 1.5159
+Epoch 18/200
+2083/2083 [==============================] - 20s 10ms/step - loss: 1.5025
+Epoch 19/200
+2083/2083 [==============================] - 20s 10ms/step - loss: 1.4749
+Epoch 20/200
+2083/2083 [==============================] - 22s 10ms/step - loss: 1.4397
+Epoch 21/200
+2083/2083 [==============================] - 30s 14ms/step - loss: 1.3992
+Epoch 22/200
+2083/2083 [==============================] - 23s 11ms/step - loss: 1.3764
+Epoch 23/200
+2083/2083 [==============================] - 27s 13ms/step - loss: 1.3350
+Epoch 24/200
+2083/2083 [==============================] - 28s 14ms/step - loss: 1.3210
+Epoch 25/200
+2083/2083 [==============================] - 28s 14ms/step - loss: 1.2972
+Epoch 26/200
+2083/2083 [==============================] - 28s 14ms/step - loss: 1.2743
+Epoch 27/200
+2083/2083 [==============================] - 28s 13ms/step - loss: 1.2628
+Epoch 28/200
+2083/2083 [==============================] - 27s 13ms/step - loss: 1.2338
+Epoch 29/200
+2083/2083 [==============================] - 24s 11ms/step - loss: 1.2126
+Epoch 30/200
+2083/2083 [==============================] - 29s 14ms/step - loss: 1.1936
+Epoch 31/200
+2083/2083 [==============================] - 30s 14ms/step - loss: 1.1889
+Epoch 32/200
+2083/2083 [==============================] - 30s 14ms/step - loss: 1.1614
+Epoch 33/200
+2083/2083 [==============================] - 29s 14ms/step - loss: 1.1415
+Epoch 34/200
+2083/2083 [==============================] - 33s 16ms/step - loss: 1.1335
+Epoch 35/200
+2083/2083 [==============================] - 21s 10ms/step - loss: 1.1311
+Epoch 36/200
+2083/2083 [==============================] - 22s 11ms/step - loss: 1.1187
+Epoch 37/200
+2083/2083 [==============================] - 34s 16ms/step - loss: 1.1038
+Epoch 38/200
+2083/2083 [==============================] - 36s 17ms/step - loss: 1.0968
+Epoch 39/200
+2083/2083 [==============================] - 26s 13ms/step - loss: 1.0790
+Epoch 40/200
+2083/2083 [==============================] - 31s 15ms/step - loss: 1.0745
+Epoch 41/200
+2083/2083 [==============================] - 28s 13ms/step - loss: 1.0655
+Epoch 42/200
+2083/2083 [==============================] - 21s 10ms/step - loss: 1.0480
+Epoch 43/200
+2083/2083 [==============================] - 27s 13ms/step - loss: 1.0453
+Epoch 44/200
+2083/2083 [==============================] - 32s 16ms/step - loss: 1.0395
+Epoch 45/200
+2083/2083 [==============================] - 35s 17ms/step - loss: 1.0238
+Epoch 46/200
+2083/2083 [==============================] - 27s 13ms/step - loss: 1.0261
+Epoch 47/200
+2083/2083 [==============================] - 27s 13ms/step - loss: 1.0142
+Epoch 48/200
+2083/2083 [==============================] - 22s 11ms/step - loss: 1.0148
+Epoch 49/200
+2083/2083 [==============================] - 25s 12ms/step - loss: 0.9909
+Epoch 50/200
+2083/2083 [==============================] - 21s 10ms/step - loss: 0.9929
+Epoch 51/200
+2083/2083 [==============================] - 28s 13ms/step - loss: 0.9913
+Epoch 52/200
+2083/2083 [==============================] - 34s 16ms/step - loss: 0.9861
+Epoch 53/200
+2083/2083 [==============================] - 35s 17ms/step - loss: 0.9852
+Epoch 54/200
+2083/2083 [==============================] - 32s 15ms/step - loss: 0.9682
+Epoch 55/200
+2083/2083 [==============================] - 32s 15ms/step - loss: 0.9794
+Epoch 56/200
+2083/2083 [==============================] - 36s 17ms/step - loss: 0.9594
+Epoch 57/200
+2083/2083 [==============================] - 37s 18ms/step - loss: 0.9570
+Epoch 58/200
+2083/2083 [==============================] - 34s 16ms/step - loss: 0.9623
+Epoch 59/200
+2083/2083 [==============================] - 37s 18ms/step - loss: 0.9515
+Epoch 60/200
+2083/2083 [==============================] - 34s 16ms/step - loss: 0.9419
+Epoch 61/200
+2083/2083 [==============================] - 36s 17ms/step - loss: 0.9560
+Epoch 62/200
+2083/2083 [==============================] - 33s 16ms/step - loss: 0.9503
+Epoch 63/200
+2083/2083 [==============================] - 34s 16ms/step - loss: 0.9428
+Epoch 64/200
+2083/2083 [==============================] - 34s 16ms/step - loss: 0.9426
+Epoch 65/200
+2083/2083 [==============================] - 34s 16ms/step - loss: 0.9448
+Epoch 66/200
+2083/2083 [==============================] - 26s 13ms/step - loss: 0.9434
+Epoch 67/200
+2083/2083 [==============================] - 32s 15ms/step - loss: 0.9406
+Epoch 68/200
+2083/2083 [==============================] - 33s 16ms/step - loss: 0.9244
+Epoch 69/200
+2083/2083 [==============================] - 35s 17ms/step - loss: 0.9323
+Epoch 70/200
+2083/2083 [==============================] - 38s 18ms/step - loss: 0.9361
+Epoch 71/200
+2083/2083 [==============================] - 33s 16ms/step - loss: 0.9252
+Epoch 72/200
+2083/2083 [==============================] - 36s 17ms/step - loss: 0.9325
+Epoch 73/200
+2083/2083 [==============================] - 34s 16ms/step - loss: 0.9312
+Epoch 74/200
+2083/2083 [==============================] - 30s 15ms/step - loss: 0.9343
+Epoch 75/200
+2083/2083 [==============================] - 33s 16ms/step - loss: 0.9346
+Epoch 76/200
+2083/2083 [==============================] - 36s 17ms/step - loss: 0.9198
+Epoch 77/200
+2083/2083 [==============================] - 35s 17ms/step - loss: 0.9331
+Epoch 78/200
+2083/2083 [==============================] - 34s 16ms/step - loss: 1.7209
+Epoch 79/200
+2083/2083 [==============================] - 37s 18ms/step - loss: 3.7659
+Epoch 80/200
+2083/2083 [==============================] - 32s 15ms/step - loss: 3.1665
+Epoch 81/200
+2083/2083 [==============================] - 36s 17ms/step - loss: 2.8868
+Epoch 82/200
+2083/2083 [==============================] - 30s 15ms/step - loss: 2.7156
+Epoch 83/200
+2083/2083 [==============================] - 35s 17ms/step - loss: 2.6041
+Epoch 84/200
+2083/2083 [==============================] - 37s 18ms/step - loss: 2.5368
+Epoch 85/200
+2083/2083 [==============================] - 32s 16ms/step - loss: 2.4605
+Epoch 86/200
+2083/2083 [==============================] - 25s 12ms/step - loss: 2.3947
+Epoch 87/200
+2083/2083 [==============================] - 31s 15ms/step - loss: 2.3747
+Epoch 88/200
+2083/2083 [==============================] - 36s 17ms/step - loss: 2.3057
+Epoch 89/200
+2083/2083 [==============================] - 31s 15ms/step - loss: 2.2391
+Epoch 90/200
+2083/2083 [==============================] - 34s 16ms/step - loss: 2.1357
+Epoch 91/200
+2083/2083 [==============================] - 32s 16ms/step - loss: 2.0559
+Epoch 92/200
+2083/2083 [==============================] - 35s 17ms/step - loss: 1.9769
+Epoch 93/200
+2083/2083 [==============================] - 29s 14ms/step - loss: 1.9188
+Epoch 94/200
+2083/2083 [==============================] - 37s 18ms/step - loss: 1.8637
+Epoch 95/200
+2083/2083 [==============================] - 39s 19ms/step - loss: 1.7961
+Epoch 96/200
+2083/2083 [==============================] - 41s 20ms/step - loss: 1.7647
+Epoch 97/200
+2083/2083 [==============================] - 41s 20ms/step - loss: 1.7186
+Epoch 98/200
+2083/2083 [==============================] - 37s 18ms/step - loss: 1.6773
+Epoch 99/200
+2083/2083 [==============================] - 39s 19ms/step - loss: 1.6338
+Epoch 100/200
+2083/2083 [==============================] - 36s 17ms/step - loss: 1.6125
+Epoch 101/200
+2083/2083 [==============================] - 39s 19ms/step - loss: 1.5730
+Epoch 102/200
+2083/2083 [==============================] - 36s 17ms/step - loss: 1.5506
+Epoch 103/200
+2083/2083 [==============================] - 36s 17ms/step - loss: 1.5189
+Epoch 104/200
+2083/2083 [==============================] - 40s 19ms/step - loss: 1.5105
+Epoch 105/200
+2083/2083 [==============================] - 39s 19ms/step - loss: 1.4798
+Epoch 106/200
+2083/2083 [==============================] - 37s 18ms/step - loss: 1.4562
+Epoch 107/200
+2083/2083 [==============================] - 41s 20ms/step - loss: 1.5138
+Epoch 108/200
+2083/2083 [==============================] - 36s 17ms/step - loss: 1.4241
+Epoch 109/200
+2083/2083 [==============================] - 38s 18ms/step - loss: 1.4028
+Epoch 110/200
+2083/2083 [==============================] - 41s 20ms/step - loss: 1.3790
+Epoch 111/200
+2083/2083 [==============================] - 38s 18ms/step - loss: 1.3591
+Epoch 112/200
+2083/2083 [==============================] - 39s 18ms/step - loss: 1.3491
+Epoch 113/200
+2083/2083 [==============================] - 37s 18ms/step - loss: 1.3394
+Epoch 114/200
+2083/2083 [==============================] - 37s 18ms/step - loss: 1.3289
+Epoch 115/200
+2083/2083 [==============================] - 41s 20ms/step - loss: 1.3135
+Epoch 116/200
+2083/2083 [==============================] - 38s 18ms/step - loss: 1.2875
+Epoch 117/200
+2083/2083 [==============================] - 39s 19ms/step - loss: 1.2790
+Epoch 118/200
+2083/2083 [==============================] - 40s 19ms/step - loss: 1.2759
+Epoch 119/200
+2083/2083 [==============================] - 32s 15ms/step - loss: 1.2641
+Epoch 120/200
+2083/2083 [==============================] - 40s 19ms/step - loss: 1.2541
+Epoch 121/200
+2083/2083 [==============================] - 39s 19ms/step - loss: 1.2385
+Epoch 122/200
+2083/2083 [==============================] - 39s 19ms/step - loss: 1.2549
+Epoch 123/200
+2083/2083 [==============================] - 39s 19ms/step - loss: 1.2160
+Epoch 124/200
+2083/2083 [==============================] - 37s 18ms/step - loss: 1.2087
+Epoch 125/200
+2083/2083 [==============================] - 39s 19ms/step - loss: 1.2009
+Epoch 126/200
+2083/2083 [==============================] - 39s 19ms/step - loss: 1.1916
+Epoch 127/200
+2083/2083 [==============================] - 38s 18ms/step - loss: 1.1804
+Epoch 128/200
+2083/2083 [==============================] - 39s 19ms/step - loss: 1.1824
+Epoch 129/200
+2083/2083 [==============================] - 31s 15ms/step - loss: 1.1581
+Epoch 130/200
+2083/2083 [==============================] - 28s 14ms/step - loss: 1.1485
+Epoch 131/200
+2083/2083 [==============================] - 34s 16ms/step - loss: 1.1538
+Epoch 132/200
+2083/2083 [==============================] - 35s 17ms/step - loss: 1.1451
+Epoch 133/200
+2083/2083 [==============================] - 32s 15ms/step - loss: 1.1317
+Epoch 134/200
+2083/2083 [==============================] - 31s 15ms/step - loss: 1.2675
+Epoch 135/200
+2083/2083 [==============================] - 37s 18ms/step - loss: 1.5304
+Epoch 136/200
+2083/2083 [==============================] - 35s 17ms/step - loss: 1.5561
+Epoch 137/200
+2083/2083 [==============================] - 39s 19ms/step - loss: 1.2676
+Epoch 138/200
+2083/2083 [==============================] - 33s 16ms/step - loss: 1.1609
+Epoch 139/200
+2083/2083 [==============================] - 37s 18ms/step - loss: 1.1298
+Epoch 140/200
+2083/2083 [==============================] - 34s 16ms/step - loss: 1.1255
+Epoch 141/200
+2083/2083 [==============================] - 33s 16ms/step - loss: 1.1045
+Epoch 142/200
+2083/2083 [==============================] - 38s 18ms/step - loss: 1.1079
+Epoch 143/200
+2083/2083 [==============================] - 32s 15ms/step - loss: 1.1177
+Epoch 144/200
+2083/2083 [==============================] - 28s 13ms/step - loss: 1.1079
+Epoch 145/200
+2083/2083 [==============================] - 32s 15ms/step - loss: 1.1024
+Epoch 146/200
+2083/2083 [==============================] - 38s 18ms/step - loss: 1.1011
+Epoch 147/200
+2083/2083 [==============================] - 31s 15ms/step - loss: 1.0886
+Epoch 148/200
+2083/2083 [==============================] - 26s 13ms/step - loss: 1.0800
+Epoch 149/200
+2083/2083 [==============================] - 32s 15ms/step - loss: 1.0748
+Epoch 150/200
+2083/2083 [==============================] - 26s 13ms/step - loss: 1.1929
+Epoch 151/200
+2083/2083 [==============================] - 22s 11ms/step - loss: 1.1015
+Epoch 152/200
+2083/2083 [==============================] - 28s 13ms/step - loss: 1.0581
+Epoch 153/200
+2083/2083 [==============================] - 27s 13ms/step - loss: 1.7733
+Epoch 154/200
+2083/2083 [==============================] - 22s 11ms/step - loss: 4.7665
+Epoch 155/200
+2083/2083 [==============================] - 27s 13ms/step - loss: 3.7679
+Epoch 156/200
+2083/2083 [==============================] - 23s 11ms/step - loss: 3.0387
+Epoch 157/200
+2083/2083 [==============================] - 24s 12ms/step - loss: 2.7524
+Epoch 158/200
+2083/2083 [==============================] - 25s 12ms/step - loss: 2.4446
+Epoch 159/200
+2083/2083 [==============================] - 18s 9ms/step - loss: 1.6476
+Epoch 160/200
+2083/2083 [==============================] - 25s 12ms/step - loss: 1.3003
+Epoch 161/200
+2083/2083 [==============================] - 17s 8ms/step - loss: 1.1860
+Epoch 162/200
+2083/2083 [==============================] - 14s 7ms/step - loss: 1.1493
+Epoch 163/200
+2083/2083 [==============================] - 14s 7ms/step - loss: 1.1235
+Epoch 164/200
+2083/2083 [==============================] - 14s 7ms/step - loss: 1.0983
+Epoch 165/200
+2083/2083 [==============================] - 14s 7ms/step - loss: 1.0867
+Epoch 166/200
+2083/2083 [==============================] - 14s 7ms/step - loss: 1.0771
+Epoch 167/200
+2083/2083 [==============================] - 14s 7ms/step - loss: 1.0721
+Epoch 168/200
+2083/2083 [==============================] - 14s 7ms/step - loss: 1.0495
+Epoch 169/200
+2083/2083 [==============================] - 22s 11ms/step - loss: 1.0529
+Epoch 170/200
+2083/2083 [==============================] - 20s 10ms/step - loss: 1.0311
+Epoch 171/200
+2083/2083 [==============================] - 23s 11ms/step - loss: 1.0332
+Epoch 172/200
+2083/2083 [==============================] - 21s 10ms/step - loss: 1.0385
+Epoch 173/200
+2083/2083 [==============================] - 20s 10ms/step - loss: 1.0314
+Epoch 174/200
+2083/2083 [==============================] - 22s 10ms/step - loss: 1.0018
+Epoch 175/200
+2083/2083 [==============================] - 20s 10ms/step - loss: 1.0124
+Epoch 176/200
+2083/2083 [==============================] - 21s 10ms/step - loss: 1.0036
+Epoch 177/200
+2083/2083 [==============================] - 22s 11ms/step - loss: 0.9950
+Epoch 178/200
+2083/2083 [==============================] - 23s 11ms/step - loss: 0.9993
+Epoch 179/200
+2083/2083 [==============================] - 21s 10ms/step - loss: 0.9909
+Epoch 180/200
+2083/2083 [==============================] - 32s 15ms/step - loss: 0.9957
+Epoch 181/200
+2083/2083 [==============================] - 22s 10ms/step - loss: 0.9966
+Epoch 182/200
+2083/2083 [==============================] - 24s 12ms/step - loss: 0.9896
+Epoch 183/200
+2083/2083 [==============================] - 23s 11ms/step - loss: 0.9803
+Epoch 184/200
+2083/2083 [==============================] - 23s 11ms/step - loss: 0.9797
+Epoch 185/200
+2083/2083 [==============================] - 24s 12ms/step - loss: 0.9621
+Epoch 186/200
+2083/2083 [==============================] - 22s 11ms/step - loss: 0.9808
+Epoch 187/200
+2083/2083 [==============================] - 22s 11ms/step - loss: 0.9747
+Epoch 188/200
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2083/2083 [==============================] - 28s 14ms/step - loss: 0.9642
+Epoch 189/200
+2083/2083 [==============================] - 28s 14ms/step - loss: 0.9633
+Epoch 190/200
+2083/2083 [==============================] - 29s 14ms/step - loss: 0.9460
+Epoch 191/200
+2083/2083 [==============================] - 25s 12ms/step - loss: 0.9605
+Epoch 192/200
+2083/2083 [==============================] - 29s 14ms/step - loss: 0.9480
+Epoch 193/200
+2083/2083 [==============================] - 26s 13ms/step - loss: 0.9451
+Epoch 194/200
+2083/2083 [==============================] - 19s 9ms/step - loss: 0.9382
+Epoch 195/200
+2083/2083 [==============================] - 20s 10ms/step - loss: 0.9595
+Epoch 196/200
+2083/2083 [==============================] - 24s 11ms/step - loss: 0.9227
+Epoch 197/200
+2083/2083 [==============================] - 24s 11ms/step - loss: 0.9242
+Epoch 198/200
+2083/2083 [==============================] - 17s 8ms/step - loss: 0.9273
+Epoch 199/200
+2083/2083 [==============================] - 20s 10ms/step - loss: 0.9230
+Epoch 200/200
+2083/2083 [==============================] - 23s 11ms/step - loss: 0.9315
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;tensorflow.python.keras.callbacks.History at 0x7fc096a35150&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<p>As we saw in previous classes, the model trained using batch_input_shape requires a similar batch for validation, so in order to evaluate the model using a single sequence, we have to create a new model with a batch_size = 1 and pass on the learnt weights of the first model to the new one.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># re-define the batch size</span>
+<span class="n">n_batch</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="c1"># re-define model</span>
+<span class="n">new_model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+<span class="n">new_model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="n">batch_input_shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_batch</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">return_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="n">new_model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="mf">0.2</span><span class="p">))</span>
+<span class="n">new_model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">256</span><span class="p">))</span>
+<span class="n">new_model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="mf">0.2</span><span class="p">))</span>
+<span class="n">new_model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
+<span class="c1"># copy weights</span>
+<span class="n">old_weights</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
+<span class="n">new_model</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span><span class="n">old_weights</span><span class="p">)</span>
+<span class="c1"># compile model</span>
+<span class="n">new_model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># pick a random seed</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataX</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">pattern</span> <span class="o">=</span> <span class="n">dataX</span><span class="p">[</span><span class="n">start</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Seed:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">int_to_char</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">pattern</span><span class="p">]),</span> <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># generate characters</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_vocab</span><span class="p">)</span>
+    <span class="n">prediction</span> <span class="o">=</span> <span class="n">new_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">int_to_char</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">seq_in</span> <span class="o">=</span> <span class="p">[</span><span class="n">int_to_char</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">pattern</span><span class="p">]</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="n">pattern</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="n">pattern</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Done.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Seed:
+&quot; e said, Is not he rightly named Jacob? for he hath
+supplante &quot;
+d him anl that which
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/julian/.local/lib/python3.7/site-packages/ipykernel_launcher.py:4: RuntimeWarning: divide by zero encountered in log
+  after removing the cwd from sys.path.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> was in his son.
+
+26:15 And the seven oe the man of Earaham stoedn them ont, and grom the land of Cgypt.
+
+40:48 And the waters were iim to the len of the darth, and the sons of Esau, and the cameed a samoon in the land of Cgypt. 
+44:48 And the seventg day wat anl that he had mado of to drenk aerrreng, and the camees,
+and the famene which he had spoken of the man; and he said, She caughter ald the diildren of Searaoh iis sesvants,
+and said unto him, Where oe my mister Aaraham and the food of the land of Cgypt, and the wasers were the seven go twene betuid, and sent me to thei fown to the mend of Cgypt, and seid unto him, There on the land of Cgypt, and with thee and the men shall be mnten.
+
+34:32 And the cemer were there things, and taid unto him, There oe my mister said unto him, Tho hs the land of Cgypt, and the farthin of the hand of Egypt, and terv them in the land of Cgypt. 
+44:40 And the sons of Dasaham&#39;s sarvant, and said unto Abramam, Iehold, ie and the theii
+Done.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># serialize model to JSON</span>
+<span class="n">model_json</span> <span class="o">=</span> <span class="n">new_model</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;modelgenDNNLSTM.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+    <span class="n">json_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">model_json</span><span class="p">)</span>
+<span class="c1"># serialize weights to HDF5</span>
+<span class="n">new_model</span><span class="o">.</span><span class="n">save_weights</span><span class="p">(</span><span class="s2">&quot;modelgenDNNLSTM.h5&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved model to disk&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Saved model to disk
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="U5.04%20-%20Basic%20concepts%20of%20text%20processing.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">5.4 Text processing</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="U5.06%20-%20Bidirectional%20RNNs%20-%20Attention%20Model.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">5.6 Bidirectional RNNs</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling">Sampling</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-result-is-not-what-we-expected-mainly-because-of-three-resons">The result is not what we expected mainly because of three resons:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-a-more-complex-model-with-the-whole-dataset">Using a more complex model with the whole dataset</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Raúl Ramos, Julián Arias / Universidad de Antioquia
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

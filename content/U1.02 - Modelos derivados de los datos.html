@@ -1,0 +1,1234 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>1.2 - Models derived from data &#8212; Fundamentos de Deep Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-43235448-3"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'UA-43235448-3');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'UA-43235448-3');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/U1.02 - Modelos derivados de los datos';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="1.3 - ML algorithm design" href="U1.03%20-%20Como%20se%20disena%20un%20algoritmo%20de%20Machine%20Learning.html" />
+    <link rel="prev" title="1.1 - DL Overview" href="U1.01%20-%20DL%20Overview.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/fudea.jpg" class="logo__image only-light" alt="Fundamentos de Deep Learning - Home"/>
+    <script>document.write(`<img src="../_static/fudea.jpg" class="logo__image only-dark" alt="Fundamentos de Deep Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="M00_20252_pre.html">Info 2025.2 - UdeA</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="M01.html">01 - INTRODUCTION</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="U1.01%20-%20DL%20Overview.html">1.1 - DL Overview</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">1.2 - Models derived from data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1.03%20-%20Como%20se%20disena%20un%20algoritmo%20de%20Machine%20Learning.html">1.3 - ML algorithm design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1%20LAB%2001%20-%20WARMUP.html">LAB 01.01 - WARM UP</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M02.html">02 - NEURAL NETWORKS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U2.01%20-%20The%20Perceptron.html">2.1 - The Perceptron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.02%20-%20The%20Multilayer%20Perceptron.html">2.2 - The Multilayer Perceptron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.03%20-%20Overfitting%20and%20regularization.html">2.3 - Overfitting and regularization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.04%20-%20Loss%20functions.html">2.4 - Loss functions in Tensorflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.05%20-%20Network%20Architectures%20-%20Autoencoders.html">2.5 - Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.06%20-%20Network%20Architectures%20-%20Multimodal%20information.html">2.6 - Multimodal architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.07%20-%20Vanishing%20gradients.html">2.7 - Vanishing gradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.08%20-%20Weights%20initialization.html">2.8 - Weights initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2001%20-%20Customized%20loss%20functions%20and%20regularization.html">LAB 2.1 - Customized loss function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2002%20-%20Autoencoders.html">LAB 2.2 - Sparse Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2003%20-%20Pairwise%20image%20classification.html">LAB 2.3 - Pairwise classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2004%20-%20Model%20instrumentation%20and%20monitoring.html">LAB 2.4 - Model instrumentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M03.html">03 - TENSORFLOW CORE</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U3.01%20-%20Simbolic%20computing%20for%20ML.html">3.1 - Symbolic computing for ML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.02%20-%20TF%20for%20symbolic%20computing.html">3.2 - TF symbolic engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.03%20-%20Using%20tf.function.html">3.3 - Using <code class="docutils literal notranslate"><span class="pre">tf.function</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.04%20-%20Batch%20Normalization.html">3.4 - Batch normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3%20LAB%2001%20-%20Tensorflow%20model%20subclassing.html">LAB 3.1 - TF model subclassing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3%20LAB%2002%20-%20Low%20level%20Tensorflow.html">LAB 3.2 - Low level <code class="docutils literal notranslate"><span class="pre">tensorflow</span></code></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M04.html">04 - CONVOLUTIONAL NETWORKS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U4.01%20-%20Convolutions.html">4.1 - Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.02%20-%20Convolutional%20Neural%20Networks.html">4.2 - Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.03%20-%20Dropout%2C%20pooling.html">4.3 - Dropout, pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.04%20-%20CNN%20Architectures.html">4.4 - CNN Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.05%20-%20Transfer%20learning.html">4.5 - Transfer learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.06%20-%20Object%20Detection.html">4.6 - Object detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.07%20-%20Transposed%20convolutions.html">4.7 - Transposed convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.08%20-%20UNet%20image%20segmentation.html"><strong>4.8</strong> - UNet Image segmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.09%20-%20Atrous%20convolutions.html">4.9 - Atrous convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2001%20-%20Convolutions.html">LAB 4.1 - Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2002%20-%20Transfer%20Learning.html">LAB 4.2 - Transfer learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2003%20-%20Object%20Detection.html">LAB 4.3 - Object detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2004%20-%20Semantic%20segmentation.html">LAB 4.4 - Semantic segmentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M05.html">05 - SEQUENCE MODELS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U5.00%20-%20Intro%20time%20series.html">5.0 Crossvalidation in time series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.01%20-%20Recurrent%20Neural%20Networks.html">5.1 Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.02%20-%20Long%20Short%20Term%20Memory%20RNN.html">5.2 LSTM and GRU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.03%20-%20Truncated%20BPTT.html">5.3 Truncated BPTT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.04%20-%20Basic%20concepts%20of%20text%20processing.html">5.4 Text processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.05%20-%20Sequences%20generation%20using%20LSTM.html">5.5 Sequences generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.06%20-%20Bidirectional%20RNNs%20-%20Attention%20Model.html">5.6 Bidirectional RNNs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.07%20-%20ELMo%20-%20NER.html">5.7 ELMo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.08%20-%20Self-Attention%20-%20Transformer%20-%20BERT.html">5.8 Transformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.09%20-%20CNN-LSTM%20architectures.html">5.9  CNN-LSTM architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2001%20-%20Multivariate%20time%20series%20prediction.html">LAB 5.1 - Time series prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2002%20-%20Padding%2C%20Masking%20-%20Sentiment%20Analysis.html">LAB 5.2 - Padding - Masking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2003%20-%20Sentiment%20Analysis%20using%20BERT.html">LAB 5.3 - Transformer - BERT</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/rramosp/2021.deeplearning/blob/master/content/U1.02 - Modelos derivados de los datos.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/content/U1.02 - Modelos derivados de los datos.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>1.2 - Models derived from data</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#que-es-machine-learning-ml">¿Qué es <em>Machine Learning (ML)</em>?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#que-es-un-modelo-derivado-de-los-datos">¿Qué es un modelo derivado de los datos?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calculo-analitico-de-los-errores-de-clasificacion">cálculo analítico de los errores de clasificación</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#los-algoritmos-de-machine-learning">Los algoritmos de machine learning:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#observa-como-un-clasificador-lineal-aproxima-la-frontera-con-diferentes-tamanos-de-muestras">observa cómo un clasificador lineal aproxima la frontera con diferentes tamaños de muestras</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solo-tenemos-un-dataset">Solo tenemos un dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multidimensionalidad-2d">Multidimensionalidad (&gt;2D)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#taxonomia-de-problemas-de-machine-learning">Taxonomía de problemas de machine learning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#complejidad-de-los-modelos-vs-complejidad-de-los-datos">Complejidad de los modelos vs. complejidad de los datos</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="models-derived-from-data">
+<h1>1.2 - Models derived from data<a class="headerlink" href="#models-derived-from-data" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>wget<span class="w"> </span>-nc<span class="w"> </span>--no-cache<span class="w"> </span>-O<span class="w"> </span>init.py<span class="w"> </span>-q<span class="w"> </span>https://raw.githubusercontent.com/rramosp/2021.deeplearning/main/content/init.py
+<span class="kn">import</span><span class="w"> </span><span class="nn">init</span><span class="p">;</span> <span class="n">init</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">);</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<section id="que-es-machine-learning-ml">
+<h2>¿Qué es <em>Machine Learning (ML)</em>?<a class="headerlink" href="#que-es-machine-learning-ml" title="Link to this heading">#</a></h2>
+<p><strong>Primero</strong> realizamos experimentos (ciencia), <strong>después</strong> desarrollamos productos (ingeniería)</p>
+<p>Dos roles <span class="math notranslate nohighlight">\(\rightarrow\)</span> dos flujos de trabajo:</p>
+<ul class="simple">
+<li><p><strong>diseñador</strong> de algoritmos de ML <span class="math notranslate nohighlight">\(\rightarrow\)</span> se enfoca en cómo se <strong>genera un modelo</strong>.</p></li>
+<li><p><strong>usuario</strong> de algoritmos de ML <span class="math notranslate nohighlight">\(\rightarrow\)</span> se enfoca que <strong>calibrar modelos</strong> respecto a unos datos concretos.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;local/imgs/science_engineering.png&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/b6c5193c63144940ec340e16cdc30d0ae871b9ff60542f06130d51c9cd30b71a.png"><img alt="../_images/b6c5193c63144940ec340e16cdc30d0ae871b9ff60542f06130d51c9cd30b71a.png" src="../_images/b6c5193c63144940ec340e16cdc30d0ae871b9ff60542f06130d51c9cd30b71a.png" style="width: 600px;" />
+</a>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;local/imgs/ml_workflows_tools.png&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/786fab3a1f63450d18102f1bc57a43313bbadd0ed520ff3dd3e99e38cf40f9a8.png"><img alt="../_images/786fab3a1f63450d18102f1bc57a43313bbadd0ed520ff3dd3e99e38cf40f9a8.png" src="../_images/786fab3a1f63450d18102f1bc57a43313bbadd0ed520ff3dd3e99e38cf40f9a8.png" style="width: 600px;" />
+</a>
+</div>
+</div>
+</section>
+<section id="que-es-un-modelo-derivado-de-los-datos">
+<h2>¿Qué es un modelo derivado de los datos?<a class="headerlink" href="#que-es-un-modelo-derivado-de-los-datos" title="Link to this heading">#</a></h2>
+<p><strong>Caso ideal</strong>: Sabemos las distribuciones de las que vienen los datos. <span class="math notranslate nohighlight">\(\Rightarrow\)</span> podemos calcular analíticamente nuestro modelo.</p>
+<ul class="simple">
+<li><p>¿Podemos encontrar un modelo con 100% de acierto? ¿Por qué sí, o por qué no?</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">optimize</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="n">d1</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">d2</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span><span class="n">scale</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d1</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;pop 1&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d2</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;pop 2&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/81c5072bb01cba9f34c9b75794e0dc6041d387cc1a433e224c9b04566e3e0e69.png" src="../_images/81c5072bb01cba9f34c9b75794e0dc6041d387cc1a433e224c9b04566e3e0e69.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">25</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">minx</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">d1</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="n">d2</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">)))]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;frontera óptima en </span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="o">%</span><span class="k">minx</span>)
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d1</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;pop 1&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d2</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;pop 2&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">minx</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;óptimo = </span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="o">%</span><span class="k">minx</span>)
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>frontera óptima en 13.15
+</pre></div>
+</div>
+<img alt="../_images/3a4698c6fc01f05104c5d1242c40e8e4512549d8f6926803aaf2aa2abdbb492b.png" src="../_images/3a4698c6fc01f05104c5d1242c40e8e4512549d8f6926803aaf2aa2abdbb492b.png" />
+</div>
+</div>
+<section id="calculo-analitico-de-los-errores-de-clasificacion">
+<h3>cálculo analítico de los errores de clasificación<a class="headerlink" href="#calculo-analitico-de-los-errores-de-clasificacion" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pop 1 error&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">d1</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">minx</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pop 2 error&quot;</span><span class="p">,</span> <span class="n">d2</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">minx</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>pop 1 error 0.05773516274534907
+pop 2 error 0.09957961739117976
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Caso real</strong>: Tenemos una muestra de los datos</p>
+<p><span class="math notranslate nohighlight">\(\rightarrow\)</span> ¿Cómo determinamos donde poner la frontera?</p>
+<p><span class="math notranslate nohighlight">\(\rightarrow\)</span> ¿Qué frontera qusiéramos obtener?</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">show_1D_dataset_samples</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n_datasets</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dot_alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">line_alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">5</span><span class="p">)):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_datasets</span><span class="p">):</span>
+
+        <span class="n">m1</span> <span class="o">=</span> <span class="n">d1</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">m2</span> <span class="o">=</span> <span class="n">d2</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">m1</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">m2</span><span class="p">)]</span>
+        <span class="n">estimator</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">Xr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">yr</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">Xr</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Xr</span><span class="p">[</span><span class="n">yr</span><span class="o">==</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">yr</span><span class="o">==</span><span class="mi">0</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">line_alpha</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Xr</span><span class="p">[</span><span class="n">yr</span><span class="o">==</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">yr</span><span class="o">==</span><span class="mi">1</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">line_alpha</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mf">.1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">m1</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">dot_alpha</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">m2</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mf">.1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">m2</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">dot_alpha</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">show_1D_dataset_samples</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_datasets</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dot_alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">line_alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;on&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mf">.095</span><span class="p">,</span> <span class="mf">.105</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">([])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">.1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.lines.Line2D at 0x7f6f68cd1790&gt;
+</pre></div>
+</div>
+<img alt="../_images/6892714789b74829c79e5bbc835286357ccb85cff449bdc3e22f253f1c0d7a8e.png" src="../_images/6892714789b74829c79e5bbc835286357ccb85cff449bdc3e22f253f1c0d7a8e.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">show_1D_dataset_samples</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dot_alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/fdedb18f33744e6b4ed8855e8ae2aa181ec6b0563209ef8bde6f8aa91dc5a1d3.png" src="../_images/fdedb18f33744e6b4ed8855e8ae2aa181ec6b0563209ef8bde6f8aa91dc5a1d3.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">show_1D_dataset_samples</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">dot_alpha</span><span class="o">=</span><span class="mf">.05</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/305442a97fa4549e484e6fe12071f8ebf0309f5ea0b5fcdc8623799880ebf62d.png" src="../_images/305442a97fa4549e484e6fe12071f8ebf0309f5ea0b5fcdc8623799880ebf62d.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">show_1D_dataset_samples</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="n">dot_alpha</span><span class="o">=</span><span class="mf">.001</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/bcbb395b571cad77a0bac3ad551d215ce4c88affbeee23f3a0b4aa8d74801639.png" src="../_images/bcbb395b571cad77a0bac3ad551d215ce4c88affbeee23f3a0b4aa8d74801639.png" />
+</div>
+</div>
+<p><strong>Caso en 2D</strong></p>
+<ul class="simple">
+<li><p>en 2D, un modelo de clasificación <strong>es una frontera</strong> en el plano</p></li>
+<li><p><strong>supongamos</strong> que tenemos acceso a las distribuciones de las que surgen los datos <span class="math notranslate nohighlight">\(\rightarrow\)</span> podemos muestrear tantas veces como queramos</p></li>
+<li><p>¿cuál es la frontera que produce menos error de clasificación?</p></li>
+<li><p><span class="math notranslate nohighlight">\(\epsilon\)</span> es el error de clasificación calculado analíticamente <strong>con la frontera óptima</strong> porque conocemos las distribuciones que generan los datos.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\hat{\epsilon}\)</span> es el error de clasificacón calculado con la muestra de datos y <strong>con la frontera óptima</strong> (conocida también como <em>frontera bayesiana</em>).</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">local.lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">mlutils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVC</span>
+
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mc</span> <span class="o">=</span> <span class="n">mlutils</span><span class="o">.</span><span class="n">Example_Bayes2DClassifier</span><span class="p">(</span><span class="n">mean0</span><span class="o">=</span><span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span> <span class="n">cov0</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]],</span>
+                                        <span class="n">mean1</span><span class="o">=</span><span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span> <span class="n">cov1</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mf">.2</span><span class="p">]])</span>
+<span class="n">X</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
+<span class="n">mlutils</span><span class="o">.</span><span class="n">plot_2Ddata_with_boundary</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">predict</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">dots_alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot; $\hat{\epsilon}=</span><span class="si">%.3f</span><span class="s2">$&quot;</span><span class="o">%</span><span class="k">mc</span>.score(X,y)+&quot;  $\epsilon=%.3f$&quot;%mc.analytic_score());
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/opt/anaconda/lib/python3.7/site-packages/scipy/stats/_multivariate.py:660: RuntimeWarning: covariance is not symmetric positive-semidefinite.
+  out = random_state.multivariate_normal(mean, cov, size)
+</pre></div>
+</div>
+<img alt="../_images/61cffa8211f17ad5bf84d68d3eb3f25dcc7563dc8c28cab73ff62a71cdfd2249.png" src="../_images/61cffa8211f17ad5bf84d68d3eb3f25dcc7563dc8c28cab73ff62a71cdfd2249.png" />
+</div>
+</div>
+<p>haz los siguientes experimentos:</p>
+<ul class="simple">
+<li><p>separa los centros de las distribuciones de cada clase (<code class="docutils literal notranslate"><span class="pre">mean0</span></code>, <code class="docutils literal notranslate"><span class="pre">mean1</span></code>).</p></li>
+<li><p>aumenta y disminuye las matrices de covarianza.</p></li>
+<li><p>aumenta y disminuye el número de muestras.</p></li>
+<li><p>observa la estabilidad de <span class="math notranslate nohighlight">\(\hat{\epsilon}\)</span> respecto a <span class="math notranslate nohighlight">\(\epsilon\)</span> según ambas clases están más mezcladas o hay más o menos datos.</p></li>
+</ul>
+<p>en general <strong>SOLO TENEMOS UNA MUESTRA</strong> de los datos, porque no tenemos conocimiento de las distribuciones que los generan. Los métodos de <strong>estadística</strong> y de <strong>machine learning</strong> están diseñados para esta situación.</p>
+<p>Ejecuta la siguiente celda y pregúntate cada vez, <strong>¿qué frontera establecerías con los datos que ves?</strong>.</p>
+<p>Fíjate que tenemos distintas muestras de una misma disitribución de base. Es decir, <strong>la realidad detrás de estos datos siempre es la misma</strong>.</p>
+<p><strong>Aumenta</strong> el número de muestras y hazte cada vez la misma pregunta.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">mlutils</span><span class="o">.</span><span class="n">plot_2Ddata</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dots_alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/31f71a64d1aec0ca3275ba1eb20d267f42500f9458061983076c2b489a05855f.png" src="../_images/31f71a64d1aec0ca3275ba1eb20d267f42500f9458061983076c2b489a05855f.png" />
+</div>
+</div>
+</section>
+<section id="los-algoritmos-de-machine-learning">
+<h3>Los algoritmos de machine learning:<a class="headerlink" href="#los-algoritmos-de-machine-learning" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Los algoritmos de clasificación <strong>calculan fronteras</strong> entre los datos.</p></li>
+<li><p>Parten de una muestra de los datos, <strong>no de las distribuciones</strong>.</p></li>
+<li><p>Por tanto, <strong>no conocemos</strong> la forma de la frontera bayesiana.</p></li>
+</ul>
+<p>O sea, <strong>partimos ciegos</strong>!!!!!!!</p>
+<p>Para abordar esta situación, <strong>cualquier algoritmo</strong> tiene necesariamente que plantear una alguna suposición de base:</p>
+<ul class="simple">
+<li><p>los datos vienen de distribuciones normales.</p></li>
+<li><p>las columnas son estadísticamente independientes.</p></li>
+<li><p>la frontera es lineal, o cuadrática.</p></li>
+<li><p>la frontera se representa con una red neuronal.</p></li>
+</ul>
+<p>Teniendo esto en cuenta, y <strong>partiendo de una muestra de los datos</strong>:</p>
+<ul class="simple">
+<li><p>el objetivo de un usuario de ML es acercarse lo más posible a la <strong>frontera bayesiana</strong> (que no sabemos cómo es).</p></li>
+<li><p>distintos algoritmos ML tienen <strong>distintas capacidades</strong> para modelar fronteras (un clasificador lineal no puede captuarar una frontera cuadrática).</p></li>
+<li><p>necesitamos dos tipos de herramientas:</p>
+<ul>
+<li><p>una buena colección de algoritmos ML.</p></li>
+<li><p>métodos para saber qué tan cerca estamos de la frontera bayesiana.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="observa-como-un-clasificador-lineal-aproxima-la-frontera-con-diferentes-tamanos-de-muestras">
+<h3>observa cómo un clasificador lineal aproxima la frontera con diferentes tamaños de muestras<a class="headerlink" href="#observa-como-un-clasificador-lineal-aproxima-la-frontera-con-diferentes-tamanos-de-muestras" title="Link to this heading">#</a></h3>
+<ul>
+<li><p>cambia el parámetro <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> y experimenta con el siguiente código.</p></li>
+<li><p>usa luego estimadores distintos. P.ej.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>  estimator = SVC(gamma=1)
+  estimator = RandomForestClassifier()
+  estimator = SVC(gamma=100)
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Hazte las siguientes preguntas:</p>
+<ul class="simple">
+<li><p>¿qué complejidad es capaz de capturar un estimador?</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
+<span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">mlutils</span><span class="p">)</span>
+<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">mlutils</span><span class="o">.</span><span class="n">plot_estimator_border</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="n">mins</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">maxs</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/opt/anaconda/lib/python3.7/site-packages/scipy/stats/_multivariate.py:660: RuntimeWarning: covariance is not symmetric positive-semidefinite.
+  out = random_state.multivariate_normal(mean, cov, size)
+/opt/anaconda/lib/python3.7/site-packages/scipy/stats/_multivariate.py:660: RuntimeWarning: covariance is not symmetric positive-semidefinite.
+  out = random_state.multivariate_normal(mean, cov, size)
+</pre></div>
+</div>
+<img alt="../_images/61d4a8c91f850b79eb10ebd67fe8b0e6bd5121cea570a785631055eb7bb100fd.png" src="../_images/61d4a8c91f850b79eb10ebd67fe8b0e6bd5121cea570a785631055eb7bb100fd.png" />
+</div>
+</div>
+<p>hacemos ahora el experimento más exhaustivo repitiendo 20 veces el siguiente proceso:</p>
+<ul class="simple">
+<li><p>se muestrea el dataset (recuerda que <strong>excepcionalmente</strong> tenemos acceso a las distribuciones que generan los datos y por tanto podemos hacer esto).</p></li>
+<li><p>se calcula la fronter de clasificación obtenida por el estimador usando el dataset muestreado.</p></li>
+<li><p>se pinta esta frontera (en negro).</p></li>
+<li><p>en verde se muestra la <strong>frontera bayesiana</strong>.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+<span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">mlutils</span><span class="p">)</span>
+<span class="n">mlutils</span><span class="o">.</span><span class="n">sample_borders</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="n">samples</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">500</span><span class="p">],</span> <span class="n">n_reps</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">mins</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">maxs</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100% (4 of 4) |##########################| Elapsed Time: 0:00:05 Time:  0:00:05
+</pre></div>
+</div>
+<img alt="../_images/80d14e3383dc1633be37160a3f6bf3e013a90a0ca2ebda8fccbd9310c991e79a.png" src="../_images/80d14e3383dc1633be37160a3f6bf3e013a90a0ca2ebda8fccbd9310c991e79a.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="solo-tenemos-un-dataset">
+<h2>Solo tenemos un dataset<a class="headerlink" href="#solo-tenemos-un-dataset" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>remuestrea, reentrena para medir el desempeño y entender la estabilidad</p></li>
+<li><p>prueba con <code class="docutils literal notranslate"><span class="pre">test_pct</span></code> entre 0.1 y 0.9. observa la divergencia entre train y test cuando <code class="docutils literal notranslate"><span class="pre">test_pct</span></code> es más cercano a 0.9. ¿por qué?</p></li>
+<li><p>prueba con <code class="docutils literal notranslate"><span class="pre">SVC(gamma=100)</span></code>. En este caso observa la divergencia entre train y test incluso cuando <code class="docutils literal notranslate"><span class="pre">test_pct</span></code> es pequeño. ¿por qué?</p></li>
+<li><p>prubea además con <code class="docutils literal notranslate"><span class="pre">dataset_size</span></code> entre 20 y 500</p></li>
+</ul>
+<p>Entiende la diferencia entre <strong>tener pocos datos</strong> y <strong>overfitting</strong></p>
+<p>Configuraciones interesantes sobre</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mc = mlutils.Example_Bayes2DClassifier(mean0=[1.5, 1.5], cov0=[[0.5, 0.1], [0.3, 0.5]],
+                                        mean1=[1.2, 2.], cov1=[[0.2,0.1],[0,.5]])
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>SVC <span class="math notranslate nohighlight">\(\gamma=100\)</span>, <code class="docutils literal notranslate"><span class="pre">dataset_size=500</span></code> (overfitting con pocos datos, convergencia con muchos)</p></li>
+<li><p>SVC <span class="math notranslate nohighlight">\(\gamma=100\)</span>, <code class="docutils literal notranslate"><span class="pre">dataset_size=2000</span></code> (overfitting con pocos datos, convergencia con muchos)</p></li>
+<li><p>SVC <span class="math notranslate nohighlight">\(\gamma=.01\)</span>, <code class="docutils literal notranslate"><span class="pre">dataset_size=100</span></code> (variabilidad siempre, convergencia promedio con pocos datos)</p></li>
+<li><p>SVC <span class="math notranslate nohighlight">\(\gamma=1\)</span>, <code class="docutils literal notranslate"><span class="pre">dataset_size=100</span></code> (variabilidad siempre, convergencia promedio con pocos datos)</p></li>
+<li><p>LinearRegression, <code class="docutils literal notranslate"><span class="pre">dataset_size=100</span></code> (nunca converge a la frontera bayesiana)</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">local.lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">mlutils</span>
+<span class="n">dataset_size</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">mc</span> <span class="o">=</span> <span class="n">mlutils</span><span class="o">.</span><span class="n">Example_Bayes2DClassifier</span><span class="p">(</span><span class="n">mean0</span><span class="o">=</span><span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span> <span class="n">cov0</span><span class="o">=</span><span class="p">[[</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]],</span>
+                                        <span class="n">mean1</span><span class="o">=</span><span class="p">[</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">4.</span><span class="p">],</span> <span class="n">cov1</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.5</span><span class="p">],[</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">1.</span><span class="p">]])</span>
+<span class="n">X</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">dataset_size</span><span class="p">)</span>
+<span class="n">mlutils</span><span class="o">.</span><span class="n">plot_estimator_border</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">dataset_size</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">analitic_score</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">analytic_score</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/603de02c106fce622b48c07665f4fdc63a813210c6630d6c373fb5227c491e89.png" src="../_images/603de02c106fce622b48c07665f4fdc63a813210c6630d6c373fb5227c491e89.png" />
+</div>
+</div>
+<p>realizamos un muestreo para dividir entre train y test</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_pct</span> <span class="o">=</span> <span class="mf">.3</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">test_size</span><span class="o">=</span><span class="n">test_pct</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_test</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(140, 2) (140,)
+(60, 2) (60,)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+<span class="n">mlutils</span><span class="o">.</span><span class="n">plot_2Ddata</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">dots_alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;train data&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+<span class="n">mlutils</span><span class="o">.</span><span class="n">plot_2Ddata</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">dots_alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;test data&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;test data&#39;)
+</pre></div>
+</div>
+<img alt="../_images/dc8e9c952f64cc422273ee1e901624e3a608790be92a724b699d01bb25948881.png" src="../_images/dc8e9c952f64cc422273ee1e901624e3a608790be92a724b699d01bb25948881.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#estimator = SVC(gamma=1)</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="c1">#estimator = LogisticRegression()</span>
+<span class="c1">#estimator = RandomForestClassifier()</span>
+<span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+    decision_function_shape=&#39;ovr&#39;, degree=3, gamma=100, kernel=&#39;rbf&#39;,
+    max_iter=-1, probability=False, random_state=None, shrinking=True,
+    tol=0.001, verbose=False)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;accuracy train </span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="o">%</span><span class="k">estimator</span>.score(X_train,y_train))
+<span class="n">tr_preds</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;predicciones para train&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tr_preds</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ground truth para train&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">accuracy test </span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="o">%</span><span class="k">estimator</span>.score(X_test,y_test))
+<span class="n">ts_preds</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;predicciones para test&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ts_preds</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ground truth para test&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>accuracy train 1.00
+predicciones para train
+[1. 1. 1. 0. 0. 1. 0. 1. 0. 1. 1. 1. 0. 1. 1. 0. 0. 0. 0. 0. 0. 0. 0. 1.
+ 1. 1. 1. 1. 0. 0. 1. 1. 1. 1. 1. 0. 1. 1. 0. 1. 1. 0. 0. 0. 0. 1. 1. 0.
+ 1. 1. 1. 1. 0. 1. 0. 0. 1. 1. 0. 1. 1. 0. 0. 1. 1. 1. 0. 1. 1. 0. 1. 0.
+ 0. 0. 1. 0. 0. 0. 1. 0. 0. 1. 1. 0. 1. 1. 1. 0. 0. 0. 0. 0. 0. 1. 0. 1.
+ 0. 0. 0. 1. 0. 0. 0. 0. 1. 0. 1. 1. 0. 1. 0. 0. 1. 0. 1. 0. 0. 0. 1. 0.
+ 0. 0. 1. 1. 1. 0. 0. 1. 0. 1. 0. 0. 1. 1. 0. 1. 0. 1. 1. 0.]
+ground truth para train
+[1. 1. 1. 0. 0. 1. 0. 1. 0. 1. 1. 1. 0. 1. 1. 0. 0. 0. 0. 0. 0. 0. 0. 1.
+ 1. 1. 1. 1. 0. 0. 1. 1. 1. 1. 1. 0. 1. 1. 0. 1. 1. 0. 0. 0. 0. 1. 1. 0.
+ 1. 1. 1. 1. 0. 1. 0. 0. 1. 1. 0. 1. 1. 0. 0. 1. 1. 1. 0. 1. 1. 0. 1. 0.
+ 0. 0. 1. 0. 0. 0. 1. 0. 0. 1. 1. 0. 1. 1. 1. 0. 0. 0. 0. 0. 0. 1. 0. 1.
+ 0. 0. 0. 1. 0. 0. 0. 0. 1. 0. 1. 1. 0. 1. 0. 0. 1. 0. 1. 0. 0. 0. 1. 0.
+ 0. 0. 1. 1. 1. 0. 0. 1. 0. 1. 0. 0. 1. 1. 0. 1. 0. 1. 1. 0.]
+
+accuracy test 0.60
+predicciones para test
+[1. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 1.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 1. 0. 0. 1. 1. 1. 0.
+ 0. 0. 0. 1. 0. 0. 0. 0. 0. 0. 0. 0.]
+ground truth para test
+[1. 0. 0. 0. 0. 0. 1. 0. 1. 0. 0. 1. 0. 1. 0. 1. 1. 0. 0. 0. 0. 0. 1. 1.
+ 1. 1. 0. 0. 0. 0. 1. 1. 1. 0. 1. 0. 1. 1. 1. 0. 1. 1. 1. 1. 1. 1. 0. 0.
+ 1. 0. 0. 1. 0. 1. 1. 1. 1. 1. 0. 1.]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([-4.07714226, -4.20674506])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">test_size</span><span class="o">=</span><span class="n">test_pct</span><span class="p">)</span>
+<span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">trsc</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">tssc</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;train_score </span><span class="si">%5.2f</span><span class="s2">&quot;</span><span class="o">%</span><span class="k">estimator</span>.score(X_train, y_train))
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;test_score  </span><span class="si">%5.2f</span><span class="s2">&quot;</span><span class="o">%</span><span class="k">estimator</span>.score(X_test, y_test))
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+<span class="n">mlutils</span><span class="o">.</span><span class="n">plot_2Ddata</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">dots_alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">)</span>
+<span class="n">mlutils</span><span class="o">.</span><span class="n">plot_2D_boundary</span><span class="p">(</span><span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                 <span class="n">line_width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">line_alpha</span><span class="o">=</span><span class="mf">.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;train accuracy </span><span class="si">%.5f</span><span class="s2">&quot;</span><span class="o">%</span><span class="k">estimator</span>.score(X_train, y_train))
+
+<span class="n">mlutils</span><span class="o">.</span><span class="n">plot_2D_boundary</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">predict</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                 <span class="n">line_width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">line_alpha</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;bayes boundary&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+<span class="n">mlutils</span><span class="o">.</span><span class="n">plot_2Ddata</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">dots_alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">)</span>
+<span class="n">mlutils</span><span class="o">.</span><span class="n">plot_2D_boundary</span><span class="p">(</span><span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                 <span class="n">line_width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">line_alpha</span><span class="o">=</span><span class="mf">.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;test accuracy  </span><span class="si">%.5f</span><span class="s2">&quot;</span><span class="o">%</span><span class="k">estimator</span>.score(X_test, y_test))
+<span class="n">mlutils</span><span class="o">.</span><span class="n">plot_2D_boundary</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">predict</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                 <span class="n">line_width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">line_alpha</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;bayes boundary&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>train_score  1.00
+test_score   0.43
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.878175, 0.121825)
+</pre></div>
+</div>
+<img alt="../_images/5dd3cd7a42410e8ae3c9fb6f86f8fe2001751d86d9d5b4920e889f8ee99608c2.png" src="../_images/5dd3cd7a42410e8ae3c9fb6f86f8fe2001751d86d9d5b4920e889f8ee99608c2.png" />
+</div>
+</div>
+</section>
+<section id="multidimensionalidad-2d">
+<h2>Multidimensionalidad (&gt;2D)<a class="headerlink" href="#multidimensionalidad-2d" title="Link to this heading">#</a></h2>
+<p>normalmente tenemos datasets de muchas dimensiones (columnas) y no podemos visualizar los datos como en 2D <span class="math notranslate nohighlight">\(\rightarrow\)</span> necesitamos métodos para recabar evidencia sobre si tenemos pocos datos, estamos haciendo overfitting, etc.</p>
+<p>Las <strong>curvas de aprendizaje</strong> nos ayudan a esto.</p>
+<p>Realiza el experimento desde la sección anterior, con distintos tamaños del dataset inicial y con distintos algoritmos.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">estimator</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="n">mlutils</span><span class="o">.</span><span class="n">lcurve</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_reps</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">score_func</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">analitic_score</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;bayes score&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center left&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100% (9 of 9) |##########################| Elapsed Time: 0:00:00 Time:  0:00:00
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fbdb9f5d198&gt;
+</pre></div>
+</div>
+<img alt="../_images/e46f36f42d5e0fe49fd4328ad070148b084827df9e65f9f3388abd1e10b27f0e.png" src="../_images/e46f36f42d5e0fe49fd4328ad070148b084827df9e65f9f3388abd1e10b27f0e.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">estimator</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">mlutils</span><span class="o">.</span><span class="n">lcurve</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_reps</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">score_func</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">analitic_score</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;bayes score&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center left&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100% (9 of 9) |##########################| Elapsed Time: 0:00:00 Time:  0:00:00
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fbdba102ac8&gt;
+</pre></div>
+</div>
+<img alt="../_images/1fbe4433d53c5e3a7a8a99c2325c588d6cf77588cde5bee825f3de694ec4a09c.png" src="../_images/1fbe4433d53c5e3a7a8a99c2325c588d6cf77588cde5bee825f3de694ec4a09c.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">estimator</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">mlutils</span><span class="o">.</span><span class="n">lcurve</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_reps</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">score_func</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">analitic_score</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;bayes score&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center left&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100% (9 of 9) |##########################| Elapsed Time: 0:00:00 Time:  0:00:00
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fbdba1885c0&gt;
+</pre></div>
+</div>
+<img alt="../_images/a335b73561ac507e949725847d32b750b34c50d2366d6c7379f7e94c913de8ea.png" src="../_images/a335b73561ac507e949725847d32b750b34c50d2366d6c7379f7e94c913de8ea.png" />
+</div>
+</div>
+<p>no olvides que normalmente <strong>no conocemos la <em>frontera bayesiana</em></strong>, y por tanto no tenemos el <em>bayes score</em></p>
+</section>
+<section id="taxonomia-de-problemas-de-machine-learning">
+<h2>Taxonomía de problemas de machine learning<a class="headerlink" href="#taxonomia-de-problemas-de-machine-learning" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Supervisados</p>
+<ul>
+<li><p>Clasificación</p></li>
+<li><p>Regresión</p></li>
+</ul>
+</li>
+<li><p>No supervisados</p>
+<ul>
+<li><p>Agrupamiento</p></li>
+<li><p>Estimación de densidad</p></li>
+<li><p>etc.</p></li>
+</ul>
+</li>
+<li><p>Reinforcement learning</p></li>
+</ul>
+</section>
+<section id="complejidad-de-los-modelos-vs-complejidad-de-los-datos">
+<h2>Complejidad de los modelos vs. complejidad de los datos<a class="headerlink" href="#complejidad-de-los-modelos-vs-complejidad-de-los-datos" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;local/imgs/bvc.png&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/f909266fa9e0192e047118b1cff5c01ad6ac3c125e8d124e3929c0bd343f34fa.png"><img alt="../_images/f909266fa9e0192e047118b1cff5c01ad6ac3c125e8d124e3929c0bd343f34fa.png" src="../_images/f909266fa9e0192e047118b1cff5c01ad6ac3c125e8d124e3929c0bd343f34fa.png" style="width: 600px;" />
+</a>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "p38"
+        },
+        kernelOptions: {
+            name: "p38",
+            path: "./content"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'p38'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="U1.01%20-%20DL%20Overview.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">1.1 - DL Overview</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="U1.03%20-%20Como%20se%20disena%20un%20algoritmo%20de%20Machine%20Learning.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">1.3 - ML algorithm design</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#que-es-machine-learning-ml">¿Qué es <em>Machine Learning (ML)</em>?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#que-es-un-modelo-derivado-de-los-datos">¿Qué es un modelo derivado de los datos?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calculo-analitico-de-los-errores-de-clasificacion">cálculo analítico de los errores de clasificación</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#los-algoritmos-de-machine-learning">Los algoritmos de machine learning:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#observa-como-un-clasificador-lineal-aproxima-la-frontera-con-diferentes-tamanos-de-muestras">observa cómo un clasificador lineal aproxima la frontera con diferentes tamaños de muestras</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solo-tenemos-un-dataset">Solo tenemos un dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multidimensionalidad-2d">Multidimensionalidad (&gt;2D)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#taxonomia-de-problemas-de-machine-learning">Taxonomía de problemas de machine learning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#complejidad-de-los-modelos-vs-complejidad-de-los-datos">Complejidad de los modelos vs. complejidad de los datos</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Raúl Ramos, Julián Arias / Universidad de Antioquia
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

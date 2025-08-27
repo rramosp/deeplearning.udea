@@ -1,0 +1,1616 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>2.6 - Multimodal architectures &#8212; Fundamentos de Deep Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-43235448-3"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'UA-43235448-3');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'UA-43235448-3');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/U2.06 - Network Architectures - Multimodal information';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2.7 - Vanishing gradients" href="U2.07%20-%20Vanishing%20gradients.html" />
+    <link rel="prev" title="2.5 - Autoencoders" href="U2.05%20-%20Network%20Architectures%20-%20Autoencoders.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/fudea.jpg" class="logo__image only-light" alt="Fundamentos de Deep Learning - Home"/>
+    <script>document.write(`<img src="../_static/fudea.jpg" class="logo__image only-dark" alt="Fundamentos de Deep Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="M00_20252_pre.html">Info 2025.2 - UdeA</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M01.html">01 - INTRODUCTION</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U1.01%20-%20DL%20Overview.html">1.1 - DL Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1.02%20-%20Modelos%20derivados%20de%20los%20datos.html">1.2 - Models derived from data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1.03%20-%20Como%20se%20disena%20un%20algoritmo%20de%20Machine%20Learning.html">1.3 - ML algorithm design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1%20LAB%2001%20-%20WARMUP.html">LAB 01.01 - WARM UP</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="M02.html">02 - NEURAL NETWORKS</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="U2.01%20-%20The%20Perceptron.html">2.1 - The Perceptron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.02%20-%20The%20Multilayer%20Perceptron.html">2.2 - The Multilayer Perceptron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.03%20-%20Overfitting%20and%20regularization.html">2.3 - Overfitting and regularization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.04%20-%20Loss%20functions.html">2.4 - Loss functions in Tensorflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.05%20-%20Network%20Architectures%20-%20Autoencoders.html">2.5 - Autoencoders</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">2.6 - Multimodal architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.07%20-%20Vanishing%20gradients.html">2.7 - Vanishing gradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.08%20-%20Weights%20initialization.html">2.8 - Weights initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2001%20-%20Customized%20loss%20functions%20and%20regularization.html">LAB 2.1 - Customized loss function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2002%20-%20Autoencoders.html">LAB 2.2 - Sparse Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2003%20-%20Pairwise%20image%20classification.html">LAB 2.3 - Pairwise classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2004%20-%20Model%20instrumentation%20and%20monitoring.html">LAB 2.4 - Model instrumentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M03.html">03 - TENSORFLOW CORE</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U3.01%20-%20Simbolic%20computing%20for%20ML.html">3.1 - Symbolic computing for ML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.02%20-%20TF%20for%20symbolic%20computing.html">3.2 - TF symbolic engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.03%20-%20Using%20tf.function.html">3.3 - Using <code class="docutils literal notranslate"><span class="pre">tf.function</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.04%20-%20Batch%20Normalization.html">3.4 - Batch normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3%20LAB%2001%20-%20Tensorflow%20model%20subclassing.html">LAB 3.1 - TF model subclassing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3%20LAB%2002%20-%20Low%20level%20Tensorflow.html">LAB 3.2 - Low level <code class="docutils literal notranslate"><span class="pre">tensorflow</span></code></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M04.html">04 - CONVOLUTIONAL NETWORKS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U4.01%20-%20Convolutions.html">4.1 - Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.02%20-%20Convolutional%20Neural%20Networks.html">4.2 - Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.03%20-%20Dropout%2C%20pooling.html">4.3 - Dropout, pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.04%20-%20CNN%20Architectures.html">4.4 - CNN Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.05%20-%20Transfer%20learning.html">4.5 - Transfer learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.06%20-%20Object%20Detection.html">4.6 - Object detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.07%20-%20Transposed%20convolutions.html">4.7 - Transposed convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.08%20-%20UNet%20image%20segmentation.html"><strong>4.8</strong> - UNet Image segmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.09%20-%20Atrous%20convolutions.html">4.9 - Atrous convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2001%20-%20Convolutions.html">LAB 4.1 - Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2002%20-%20Transfer%20Learning.html">LAB 4.2 - Transfer learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2003%20-%20Object%20Detection.html">LAB 4.3 - Object detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2004%20-%20Semantic%20segmentation.html">LAB 4.4 - Semantic segmentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M05.html">05 - SEQUENCE MODELS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U5.00%20-%20Intro%20time%20series.html">5.0 Crossvalidation in time series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.01%20-%20Recurrent%20Neural%20Networks.html">5.1 Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.02%20-%20Long%20Short%20Term%20Memory%20RNN.html">5.2 LSTM and GRU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.03%20-%20Truncated%20BPTT.html">5.3 Truncated BPTT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.04%20-%20Basic%20concepts%20of%20text%20processing.html">5.4 Text processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.05%20-%20Sequences%20generation%20using%20LSTM.html">5.5 Sequences generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.06%20-%20Bidirectional%20RNNs%20-%20Attention%20Model.html">5.6 Bidirectional RNNs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.07%20-%20ELMo%20-%20NER.html">5.7 ELMo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.08%20-%20Self-Attention%20-%20Transformer%20-%20BERT.html">5.8 Transformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.09%20-%20CNN-LSTM%20architectures.html">5.9  CNN-LSTM architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2001%20-%20Multivariate%20time%20series%20prediction.html">LAB 5.1 - Time series prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2002%20-%20Padding%2C%20Masking%20-%20Sentiment%20Analysis.html">LAB 5.2 - Padding - Masking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2003%20-%20Sentiment%20Analysis%20using%20BERT.html">LAB 5.3 - Transformer - BERT</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/rramosp/2021.deeplearning/blob/master/content/U2.06 - Network Architectures - Multimodal information.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/content/U2.06 - Network Architectures - Multimodal information.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>2.6 - Multimodal architectures</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-regular-neural-network-for-classification">A regular neural network for classification</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-the-model">create the model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fit-and-display-losses">fit and display losses</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#measure-accuracies">measure accuracies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multimodal-network">Multimodal network</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="multimodal-architectures">
+<h1>2.6 - Multimodal architectures<a class="headerlink" href="#multimodal-architectures" title="Link to this heading">#</a></h1>
+<p>Course’s materials require a <code class="docutils literal notranslate"><span class="pre">tensorflow</span></code> version lower than the default one used in Google Colab. Run the following cell to downgrade TensorFlow accordingly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">downgrade_tf_version</span><span class="p">():</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;!yes | pip uninstall -y tensorflow&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;!yes | pip install tensorflow==2.12.0&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">downgrade_tf_version</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>wget<span class="w"> </span>-nc<span class="w"> </span>--no-cache<span class="w"> </span>-O<span class="w"> </span>init.py<span class="w"> </span>-q<span class="w"> </span>https://raw.githubusercontent.com/rramosp/2021.deeplearning/main/content/init.py
+<span class="kn">import</span><span class="w"> </span><span class="nn">init</span><span class="p">;</span> <span class="n">init</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">);</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
+<span class="n">tf</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;2.1.0&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mnist</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;local/data/mnist1.5k.csv.gz&quot;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+<span class="n">X</span><span class="o">=</span><span class="n">mnist</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">785</span><span class="p">]</span><span class="o">/</span><span class="mf">255.</span>
+<span class="n">y</span><span class="o">=</span><span class="n">mnist</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dimension de las imagenes y las clases&quot;</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dimension de las imagenes y las clases (1500, 784) (1500,)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">perm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])))[</span><span class="mi">0</span><span class="p">:</span><span class="mi">50</span><span class="p">]</span>
+<span class="n">random_imgs</span>   <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">perm</span><span class="p">]</span>
+<span class="n">random_labels</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">perm</span><span class="p">]</span> 
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">random_imgs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">random_imgs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">),</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys_r</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">random_labels</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/6adf3f150237fca95fd9849ee54cb9fc2f944bd43f82f06424e6143025446553.png" src="../_images/6adf3f150237fca95fd9849ee54cb9fc2f944bd43f82f06424e6143025446553.png" />
+</div>
+</div>
+<section id="a-regular-neural-network-for-classification">
+<h2>A regular neural network for classification<a class="headerlink" href="#a-regular-neural-network-for-classification" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;local/imgs/ann1.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/174545374785afc34424980dfadf8723f5a20ac5d4b8dc12645003e2c2fe8f10.png" src="../_images/174545374785afc34424980dfadf8723f5a20ac5d4b8dc12645003e2c2fe8f10.png" />
+</div>
+</div>
+<p>Number of connections:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>INPUT to LAYER 1:    784*50 + 50 (bias) = 39250
+LAYER 1 to LAYER 2:   50*30 + 30 (bias) = 1530
+LAYER 2 to LAYER 3:   30*20 + 20 (bias) = 620
+LAYER 3 to OUTPUT:    20*10 + 10 (bias) = 210
+
+                                     TOTAL 41610
+</pre></div>
+</div>
+<p>observe we convert <code class="docutils literal notranslate"><span class="pre">y</span></code> to a one_hot encoding</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">yoh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">10</span><span class="p">)[</span><span class="n">y</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">yoh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0, array([1., 0., 0., 0., 0., 0., 0., 0., 0., 0.]))
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">.8</span><span class="p">)</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:</span><span class="mi">300</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="mi">300</span><span class="p">:],</span> <span class="n">y</span><span class="p">[:</span><span class="mi">300</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">300</span><span class="p">:]</span>
+<span class="n">y_train_oh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">10</span><span class="p">)[</span><span class="n">y_train</span><span class="p">]</span>
+<span class="n">y_test_oh</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">10</span><span class="p">)[</span><span class="n">y_test</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_train_oh</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(300, 784) (300, 10)
+</pre></div>
+</div>
+</div>
+</div>
+<section id="create-the-model">
+<h3>create the model<a class="headerlink" href="#create-the-model" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequential</span><span class="p">,</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.layers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Dropout</span><span class="p">,</span> <span class="n">Flatten</span><span class="p">,</span> <span class="n">concatenate</span><span class="p">,</span> <span class="n">Input</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.backend</span><span class="w"> </span><span class="kn">import</span> <span class="n">clear_session</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_model_A</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">s3</span><span class="p">,</span> <span class="n">s3_activation</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">input_dim</span><span class="o">*</span><span class="n">s1</span> <span class="o">+</span> <span class="n">s1</span><span class="o">*</span><span class="n">s2</span> <span class="o">+</span> <span class="n">s2</span><span class="o">*</span><span class="n">s3</span> <span class="o">+</span> <span class="n">s3</span><span class="o">*</span><span class="mi">10</span> <span class="o">+</span> <span class="n">s1</span><span class="o">+</span><span class="n">s2</span><span class="o">+</span><span class="n">s3</span><span class="o">+</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">clear_session</span><span class="p">()</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">input_dim</span><span class="o">=</span><span class="n">input_dim</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">s2</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">s3</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">s3_activation</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">reset_states</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">get_model_A</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">s1</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">s2</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">s3</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>41610
+Model: &quot;sequential&quot;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dense (Dense)                (None, 50)                39250     
+_________________________________________________________________
+dense_1 (Dense)              (None, 30)                1530      
+_________________________________________________________________
+dense_2 (Dense)              (None, 20)                620       
+_________________________________________________________________
+dense_3 (Dense)              (None, 10)                210       
+=================================================================
+Total params: 41,610
+Trainable params: 41,610
+Non-trainable params: 0
+_________________________________________________________________
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="fit-and-display-losses">
+<h3>fit and display losses<a class="headerlink" href="#fit-and-display-losses" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train_oh</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test_oh</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Train on 300 samples, validate on 1200 samples
+Epoch 1/100
+300/300 [==============================] - 0s 1ms/sample - loss: 2.2274 - val_loss: 2.1210
+Epoch 2/100
+300/300 [==============================] - 0s 201us/sample - loss: 1.9919 - val_loss: 1.9278
+Epoch 3/100
+300/300 [==============================] - 0s 224us/sample - loss: 1.7531 - val_loss: 1.7165
+Epoch 4/100
+300/300 [==============================] - 0s 185us/sample - loss: 1.4943 - val_loss: 1.4922
+Epoch 5/100
+300/300 [==============================] - 0s 188us/sample - loss: 1.2550 - val_loss: 1.3319
+Epoch 6/100
+300/300 [==============================] - 0s 196us/sample - loss: 1.0457 - val_loss: 1.2062
+Epoch 7/100
+300/300 [==============================] - 0s 199us/sample - loss: 0.8917 - val_loss: 1.0992
+Epoch 8/100
+300/300 [==============================] - 0s 186us/sample - loss: 0.7668 - val_loss: 1.0182
+Epoch 9/100
+300/300 [==============================] - 0s 184us/sample - loss: 0.6596 - val_loss: 0.9711
+Epoch 10/100
+300/300 [==============================] - 0s 187us/sample - loss: 0.5542 - val_loss: 0.8945
+Epoch 11/100
+300/300 [==============================] - 0s 193us/sample - loss: 0.4636 - val_loss: 0.8483
+Epoch 12/100
+300/300 [==============================] - 0s 187us/sample - loss: 0.3939 - val_loss: 0.7981
+Epoch 13/100
+300/300 [==============================] - 0s 169us/sample - loss: 0.3208 - val_loss: 0.7711
+Epoch 14/100
+300/300 [==============================] - 0s 157us/sample - loss: 0.2782 - val_loss: 0.7700
+Epoch 15/100
+300/300 [==============================] - 0s 172us/sample - loss: 0.2332 - val_loss: 0.7443
+Epoch 16/100
+300/300 [==============================] - 0s 155us/sample - loss: 0.1945 - val_loss: 0.7321
+Epoch 17/100
+300/300 [==============================] - 0s 172us/sample - loss: 0.1655 - val_loss: 0.7295
+Epoch 18/100
+300/300 [==============================] - 0s 162us/sample - loss: 0.1385 - val_loss: 0.7404
+Epoch 19/100
+300/300 [==============================] - 0s 153us/sample - loss: 0.1214 - val_loss: 0.7357
+Epoch 20/100
+300/300 [==============================] - 0s 175us/sample - loss: 0.0988 - val_loss: 0.7371
+Epoch 21/100
+300/300 [==============================] - 0s 171us/sample - loss: 0.0864 - val_loss: 0.7381
+Epoch 22/100
+300/300 [==============================] - 0s 159us/sample - loss: 0.0759 - val_loss: 0.7365
+Epoch 23/100
+300/300 [==============================] - 0s 148us/sample - loss: 0.0621 - val_loss: 0.7684
+Epoch 24/100
+300/300 [==============================] - 0s 176us/sample - loss: 0.0558 - val_loss: 0.7525
+Epoch 25/100
+300/300 [==============================] - 0s 182us/sample - loss: 0.0470 - val_loss: 0.7554
+Epoch 26/100
+300/300 [==============================] - 0s 165us/sample - loss: 0.0401 - val_loss: 0.7518
+Epoch 27/100
+300/300 [==============================] - 0s 174us/sample - loss: 0.0356 - val_loss: 0.7713
+Epoch 28/100
+300/300 [==============================] - 0s 173us/sample - loss: 0.0321 - val_loss: 0.7725
+Epoch 29/100
+300/300 [==============================] - 0s 179us/sample - loss: 0.0278 - val_loss: 0.7749
+Epoch 30/100
+300/300 [==============================] - 0s 181us/sample - loss: 0.0254 - val_loss: 0.7771
+Epoch 31/100
+300/300 [==============================] - 0s 167us/sample - loss: 0.0226 - val_loss: 0.7835
+Epoch 32/100
+300/300 [==============================] - 0s 169us/sample - loss: 0.0206 - val_loss: 0.7873
+Epoch 33/100
+300/300 [==============================] - 0s 169us/sample - loss: 0.0187 - val_loss: 0.7902
+Epoch 34/100
+300/300 [==============================] - 0s 173us/sample - loss: 0.0170 - val_loss: 0.7993
+Epoch 35/100
+300/300 [==============================] - 0s 188us/sample - loss: 0.0156 - val_loss: 0.8065
+Epoch 36/100
+300/300 [==============================] - 0s 170us/sample - loss: 0.0145 - val_loss: 0.8089
+Epoch 37/100
+300/300 [==============================] - 0s 154us/sample - loss: 0.0134 - val_loss: 0.8054
+Epoch 38/100
+300/300 [==============================] - 0s 169us/sample - loss: 0.0123 - val_loss: 0.8137
+Epoch 39/100
+300/300 [==============================] - 0s 213us/sample - loss: 0.0115 - val_loss: 0.8190
+Epoch 40/100
+300/300 [==============================] - 0s 200us/sample - loss: 0.0107 - val_loss: 0.8212
+Epoch 41/100
+300/300 [==============================] - 0s 198us/sample - loss: 0.0100 - val_loss: 0.8214
+Epoch 42/100
+300/300 [==============================] - 0s 184us/sample - loss: 0.0094 - val_loss: 0.8351
+Epoch 43/100
+300/300 [==============================] - 0s 201us/sample - loss: 0.0088 - val_loss: 0.8428
+Epoch 44/100
+300/300 [==============================] - 0s 189us/sample - loss: 0.0082 - val_loss: 0.8436
+Epoch 45/100
+300/300 [==============================] - 0s 202us/sample - loss: 0.0077 - val_loss: 0.8413
+Epoch 46/100
+300/300 [==============================] - 0s 196us/sample - loss: 0.0073 - val_loss: 0.8521
+Epoch 47/100
+300/300 [==============================] - 0s 187us/sample - loss: 0.0069 - val_loss: 0.8551
+Epoch 48/100
+300/300 [==============================] - 0s 225us/sample - loss: 0.0065 - val_loss: 0.8512
+Epoch 49/100
+300/300 [==============================] - 0s 175us/sample - loss: 0.0061 - val_loss: 0.8589
+Epoch 50/100
+300/300 [==============================] - 0s 169us/sample - loss: 0.0058 - val_loss: 0.8664
+Epoch 51/100
+300/300 [==============================] - 0s 154us/sample - loss: 0.0055 - val_loss: 0.8677
+Epoch 52/100
+300/300 [==============================] - 0s 165us/sample - loss: 0.0053 - val_loss: 0.8700
+Epoch 53/100
+300/300 [==============================] - 0s 156us/sample - loss: 0.0050 - val_loss: 0.8782
+Epoch 54/100
+300/300 [==============================] - 0s 176us/sample - loss: 0.0048 - val_loss: 0.8812
+Epoch 55/100
+300/300 [==============================] - 0s 196us/sample - loss: 0.0046 - val_loss: 0.8815
+Epoch 56/100
+300/300 [==============================] - 0s 193us/sample - loss: 0.0044 - val_loss: 0.8859
+Epoch 57/100
+300/300 [==============================] - 0s 196us/sample - loss: 0.0042 - val_loss: 0.8884
+Epoch 58/100
+300/300 [==============================] - 0s 166us/sample - loss: 0.0040 - val_loss: 0.8921
+Epoch 59/100
+300/300 [==============================] - 0s 155us/sample - loss: 0.0039 - val_loss: 0.8926
+Epoch 60/100
+300/300 [==============================] - 0s 157us/sample - loss: 0.0037 - val_loss: 0.9001
+Epoch 61/100
+300/300 [==============================] - 0s 203us/sample - loss: 0.0035 - val_loss: 0.9011
+Epoch 62/100
+300/300 [==============================] - 0s 203us/sample - loss: 0.0034 - val_loss: 0.9025
+Epoch 63/100
+300/300 [==============================] - 0s 164us/sample - loss: 0.0033 - val_loss: 0.9089
+Epoch 64/100
+300/300 [==============================] - 0s 168us/sample - loss: 0.0032 - val_loss: 0.9113
+Epoch 65/100
+300/300 [==============================] - 0s 152us/sample - loss: 0.0030 - val_loss: 0.9144
+Epoch 66/100
+300/300 [==============================] - 0s 146us/sample - loss: 0.0029 - val_loss: 0.9170
+Epoch 67/100
+300/300 [==============================] - 0s 157us/sample - loss: 0.0028 - val_loss: 0.9206
+Epoch 68/100
+300/300 [==============================] - 0s 153us/sample - loss: 0.0027 - val_loss: 0.9230
+Epoch 69/100
+300/300 [==============================] - 0s 164us/sample - loss: 0.0026 - val_loss: 0.9266
+Epoch 70/100
+300/300 [==============================] - 0s 157us/sample - loss: 0.0025 - val_loss: 0.9271
+Epoch 71/100
+300/300 [==============================] - 0s 162us/sample - loss: 0.0025 - val_loss: 0.9302
+Epoch 72/100
+300/300 [==============================] - 0s 165us/sample - loss: 0.0024 - val_loss: 0.9313
+Epoch 73/100
+300/300 [==============================] - 0s 162us/sample - loss: 0.0023 - val_loss: 0.9379
+Epoch 74/100
+300/300 [==============================] - 0s 167us/sample - loss: 0.0022 - val_loss: 0.9381
+Epoch 75/100
+300/300 [==============================] - 0s 154us/sample - loss: 0.0022 - val_loss: 0.9368
+Epoch 76/100
+300/300 [==============================] - 0s 177us/sample - loss: 0.0021 - val_loss: 0.9389
+Epoch 77/100
+300/300 [==============================] - 0s 179us/sample - loss: 0.0020 - val_loss: 0.9427
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch 78/100
+300/300 [==============================] - 0s 169us/sample - loss: 0.0020 - val_loss: 0.9448
+Epoch 79/100
+300/300 [==============================] - 0s 145us/sample - loss: 0.0019 - val_loss: 0.9469
+Epoch 80/100
+300/300 [==============================] - 0s 156us/sample - loss: 0.0018 - val_loss: 0.9510
+Epoch 81/100
+300/300 [==============================] - 0s 143us/sample - loss: 0.0018 - val_loss: 0.9532
+Epoch 82/100
+300/300 [==============================] - 0s 155us/sample - loss: 0.0017 - val_loss: 0.9547
+Epoch 83/100
+300/300 [==============================] - 0s 142us/sample - loss: 0.0017 - val_loss: 0.9541
+Epoch 84/100
+300/300 [==============================] - 0s 149us/sample - loss: 0.0017 - val_loss: 0.9589
+Epoch 85/100
+300/300 [==============================] - 0s 142us/sample - loss: 0.0016 - val_loss: 0.9624
+Epoch 86/100
+300/300 [==============================] - 0s 151us/sample - loss: 0.0016 - val_loss: 0.9668
+Epoch 87/100
+300/300 [==============================] - 0s 147us/sample - loss: 0.0015 - val_loss: 0.9661
+Epoch 88/100
+300/300 [==============================] - 0s 144us/sample - loss: 0.0015 - val_loss: 0.9678
+Epoch 89/100
+300/300 [==============================] - 0s 141us/sample - loss: 0.0014 - val_loss: 0.9687
+Epoch 90/100
+300/300 [==============================] - 0s 146us/sample - loss: 0.0014 - val_loss: 0.9704
+Epoch 91/100
+300/300 [==============================] - 0s 148us/sample - loss: 0.0014 - val_loss: 0.9751
+Epoch 92/100
+300/300 [==============================] - 0s 146us/sample - loss: 0.0013 - val_loss: 0.9773
+Epoch 93/100
+300/300 [==============================] - 0s 147us/sample - loss: 0.0013 - val_loss: 0.9780
+Epoch 94/100
+300/300 [==============================] - 0s 140us/sample - loss: 0.0013 - val_loss: 0.9792
+Epoch 95/100
+300/300 [==============================] - 0s 149us/sample - loss: 0.0012 - val_loss: 0.9820
+Epoch 96/100
+300/300 [==============================] - 0s 145us/sample - loss: 0.0012 - val_loss: 0.9860
+Epoch 97/100
+300/300 [==============================] - 0s 140us/sample - loss: 0.0012 - val_loss: 0.9876
+Epoch 98/100
+300/300 [==============================] - 0s 152us/sample - loss: 0.0012 - val_loss: 0.9895
+Epoch 99/100
+300/300 [==============================] - 0s 151us/sample - loss: 0.0011 - val_loss: 0.9892
+Epoch 100/100
+300/300 [==============================] - 0s 146us/sample - loss: 0.0011 - val_loss: 0.9936
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;tensorflow.python.keras.callbacks.History at 0x7fde385ecf60&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">loss</span>  <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span>
+<span class="n">vloss</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;val_loss&quot;</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;loss&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vloss</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;val loss&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">();</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/a8abe296330aec7dce8e3d7e2d48aa37505286fe3f39bb4de4b0edcb5230c739.png" src="../_images/a8abe296330aec7dce8e3d7e2d48aa37505286fe3f39bb4de4b0edcb5230c739.png" />
+</div>
+</div>
+</section>
+<section id="measure-accuracies">
+<h3>measure accuracies<a class="headerlink" href="#measure-accuracies" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>why are we using argmax below?</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">preds_train</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">preds_test</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;accuracy train </span><span class="si">%.3f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">preds_train</span><span class="o">==</span><span class="n">y_train</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;accuracy test  </span><span class="si">%.3f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">preds_test</span><span class="o">==</span><span class="n">y_test</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>accuracy train 1.000
+accuracy test  0.798
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="multimodal-network">
+<h2>Multimodal network<a class="headerlink" href="#multimodal-network" title="Link to this heading">#</a></h2>
+<p>We will simulate we have information about our data from an additional source. This can be the case when we have, for instance, medical images and associated clinical data. In this situation we have <strong>multimodal data</strong> (images and numeric).</p>
+<p>We would like to have an arquitecture in which we can inject both image and numeric data.</p>
+<p>In this case, we assume we have an additional information source, telling us with a size 2 vector whether each image contains an odd or even number (with vaues <code class="docutils literal notranslate"><span class="pre">[1</span> <span class="pre">0]</span></code>  or <code class="docutils literal notranslate"><span class="pre">[0</span> <span class="pre">1]</span></code>)</p>
+<p>This new info <strong>is injected at LAYER 3</strong> simply concatenating the neurons</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;local/imgs/ann2.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/e66eb49ba423258f30467f402c9bc4a8b6685506653b58f7c6ddc113f7f49a8e.png" src="../_images/e66eb49ba423258f30467f402c9bc4a8b6685506653b58f7c6ddc113f7f49a8e.png" />
+</div>
+</div>
+<p>Number of connections:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>INPUT 1 to LAYER 1:              784*50 + 50 (bias) = 39250
+LAYER 1 to LAYER 2:               50*30 + 30 (bias) = 1530
+LAYER 2 to LAYER 3:               30*20 + 20 (bias) = 620
+LAYER 3 + INPUT 2 to OUTPUT:  (20+2)*10 + 10 (bias) = 230
+
+                                                TOTAL 41630
+</pre></div>
+</div>
+<p>observe how this new architecture is built, and how the two kinds of information are handled both when building the network or when fitting or predicting</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_model_B</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">extra_info_dim</span><span class="p">,</span>  <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">s3</span><span class="p">,</span> <span class="n">s3_activation</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">):</span>
+    <span class="n">clear_session</span><span class="p">()</span>
+    <span class="n">inp1</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;input_img&quot;</span><span class="p">)</span>
+    <span class="n">l11</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dense1&quot;</span><span class="p">)(</span><span class="n">inp1</span><span class="p">)</span>
+    <span class="n">l12</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">s2</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dense2&quot;</span><span class="p">)(</span><span class="n">l11</span><span class="p">)</span>
+    <span class="n">l13</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">s3</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">s3_activation</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dense3&quot;</span><span class="p">)(</span><span class="n">l12</span><span class="p">)</span>
+    
+    <span class="n">inp2</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">extra_info_dim</span><span class="p">,),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;input_extra&quot;</span><span class="p">)</span>
+    <span class="n">cc1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">l13</span><span class="p">,</span> <span class="n">inp2</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># Merge row, same column</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;output&quot;</span><span class="p">)(</span><span class="n">cc1</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">inp1</span><span class="p">,</span> <span class="n">inp2</span><span class="p">],</span> <span class="n">outputs</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
+    
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">reset_states</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We simulate extra information, we could actually have several choices to encode this information, for instance</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">1,</span> <span class="pre">0]</span> <span class="pre">[</span> <span class="pre">0,</span> <span class="pre">1]</span></code> or</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">1,-1]</span> <span class="pre">[-1,</span> <span class="pre">1]</span></code> or</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[10,</span> <span class="pre">0]</span> <span class="pre">[</span> <span class="pre">0,10]</span></code> among others</p></li>
+</ul>
+<p>Observe how <strong>k0</strong>, <strong>k1</strong> control how the data is represented. Try:</p>
+<ul class="simple">
+<li><p>k0=0, k1=1</p></li>
+<li><p>k0=-0.5, k1=2</p></li>
+<li><p>k0=0, k2=10</p></li>
+<li><p>k0=-0.5, k1=20</p></li>
+</ul>
+<p>to understand how this coding affects the representation</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_X_extra</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">k0</span><span class="p">,</span> <span class="n">k1</span><span class="p">):</span>
+    <span class="n">X_train_extra</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)[</span><span class="n">y_train</span><span class="o">%</span><span class="k">2</span>]+k0)*k1
+    <span class="n">X_test_extra</span>  <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)[</span><span class="n">y_test</span><span class="o">%</span><span class="k">2</span>]+k0)*k1
+    <span class="k">return</span> <span class="n">X_train_extra</span><span class="p">,</span> <span class="n">X_test_extra</span>
+
+<span class="n">X_train_extra</span><span class="p">,</span> <span class="n">X_test_extra</span> <span class="o">=</span> <span class="n">get_X_extra</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">k0</span><span class="o">=-</span><span class="mf">.5</span><span class="p">,</span> <span class="n">k1</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">X_train_extra</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[-1.,  1.],
+       [ 1., -1.],
+       [-1.,  1.],
+       [ 1., -1.],
+       [ 1., -1.],
+       [ 1., -1.],
+       [-1.,  1.],
+       [-1.,  1.],
+       [-1.,  1.],
+       [-1.,  1.]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">get_model_B</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">extra_info_dim</span><span class="o">=</span><span class="n">X_train_extra</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">s1</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">s2</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">s3</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                   <span class="n">s3_activation</span><span class="o">=</span><span class="s2">&quot;tanh&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model: &quot;model&quot;
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+input_img (InputLayer)          [(None, 784)]        0                                            
+__________________________________________________________________________________________________
+dense1 (Dense)                  (None, 50)           39250       input_img[0][0]                  
+__________________________________________________________________________________________________
+dense2 (Dense)                  (None, 30)           1530        dense1[0][0]                     
+__________________________________________________________________________________________________
+dense3 (Dense)                  (None, 20)           620         dense2[0][0]                     
+__________________________________________________________________________________________________
+input_extra (InputLayer)        [(None, 2)]          0                                            
+__________________________________________________________________________________________________
+tf_op_layer_concat (TensorFlowO [(None, 22)]         0           dense3[0][0]                     
+                                                                 input_extra[0][0]                
+__________________________________________________________________________________________________
+output (Dense)                  (None, 10)           230         tf_op_layer_concat[0][0]         
+==================================================================================================
+Total params: 41,630
+Trainable params: 41,630
+Non-trainable params: 0
+__________________________________________________________________________________________________
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_train_extra</span><span class="p">],</span> <span class="n">y_train_oh</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> 
+          <span class="n">validation_data</span><span class="o">=</span><span class="p">([</span><span class="n">X_test</span><span class="p">,</span> <span class="n">X_test_extra</span><span class="p">],</span> <span class="n">y_test_oh</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Train on 300 samples, validate on 1200 samples
+Epoch 1/200
+300/300 [==============================] - 0s 1ms/sample - loss: 2.2208 - val_loss: 2.0656
+Epoch 2/200
+300/300 [==============================] - 0s 186us/sample - loss: 1.9353 - val_loss: 1.8616
+Epoch 3/200
+300/300 [==============================] - 0s 197us/sample - loss: 1.6757 - val_loss: 1.6130
+Epoch 4/200
+300/300 [==============================] - 0s 196us/sample - loss: 1.4212 - val_loss: 1.3889
+Epoch 5/200
+300/300 [==============================] - 0s 200us/sample - loss: 1.1756 - val_loss: 1.2010
+Epoch 6/200
+300/300 [==============================] - 0s 193us/sample - loss: 0.9764 - val_loss: 1.0640
+Epoch 7/200
+300/300 [==============================] - 0s 197us/sample - loss: 0.8130 - val_loss: 0.9314
+Epoch 8/200
+300/300 [==============================] - 0s 196us/sample - loss: 0.6877 - val_loss: 0.8559
+Epoch 9/200
+300/300 [==============================] - 0s 193us/sample - loss: 0.5882 - val_loss: 0.7672
+Epoch 10/200
+300/300 [==============================] - 0s 200us/sample - loss: 0.4998 - val_loss: 0.7380
+Epoch 11/200
+300/300 [==============================] - 0s 199us/sample - loss: 0.4319 - val_loss: 0.6846
+Epoch 12/200
+300/300 [==============================] - 0s 188us/sample - loss: 0.3673 - val_loss: 0.6468
+Epoch 13/200
+300/300 [==============================] - 0s 166us/sample - loss: 0.3206 - val_loss: 0.6241
+Epoch 14/200
+300/300 [==============================] - 0s 165us/sample - loss: 0.2804 - val_loss: 0.5929
+Epoch 15/200
+300/300 [==============================] - 0s 169us/sample - loss: 0.2418 - val_loss: 0.5843
+Epoch 16/200
+300/300 [==============================] - 0s 191us/sample - loss: 0.2141 - val_loss: 0.5577
+Epoch 17/200
+300/300 [==============================] - 0s 173us/sample - loss: 0.1914 - val_loss: 0.5527
+Epoch 18/200
+300/300 [==============================] - 0s 168us/sample - loss: 0.1701 - val_loss: 0.5357
+Epoch 19/200
+300/300 [==============================] - 0s 157us/sample - loss: 0.1517 - val_loss: 0.5244
+Epoch 20/200
+300/300 [==============================] - 0s 158us/sample - loss: 0.1379 - val_loss: 0.5278
+Epoch 21/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.1199 - val_loss: 0.5158
+Epoch 22/200
+300/300 [==============================] - 0s 162us/sample - loss: 0.1085 - val_loss: 0.5092
+Epoch 23/200
+300/300 [==============================] - 0s 171us/sample - loss: 0.0992 - val_loss: 0.5031
+Epoch 24/200
+300/300 [==============================] - 0s 180us/sample - loss: 0.0916 - val_loss: 0.4994
+Epoch 25/200
+300/300 [==============================] - 0s 181us/sample - loss: 0.0836 - val_loss: 0.4974
+Epoch 26/200
+300/300 [==============================] - 0s 181us/sample - loss: 0.0774 - val_loss: 0.5017
+Epoch 27/200
+300/300 [==============================] - 0s 182us/sample - loss: 0.0707 - val_loss: 0.4908
+Epoch 28/200
+300/300 [==============================] - 0s 180us/sample - loss: 0.0659 - val_loss: 0.4878
+Epoch 29/200
+300/300 [==============================] - 0s 182us/sample - loss: 0.0612 - val_loss: 0.4905
+Epoch 30/200
+300/300 [==============================] - 0s 171us/sample - loss: 0.0574 - val_loss: 0.4880
+Epoch 31/200
+300/300 [==============================] - 0s 176us/sample - loss: 0.0536 - val_loss: 0.4856
+Epoch 32/200
+300/300 [==============================] - 0s 169us/sample - loss: 0.0506 - val_loss: 0.4869
+Epoch 33/200
+300/300 [==============================] - 0s 158us/sample - loss: 0.0474 - val_loss: 0.4837
+Epoch 34/200
+300/300 [==============================] - 0s 187us/sample - loss: 0.0448 - val_loss: 0.4839
+Epoch 35/200
+300/300 [==============================] - 0s 204us/sample - loss: 0.0424 - val_loss: 0.4801
+Epoch 36/200
+300/300 [==============================] - 0s 183us/sample - loss: 0.0402 - val_loss: 0.4783
+Epoch 37/200
+300/300 [==============================] - 0s 180us/sample - loss: 0.0380 - val_loss: 0.4838
+Epoch 38/200
+300/300 [==============================] - 0s 177us/sample - loss: 0.0362 - val_loss: 0.4808
+Epoch 39/200
+300/300 [==============================] - 0s 165us/sample - loss: 0.0344 - val_loss: 0.4820
+Epoch 40/200
+300/300 [==============================] - 0s 158us/sample - loss: 0.0327 - val_loss: 0.4817
+Epoch 41/200
+300/300 [==============================] - 0s 163us/sample - loss: 0.0311 - val_loss: 0.4807
+Epoch 42/200
+300/300 [==============================] - 0s 178us/sample - loss: 0.0298 - val_loss: 0.4784
+Epoch 43/200
+300/300 [==============================] - 0s 205us/sample - loss: 0.0285 - val_loss: 0.4799
+Epoch 44/200
+300/300 [==============================] - 0s 202us/sample - loss: 0.0273 - val_loss: 0.4823
+Epoch 45/200
+300/300 [==============================] - 0s 205us/sample - loss: 0.0262 - val_loss: 0.4771
+Epoch 46/200
+300/300 [==============================] - 0s 207us/sample - loss: 0.0251 - val_loss: 0.4828
+Epoch 47/200
+300/300 [==============================] - 0s 204us/sample - loss: 0.0241 - val_loss: 0.4855
+Epoch 48/200
+300/300 [==============================] - 0s 202us/sample - loss: 0.0232 - val_loss: 0.4841
+Epoch 49/200
+300/300 [==============================] - 0s 219us/sample - loss: 0.0223 - val_loss: 0.4847
+Epoch 50/200
+300/300 [==============================] - 0s 226us/sample - loss: 0.0215 - val_loss: 0.4862
+Epoch 51/200
+300/300 [==============================] - 0s 206us/sample - loss: 0.0207 - val_loss: 0.4855
+Epoch 52/200
+300/300 [==============================] - 0s 189us/sample - loss: 0.0200 - val_loss: 0.4839
+Epoch 53/200
+300/300 [==============================] - 0s 187us/sample - loss: 0.0193 - val_loss: 0.4833
+Epoch 54/200
+300/300 [==============================] - 0s 182us/sample - loss: 0.0187 - val_loss: 0.4859
+Epoch 55/200
+300/300 [==============================] - 0s 175us/sample - loss: 0.0180 - val_loss: 0.4905
+Epoch 56/200
+300/300 [==============================] - 0s 183us/sample - loss: 0.0175 - val_loss: 0.4905
+Epoch 57/200
+300/300 [==============================] - 0s 184us/sample - loss: 0.0169 - val_loss: 0.4898
+Epoch 58/200
+300/300 [==============================] - 0s 191us/sample - loss: 0.0165 - val_loss: 0.4860
+Epoch 59/200
+300/300 [==============================] - 0s 205us/sample - loss: 0.0159 - val_loss: 0.4903
+Epoch 60/200
+300/300 [==============================] - 0s 181us/sample - loss: 0.0154 - val_loss: 0.4925
+Epoch 61/200
+300/300 [==============================] - 0s 171us/sample - loss: 0.0150 - val_loss: 0.4925
+Epoch 62/200
+300/300 [==============================] - 0s 182us/sample - loss: 0.0145 - val_loss: 0.4929
+Epoch 63/200
+300/300 [==============================] - 0s 169us/sample - loss: 0.0142 - val_loss: 0.4933
+Epoch 64/200
+300/300 [==============================] - 0s 182us/sample - loss: 0.0138 - val_loss: 0.4935
+Epoch 65/200
+300/300 [==============================] - 0s 182us/sample - loss: 0.0134 - val_loss: 0.4939
+Epoch 66/200
+300/300 [==============================] - 0s 196us/sample - loss: 0.0130 - val_loss: 0.4952
+Epoch 67/200
+300/300 [==============================] - 0s 192us/sample - loss: 0.0127 - val_loss: 0.4958
+Epoch 68/200
+300/300 [==============================] - 0s 197us/sample - loss: 0.0124 - val_loss: 0.4986
+Epoch 69/200
+300/300 [==============================] - 0s 187us/sample - loss: 0.0120 - val_loss: 0.4968
+Epoch 70/200
+300/300 [==============================] - 0s 188us/sample - loss: 0.0117 - val_loss: 0.4984
+Epoch 71/200
+300/300 [==============================] - 0s 274us/sample - loss: 0.0114 - val_loss: 0.5004
+Epoch 72/200
+300/300 [==============================] - 0s 193us/sample - loss: 0.0111 - val_loss: 0.5009
+Epoch 73/200
+300/300 [==============================] - 0s 179us/sample - loss: 0.0109 - val_loss: 0.5017
+Epoch 74/200
+300/300 [==============================] - 0s 185us/sample - loss: 0.0106 - val_loss: 0.5000
+Epoch 75/200
+300/300 [==============================] - 0s 161us/sample - loss: 0.0104 - val_loss: 0.5028
+Epoch 76/200
+300/300 [==============================] - 0s 158us/sample - loss: 0.0101 - val_loss: 0.5029
+Epoch 77/200
+300/300 [==============================] - 0s 155us/sample - loss: 0.0099 - val_loss: 0.5040
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch 78/200
+300/300 [==============================] - 0s 173us/sample - loss: 0.0097 - val_loss: 0.5047
+Epoch 79/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0095 - val_loss: 0.5053
+Epoch 80/200
+300/300 [==============================] - 0s 162us/sample - loss: 0.0093 - val_loss: 0.5030
+Epoch 81/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0090 - val_loss: 0.5055
+Epoch 82/200
+300/300 [==============================] - 0s 162us/sample - loss: 0.0089 - val_loss: 0.5067
+Epoch 83/200
+300/300 [==============================] - 0s 153us/sample - loss: 0.0087 - val_loss: 0.5096
+Epoch 84/200
+300/300 [==============================] - 0s 152us/sample - loss: 0.0085 - val_loss: 0.5097
+Epoch 85/200
+300/300 [==============================] - 0s 153us/sample - loss: 0.0083 - val_loss: 0.5113
+Epoch 86/200
+300/300 [==============================] - 0s 152us/sample - loss: 0.0081 - val_loss: 0.5107
+Epoch 87/200
+300/300 [==============================] - 0s 161us/sample - loss: 0.0080 - val_loss: 0.5117
+Epoch 88/200
+300/300 [==============================] - 0s 161us/sample - loss: 0.0078 - val_loss: 0.5123
+Epoch 89/200
+300/300 [==============================] - 0s 165us/sample - loss: 0.0077 - val_loss: 0.5116
+Epoch 90/200
+300/300 [==============================] - 0s 167us/sample - loss: 0.0075 - val_loss: 0.5128
+Epoch 91/200
+300/300 [==============================] - 0s 156us/sample - loss: 0.0074 - val_loss: 0.5151
+Epoch 92/200
+300/300 [==============================] - 0s 149us/sample - loss: 0.0072 - val_loss: 0.5168
+Epoch 93/200
+300/300 [==============================] - 0s 150us/sample - loss: 0.0071 - val_loss: 0.5163
+Epoch 94/200
+300/300 [==============================] - 0s 156us/sample - loss: 0.0069 - val_loss: 0.5167
+Epoch 95/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0068 - val_loss: 0.5178
+Epoch 96/200
+300/300 [==============================] - 0s 166us/sample - loss: 0.0067 - val_loss: 0.5174
+Epoch 97/200
+300/300 [==============================] - 0s 191us/sample - loss: 0.0066 - val_loss: 0.5176
+Epoch 98/200
+300/300 [==============================] - 0s 184us/sample - loss: 0.0065 - val_loss: 0.5192
+Epoch 99/200
+300/300 [==============================] - 0s 160us/sample - loss: 0.0063 - val_loss: 0.5209
+Epoch 100/200
+300/300 [==============================] - 0s 154us/sample - loss: 0.0062 - val_loss: 0.5203
+Epoch 101/200
+300/300 [==============================] - 0s 154us/sample - loss: 0.0061 - val_loss: 0.5210
+Epoch 102/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0060 - val_loss: 0.5216
+Epoch 103/200
+300/300 [==============================] - 0s 153us/sample - loss: 0.0059 - val_loss: 0.5229
+Epoch 104/200
+300/300 [==============================] - 0s 162us/sample - loss: 0.0058 - val_loss: 0.5240
+Epoch 105/200
+300/300 [==============================] - 0s 158us/sample - loss: 0.0057 - val_loss: 0.5234
+Epoch 106/200
+300/300 [==============================] - 0s 157us/sample - loss: 0.0056 - val_loss: 0.5236
+Epoch 107/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0055 - val_loss: 0.5251
+Epoch 108/200
+300/300 [==============================] - 0s 152us/sample - loss: 0.0054 - val_loss: 0.5261
+Epoch 109/200
+300/300 [==============================] - 0s 160us/sample - loss: 0.0054 - val_loss: 0.5260
+Epoch 110/200
+300/300 [==============================] - 0s 156us/sample - loss: 0.0053 - val_loss: 0.5261
+Epoch 111/200
+300/300 [==============================] - 0s 151us/sample - loss: 0.0052 - val_loss: 0.5278
+Epoch 112/200
+300/300 [==============================] - 0s 161us/sample - loss: 0.0051 - val_loss: 0.5286
+Epoch 113/200
+300/300 [==============================] - 0s 157us/sample - loss: 0.0050 - val_loss: 0.5291
+Epoch 114/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0049 - val_loss: 0.5290
+Epoch 115/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0049 - val_loss: 0.5306
+Epoch 116/200
+300/300 [==============================] - 0s 152us/sample - loss: 0.0048 - val_loss: 0.5317
+Epoch 117/200
+300/300 [==============================] - 0s 158us/sample - loss: 0.0047 - val_loss: 0.5330
+Epoch 118/200
+300/300 [==============================] - 0s 165us/sample - loss: 0.0047 - val_loss: 0.5343
+Epoch 119/200
+300/300 [==============================] - 0s 153us/sample - loss: 0.0046 - val_loss: 0.5340
+Epoch 120/200
+300/300 [==============================] - 0s 163us/sample - loss: 0.0045 - val_loss: 0.5341
+Epoch 121/200
+300/300 [==============================] - 0s 162us/sample - loss: 0.0044 - val_loss: 0.5345
+Epoch 122/200
+300/300 [==============================] - 0s 164us/sample - loss: 0.0044 - val_loss: 0.5356
+Epoch 123/200
+300/300 [==============================] - 0s 161us/sample - loss: 0.0043 - val_loss: 0.5360
+Epoch 124/200
+300/300 [==============================] - 0s 160us/sample - loss: 0.0043 - val_loss: 0.5370
+Epoch 125/200
+300/300 [==============================] - 0s 157us/sample - loss: 0.0042 - val_loss: 0.5366
+Epoch 126/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0041 - val_loss: 0.5371
+Epoch 127/200
+300/300 [==============================] - 0s 157us/sample - loss: 0.0041 - val_loss: 0.5377
+Epoch 128/200
+300/300 [==============================] - 0s 153us/sample - loss: 0.0040 - val_loss: 0.5384
+Epoch 129/200
+300/300 [==============================] - 0s 149us/sample - loss: 0.0040 - val_loss: 0.5401
+Epoch 130/200
+300/300 [==============================] - 0s 161us/sample - loss: 0.0039 - val_loss: 0.5395
+Epoch 131/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0039 - val_loss: 0.5413
+Epoch 132/200
+300/300 [==============================] - 0s 157us/sample - loss: 0.0038 - val_loss: 0.5421
+Epoch 133/200
+300/300 [==============================] - 0s 156us/sample - loss: 0.0038 - val_loss: 0.5424
+Epoch 134/200
+300/300 [==============================] - 0s 151us/sample - loss: 0.0037 - val_loss: 0.5433
+Epoch 135/200
+300/300 [==============================] - 0s 155us/sample - loss: 0.0037 - val_loss: 0.5432
+Epoch 136/200
+300/300 [==============================] - 0s 160us/sample - loss: 0.0036 - val_loss: 0.5441
+Epoch 137/200
+300/300 [==============================] - 0s 160us/sample - loss: 0.0036 - val_loss: 0.5444
+Epoch 138/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0035 - val_loss: 0.5453
+Epoch 139/200
+300/300 [==============================] - 0s 156us/sample - loss: 0.0035 - val_loss: 0.5463
+Epoch 140/200
+300/300 [==============================] - 0s 158us/sample - loss: 0.0034 - val_loss: 0.5481
+Epoch 141/200
+300/300 [==============================] - 0s 160us/sample - loss: 0.0034 - val_loss: 0.5473
+Epoch 142/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0033 - val_loss: 0.5481
+Epoch 143/200
+300/300 [==============================] - 0s 155us/sample - loss: 0.0033 - val_loss: 0.5490
+Epoch 144/200
+300/300 [==============================] - 0s 149us/sample - loss: 0.0033 - val_loss: 0.5495
+Epoch 145/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0032 - val_loss: 0.5515
+Epoch 146/200
+300/300 [==============================] - 0s 157us/sample - loss: 0.0032 - val_loss: 0.5515
+Epoch 147/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0031 - val_loss: 0.5534
+Epoch 148/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0031 - val_loss: 0.5539
+Epoch 149/200
+300/300 [==============================] - 0s 150us/sample - loss: 0.0031 - val_loss: 0.5536
+Epoch 150/200
+300/300 [==============================] - 0s 150us/sample - loss: 0.0030 - val_loss: 0.5540
+Epoch 151/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0030 - val_loss: 0.5543
+Epoch 152/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0029 - val_loss: 0.5559
+Epoch 153/200
+300/300 [==============================] - 0s 169us/sample - loss: 0.0029 - val_loss: 0.5565
+Epoch 154/200
+300/300 [==============================] - 0s 162us/sample - loss: 0.0029 - val_loss: 0.5574
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch 155/200
+300/300 [==============================] - 0s 164us/sample - loss: 0.0028 - val_loss: 0.5574
+Epoch 156/200
+300/300 [==============================] - 0s 171us/sample - loss: 0.0028 - val_loss: 0.5584
+Epoch 157/200
+300/300 [==============================] - 0s 165us/sample - loss: 0.0028 - val_loss: 0.5589
+Epoch 158/200
+300/300 [==============================] - 0s 167us/sample - loss: 0.0027 - val_loss: 0.5586
+Epoch 159/200
+300/300 [==============================] - 0s 171us/sample - loss: 0.0027 - val_loss: 0.5589
+Epoch 160/200
+300/300 [==============================] - 0s 160us/sample - loss: 0.0027 - val_loss: 0.5604
+Epoch 161/200
+300/300 [==============================] - 0s 170us/sample - loss: 0.0027 - val_loss: 0.5613
+Epoch 162/200
+300/300 [==============================] - 0s 157us/sample - loss: 0.0026 - val_loss: 0.5614
+Epoch 163/200
+300/300 [==============================] - 0s 167us/sample - loss: 0.0026 - val_loss: 0.5617
+Epoch 164/200
+300/300 [==============================] - 0s 153us/sample - loss: 0.0026 - val_loss: 0.5627
+Epoch 165/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0025 - val_loss: 0.5633
+Epoch 166/200
+300/300 [==============================] - 0s 157us/sample - loss: 0.0025 - val_loss: 0.5632
+Epoch 167/200
+300/300 [==============================] - 0s 149us/sample - loss: 0.0025 - val_loss: 0.5639
+Epoch 168/200
+300/300 [==============================] - 0s 157us/sample - loss: 0.0025 - val_loss: 0.5641
+Epoch 169/200
+300/300 [==============================] - 0s 154us/sample - loss: 0.0024 - val_loss: 0.5652
+Epoch 170/200
+300/300 [==============================] - 0s 152us/sample - loss: 0.0024 - val_loss: 0.5664
+Epoch 171/200
+300/300 [==============================] - 0s 155us/sample - loss: 0.0024 - val_loss: 0.5668
+Epoch 172/200
+300/300 [==============================] - 0s 160us/sample - loss: 0.0023 - val_loss: 0.5678
+Epoch 173/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0023 - val_loss: 0.5681
+Epoch 174/200
+300/300 [==============================] - 0s 159us/sample - loss: 0.0023 - val_loss: 0.5694
+Epoch 175/200
+300/300 [==============================] - 0s 158us/sample - loss: 0.0023 - val_loss: 0.5694
+Epoch 176/200
+300/300 [==============================] - 0s 157us/sample - loss: 0.0022 - val_loss: 0.5701
+Epoch 177/200
+300/300 [==============================] - 0s 154us/sample - loss: 0.0022 - val_loss: 0.5706
+Epoch 178/200
+300/300 [==============================] - 0s 151us/sample - loss: 0.0022 - val_loss: 0.5718
+Epoch 179/200
+300/300 [==============================] - 0s 160us/sample - loss: 0.0022 - val_loss: 0.5725
+Epoch 180/200
+300/300 [==============================] - 0s 161us/sample - loss: 0.0022 - val_loss: 0.5726
+Epoch 181/200
+300/300 [==============================] - 0s 171us/sample - loss: 0.0021 - val_loss: 0.5733
+Epoch 182/200
+300/300 [==============================] - 0s 186us/sample - loss: 0.0021 - val_loss: 0.5741
+Epoch 183/200
+300/300 [==============================] - 0s 185us/sample - loss: 0.0021 - val_loss: 0.5746
+Epoch 184/200
+300/300 [==============================] - 0s 182us/sample - loss: 0.0021 - val_loss: 0.5744
+Epoch 185/200
+300/300 [==============================] - 0s 185us/sample - loss: 0.0020 - val_loss: 0.5759
+Epoch 186/200
+300/300 [==============================] - 0s 180us/sample - loss: 0.0020 - val_loss: 0.5765
+Epoch 187/200
+300/300 [==============================] - 0s 174us/sample - loss: 0.0020 - val_loss: 0.5769
+Epoch 188/200
+300/300 [==============================] - 0s 176us/sample - loss: 0.0020 - val_loss: 0.5770
+Epoch 189/200
+300/300 [==============================] - 0s 185us/sample - loss: 0.0020 - val_loss: 0.5775
+Epoch 190/200
+300/300 [==============================] - 0s 183us/sample - loss: 0.0019 - val_loss: 0.5776
+Epoch 191/200
+300/300 [==============================] - 0s 179us/sample - loss: 0.0019 - val_loss: 0.5782
+Epoch 192/200
+300/300 [==============================] - 0s 185us/sample - loss: 0.0019 - val_loss: 0.5785
+Epoch 193/200
+300/300 [==============================] - 0s 190us/sample - loss: 0.0019 - val_loss: 0.5795
+Epoch 194/200
+300/300 [==============================] - 0s 188us/sample - loss: 0.0019 - val_loss: 0.5809
+Epoch 195/200
+300/300 [==============================] - 0s 180us/sample - loss: 0.0018 - val_loss: 0.5817
+Epoch 196/200
+300/300 [==============================] - 0s 190us/sample - loss: 0.0018 - val_loss: 0.5827
+Epoch 197/200
+300/300 [==============================] - 0s 189us/sample - loss: 0.0018 - val_loss: 0.5826
+Epoch 198/200
+300/300 [==============================] - 0s 186us/sample - loss: 0.0018 - val_loss: 0.5834
+Epoch 199/200
+300/300 [==============================] - 0s 196us/sample - loss: 0.0018 - val_loss: 0.5836
+Epoch 200/200
+300/300 [==============================] - 0s 187us/sample - loss: 0.0018 - val_loss: 0.5843
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;tensorflow.python.keras.callbacks.History at 0x7fde3c9b98d0&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">loss</span>  <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span>
+<span class="n">vloss</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;val_loss&quot;</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;loss&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vloss</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;val loss&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">();</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/cad47e06a5f503555039e0e644149e8e7a9caee3942db48debf82f9035866b76.png" src="../_images/cad47e06a5f503555039e0e644149e8e7a9caee3942db48debf82f9035866b76.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">preds_train</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">([</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_train_extra</span><span class="p">])</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">preds_test</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">([</span><span class="n">X_test</span><span class="p">,</span> <span class="n">X_test_extra</span><span class="p">])</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;accuracy train </span><span class="si">%.3f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">preds_train</span><span class="o">==</span><span class="n">y_train</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;accuracy test  </span><span class="si">%.3f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">preds_test</span><span class="o">==</span><span class="n">y_test</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>accuracy train 1.000
+accuracy test  0.835
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="U2.05%20-%20Network%20Architectures%20-%20Autoencoders.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">2.5 - Autoencoders</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="U2.07%20-%20Vanishing%20gradients.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">2.7 - Vanishing gradients</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-regular-neural-network-for-classification">A regular neural network for classification</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-the-model">create the model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fit-and-display-losses">fit and display losses</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#measure-accuracies">measure accuracies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multimodal-network">Multimodal network</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Raúl Ramos, Julián Arias / Universidad de Antioquia
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

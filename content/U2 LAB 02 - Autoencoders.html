@@ -1,0 +1,914 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>LAB 2.2 - Sparse Autoencoders &#8212; Fundamentos de Deep Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-43235448-3"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'UA-43235448-3');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'UA-43235448-3');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/U2 LAB 02 - Autoencoders';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LAB 2.3 - Pairwise classification" href="U2%20LAB%2003%20-%20Pairwise%20image%20classification.html" />
+    <link rel="prev" title="LAB 2.1 - Customized loss function" href="U2%20LAB%2001%20-%20Customized%20loss%20functions%20and%20regularization.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/fudea.jpg" class="logo__image only-light" alt="Fundamentos de Deep Learning - Home"/>
+    <script>document.write(`<img src="../_static/fudea.jpg" class="logo__image only-dark" alt="Fundamentos de Deep Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="M00_20252_pre.html">Info 2025.2 - UdeA</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M01.html">01 - INTRODUCTION</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U1.01%20-%20DL%20Overview.html">1.1 - DL Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1.02%20-%20Modelos%20derivados%20de%20los%20datos.html">1.2 - Models derived from data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1.03%20-%20Como%20se%20disena%20un%20algoritmo%20de%20Machine%20Learning.html">1.3 - ML algorithm design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1%20LAB%2001%20-%20WARMUP.html">LAB 01.01 - WARM UP</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="M02.html">02 - NEURAL NETWORKS</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="U2.01%20-%20The%20Perceptron.html">2.1 - The Perceptron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.02%20-%20The%20Multilayer%20Perceptron.html">2.2 - The Multilayer Perceptron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.03%20-%20Overfitting%20and%20regularization.html">2.3 - Overfitting and regularization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.04%20-%20Loss%20functions.html">2.4 - Loss functions in Tensorflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.05%20-%20Network%20Architectures%20-%20Autoencoders.html">2.5 - Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.06%20-%20Network%20Architectures%20-%20Multimodal%20information.html">2.6 - Multimodal architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.07%20-%20Vanishing%20gradients.html">2.7 - Vanishing gradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.08%20-%20Weights%20initialization.html">2.8 - Weights initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2001%20-%20Customized%20loss%20functions%20and%20regularization.html">LAB 2.1 - Customized loss function</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">LAB 2.2 - Sparse Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2003%20-%20Pairwise%20image%20classification.html">LAB 2.3 - Pairwise classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2004%20-%20Model%20instrumentation%20and%20monitoring.html">LAB 2.4 - Model instrumentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M03.html">03 - TENSORFLOW CORE</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U3.01%20-%20Simbolic%20computing%20for%20ML.html">3.1 - Symbolic computing for ML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.02%20-%20TF%20for%20symbolic%20computing.html">3.2 - TF symbolic engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.03%20-%20Using%20tf.function.html">3.3 - Using <code class="docutils literal notranslate"><span class="pre">tf.function</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.04%20-%20Batch%20Normalization.html">3.4 - Batch normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3%20LAB%2001%20-%20Tensorflow%20model%20subclassing.html">LAB 3.1 - TF model subclassing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3%20LAB%2002%20-%20Low%20level%20Tensorflow.html">LAB 3.2 - Low level <code class="docutils literal notranslate"><span class="pre">tensorflow</span></code></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M04.html">04 - CONVOLUTIONAL NETWORKS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U4.01%20-%20Convolutions.html">4.1 - Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.02%20-%20Convolutional%20Neural%20Networks.html">4.2 - Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.03%20-%20Dropout%2C%20pooling.html">4.3 - Dropout, pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.04%20-%20CNN%20Architectures.html">4.4 - CNN Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.05%20-%20Transfer%20learning.html">4.5 - Transfer learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.06%20-%20Object%20Detection.html">4.6 - Object detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.07%20-%20Transposed%20convolutions.html">4.7 - Transposed convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.08%20-%20UNet%20image%20segmentation.html"><strong>4.8</strong> - UNet Image segmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.09%20-%20Atrous%20convolutions.html">4.9 - Atrous convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2001%20-%20Convolutions.html">LAB 4.1 - Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2002%20-%20Transfer%20Learning.html">LAB 4.2 - Transfer learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2003%20-%20Object%20Detection.html">LAB 4.3 - Object detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2004%20-%20Semantic%20segmentation.html">LAB 4.4 - Semantic segmentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M05.html">05 - SEQUENCE MODELS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U5.00%20-%20Intro%20time%20series.html">5.0 Crossvalidation in time series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.01%20-%20Recurrent%20Neural%20Networks.html">5.1 Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.02%20-%20Long%20Short%20Term%20Memory%20RNN.html">5.2 LSTM and GRU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.03%20-%20Truncated%20BPTT.html">5.3 Truncated BPTT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.04%20-%20Basic%20concepts%20of%20text%20processing.html">5.4 Text processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.05%20-%20Sequences%20generation%20using%20LSTM.html">5.5 Sequences generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.06%20-%20Bidirectional%20RNNs%20-%20Attention%20Model.html">5.6 Bidirectional RNNs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.07%20-%20ELMo%20-%20NER.html">5.7 ELMo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.08%20-%20Self-Attention%20-%20Transformer%20-%20BERT.html">5.8 Transformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.09%20-%20CNN-LSTM%20architectures.html">5.9  CNN-LSTM architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2001%20-%20Multivariate%20time%20series%20prediction.html">LAB 5.1 - Time series prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2002%20-%20Padding%2C%20Masking%20-%20Sentiment%20Analysis.html">LAB 5.2 - Padding - Masking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2003%20-%20Sentiment%20Analysis%20using%20BERT.html">LAB 5.3 - Transformer - BERT</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/rramosp/2021.deeplearning/blob/master/content/U2 LAB 02 - Autoencoders.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/content/U2 LAB 02 - Autoencoders.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>LAB 2.2 - Sparse Autoencoders</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lab-summary">LAB SUMMARY</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#task-01-handcrafted-sparse-autoencoder">TASK 01: Handcrafted sparse autoencoder</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#task-02-sparse-autoencoder-model">TASK 02: Sparse autoencoder model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-the-reconstruction">test the reconstruction</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="lab-2-2-sparse-autoencoders">
+<h1>LAB 2.2 - Sparse Autoencoders<a class="headerlink" href="#lab-2-2-sparse-autoencoders" title="Link to this heading">#</a></h1>
+<p>The labs require a <code class="docutils literal notranslate"><span class="pre">tensorflow</span></code> version lower than the default one used in Google Colab. Run the following cell to downgrade TensorFlow accordingly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">downgrade_tf_version</span><span class="p">():</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;!yes | pip uninstall -y tensorflow&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;!yes | pip install tensorflow==2.12.0&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">downgrade_tf_version</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>wget<span class="w"> </span>-nc<span class="w"> </span>--no-cache<span class="w"> </span>-O<span class="w"> </span>init.py<span class="w"> </span>-q<span class="w"> </span>https://raw.githubusercontent.com/rramosp/2021.deeplearning/main/content/init.py
+<span class="kn">import</span><span class="w"> </span><span class="nn">init</span><span class="p">;</span> <span class="n">init</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">);</span> <span class="n">init</span><span class="o">.</span><span class="n">get_weblink</span><span class="p">()</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">local.lib.rlxmoocapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">submit</span><span class="p">,</span> <span class="n">session</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="n">session</span><span class="o">.</span><span class="n">LoginSequence</span><span class="p">(</span><span class="n">endpoint</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">course_id</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">course_id</span><span class="p">,</span> <span class="n">lab_id</span><span class="o">=</span><span class="s2">&quot;L02.02&quot;</span><span class="p">,</span> <span class="n">varname</span><span class="o">=</span><span class="s2">&quot;student&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="lab-summary">
+<h2>LAB SUMMARY<a class="headerlink" href="#lab-summary" title="Link to this heading">#</a></h2>
+<p>In this lab we will create a <strong>Sparse Autoencoder</strong>, where we will force the encoder to have <strong>SMALL ACTIVATIONS</strong>. we will continue to use <strong>MNIST</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequential</span><span class="p">,</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.layers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Dropout</span><span class="p">,</span> <span class="n">Flatten</span><span class="p">,</span> <span class="n">Input</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
+
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mnist</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;local/data/mnist1.5k.csv.gz&quot;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+<span class="n">X</span><span class="o">=</span><span class="p">(</span><span class="n">mnist</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">785</span><span class="p">]</span><span class="o">/</span><span class="mf">255.</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">y</span><span class="o">=</span><span class="p">(</span><span class="n">mnist</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dimension de las imagenes y las clases&quot;</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">.2</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_test</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="task-01-handcrafted-sparse-autoencoder">
+<h2>TASK 01: Handcrafted sparse autoencoder<a class="headerlink" href="#task-01-handcrafted-sparse-autoencoder" title="Link to this heading">#</a></h2>
+<p>Given:</p>
+<ul class="simple">
+<li><p>input <span class="math notranslate nohighlight">\(X_{in} \in \mathbb{R}^{m\times n}\)</span> = <span class="math notranslate nohighlight">\(\{ x^{(0)}, x^{(1)},..., x^{(m-1)}  \}\)</span>, with <span class="math notranslate nohighlight">\(x^{(i)}  \in \mathbb{R}^n\)</span></p></li>
+<li><p>encoder weights and bias: <span class="math notranslate nohighlight">\(W_e \in \mathbb{R}^{n \times c}\)</span>, <span class="math notranslate nohighlight">\(b_e \in \mathbb{R}^{c}\)</span></p></li>
+<li><p>decoder weights and bias: <span class="math notranslate nohighlight">\(W_d \in \mathbb{R}^{c \times n}\)</span>, <span class="math notranslate nohighlight">\(b_d \in \mathbb{R}^{n}\)</span></p></li>
+</ul>
+<p>with:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(n\)</span> the input data dimension</p></li>
+<li><p><span class="math notranslate nohighlight">\(m\)</span> the number of input data items</p></li>
+<li><p><span class="math notranslate nohighlight">\(c\)</span> the autoencoder <code class="docutils literal notranslate"><span class="pre">code_size</span></code></p></li>
+</ul>
+<p>An autoencoder output is computed as a regular neural network</p>
+<div class="math notranslate nohighlight">
+\[X_{out} = d(e(X_{in})) = \sigma(\text{r}(X_{in} \times W_e + b_e) \times W_d  + b_d)\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(X_{out} \in \mathbb{R}^{m\times n}\)</span> is the output</p></li>
+<li><p><span class="math notranslate nohighlight">\(d(X) = \sigma(X \times W_d  + b_d)\)</span> is the decoder function</p></li>
+<li><p><span class="math notranslate nohighlight">\(e(X) = \text{r}(X \times W_e + b_e)\)</span> is the encoder function</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sigma(z) = 1/(1+e^{-z})\)</span> is the sigmoid activation function</p></li>
+<li><p><span class="math notranslate nohighlight">\(r(z) = \text{max}(0, z)\)</span> is the ReLU activation function</p></li>
+</ul>
+<p>and we use the following loss function</p>
+<div class="math notranslate nohighlight">
+\[\text{loss}(X_{in}) = \frac{1}{mn}\sum_{m,n} \big(x^{(i)} - d(e(x^{(i)}))\big)^2 + \beta \frac{1}{mc}\sum_{m,c} e(x^{(i)})\]</div>
+<p>observe that:</p>
+<ul class="simple">
+<li><p>we pretend to penalize large values of the encoder activations, with <span class="math notranslate nohighlight">\(\beta\)</span> regulating how much we penalize</p></li>
+<li><p>as we are using ReLU there is no need to square <span class="math notranslate nohighlight">\(e(x^{(i)})\)</span></p></li>
+<li><p>the summations are over the number of elements (<span class="math notranslate nohighlight">\(m\)</span>, with the running index <span class="math notranslate nohighlight">\(i \in [0,..,m-1]\)</span>) <strong>and</strong> the number of columns (<span class="math notranslate nohighlight">\(n\)</span> for the first term, <span class="math notranslate nohighlight">\(c\)</span> for the second term)</p></li>
+</ul>
+<p><strong>Complete the following function to compute the encoder output and loss</strong>. All arguments are <code class="docutils literal notranslate"><span class="pre">numpy</span></code> arrays. The <code class="docutils literal notranslate"><span class="pre">Xout</span></code> output must also be a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array and <code class="docutils literal notranslate"><span class="pre">loss</span></code> must be a number. You cannot use Tensorflow to implement your function.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">apply_autoencoder</span><span class="p">(</span><span class="n">Xin</span><span class="p">,</span> <span class="n">We</span><span class="p">,</span> <span class="n">be</span><span class="p">,</span> <span class="n">Wd</span><span class="p">,</span> <span class="n">bd</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
+    
+    <span class="n">sigm</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">))</span>
+    <span class="n">relu</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="n">z</span><span class="o">*</span><span class="p">(</span><span class="n">z</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+    
+    <span class="n">Xout</span> <span class="o">=</span> <span class="o">...</span>    
+    <span class="n">loss</span> <span class="o">=</span> <span class="o">...</span>
+    
+    <span class="k">return</span> <span class="n">Xout</span><span class="p">,</span> <span class="n">loss</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>test your code</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#</span>
+<span class="c1"># --- you should get the following output up to three decimals ---</span>
+<span class="c1">#</span>
+<span class="c1"># Xout</span>
+<span class="c1">#  [[0.53992624 0.54127547 0.40167658 0.59832582]</span>
+<span class="c1">#  [0.580101   0.55012488 0.42321322 0.59509962]</span>
+<span class="c1">#  [0.62155216 0.52174768 0.43006826 0.62407879]</span>
+<span class="c1">#  [0.55635373 0.54059637 0.40857522 0.60072369]</span>
+<span class="c1">#  [0.62178687 0.51694816 0.42812613 0.62813387]]</span>
+<span class="c1"># loss</span>
+<span class="c1">#  0.5723349282191469</span>
+
+<span class="n">Xin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">0.37035694</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.34542735</span><span class="p">,</span>  <span class="mf">0.15605706</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.33053004</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.3153002</span> <span class="p">,</span> <span class="o">-</span><span class="mf">0.41249585</span><span class="p">,</span>  <span class="mf">0.30073246</span><span class="p">,</span>  <span class="mf">0.13771319</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.30017424</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.15409659</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.43102843</span><span class="p">,</span>  <span class="mf">0.38578104</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.14914677</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.4411987</span> <span class="p">,</span> <span class="o">-</span><span class="mf">0.33116959</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.32483895</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.17407847</span><span class="p">,</span>  <span class="mf">0.0946155</span> <span class="p">,</span> <span class="o">-</span><span class="mf">0.48391975</span><span class="p">,</span>  <span class="mf">0.34075492</span><span class="p">]])</span>
+
+<span class="n">We</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">0.28030543</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.46140969</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.18068483</span><span class="p">],</span>
+               <span class="p">[</span> <span class="mf">0.31530074</span><span class="p">,</span>  <span class="mf">0.29354581</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.30835241</span><span class="p">],</span>
+               <span class="p">[</span><span class="o">-</span><span class="mf">0.35849794</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.12389752</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.01763293</span><span class="p">],</span>
+               <span class="p">[</span> <span class="mf">0.44245022</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.4465276</span> <span class="p">,</span> <span class="o">-</span><span class="mf">0.40293482</span><span class="p">]])</span>
+
+<span class="n">be</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">0.33030961</span><span class="p">,</span>  <span class="mf">0.33221543</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.32828997</span><span class="p">])</span>
+
+<span class="n">Wd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mf">0.42964391</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.22892199</span><span class="p">,</span>  <span class="mf">0.09340045</span><span class="p">,</span>  <span class="mf">0.25372971</span><span class="p">],</span>
+               <span class="p">[</span><span class="o">-</span><span class="mf">0.41209546</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.23107885</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.28591832</span><span class="p">,</span>  <span class="mf">0.15998353</span><span class="p">],</span>
+               <span class="p">[</span><span class="o">-</span><span class="mf">0.16731707</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.10630373</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.15786946</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.20899463</span><span class="p">]])</span>
+
+<span class="n">bd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">0.32558449</span><span class="p">,</span>  <span class="mf">0.31610265</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.25844944</span><span class="p">,</span>  <span class="mf">0.28249571</span><span class="p">])</span>
+
+<span class="n">Xout</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">apply_autoencoder</span><span class="p">(</span><span class="n">Xin</span><span class="p">,</span> <span class="n">We</span><span class="p">,</span> <span class="n">be</span><span class="p">,</span> <span class="n">Wd</span><span class="p">,</span> <span class="n">bd</span><span class="p">)</span>
+
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Xout</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Xout</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;loss</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Try your code with other cases</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span>
+
+<span class="n">Xin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">n</span><span class="p">))</span><span class="o">-</span><span class="mf">.5</span>
+<span class="n">We</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">c</span><span class="p">))</span><span class="o">-</span><span class="mf">.5</span>
+<span class="n">be</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">c</span><span class="p">)</span><span class="o">-</span><span class="mf">.5</span>
+
+<span class="n">Wd</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">n</span><span class="p">))</span><span class="o">-</span><span class="mf">.5</span>
+<span class="n">bd</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span><span class="o">-</span><span class="mf">.5</span>
+
+<span class="n">Xout</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">apply_autoencoder</span><span class="p">(</span><span class="n">Xin</span><span class="p">,</span> <span class="n">We</span><span class="p">,</span> <span class="n">be</span><span class="p">,</span> <span class="n">Wd</span><span class="p">,</span> <span class="n">bd</span><span class="p">)</span>
+
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Xout</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Xout</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;loss</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Registra tu solución en linea</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">student</span><span class="o">.</span><span class="n">submit_task</span><span class="p">(</span><span class="n">namespace</span><span class="o">=</span><span class="nb">globals</span><span class="p">(),</span> <span class="n">task_id</span><span class="o">=</span><span class="s1">&#39;T1&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="task-02-sparse-autoencoder-model">
+<h2>TASK 02: Sparse autoencoder model<a class="headerlink" href="#task-02-sparse-autoencoder-model" title="Link to this heading">#</a></h2>
+<p>Complete the <code class="docutils literal notranslate"><span class="pre">get_model</span></code> function so that the returned model uses the loss function previously defined.</p>
+<p>You <strong>MUST USE</strong> the <strong>UNSUPERVISED</strong> method to specify your loss function as described in the notes, so that the <code class="docutils literal notranslate"><span class="pre">.fit</span></code> method only gets one argument.</p>
+<p>Note for models you have to use <strong>Tensorflow operations</strong> in specific you have to use <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/reduce_mean"><code class="docutils literal notranslate"><span class="pre">tf.reduce_mean</span></code></a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_model</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">code_size</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">.01</span><span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequential</span><span class="p">,</span> <span class="n">Model</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.layers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Dropout</span><span class="p">,</span> <span class="n">Flatten</span><span class="p">,</span> <span class="n">Input</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
+    
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;input&quot;</span><span class="p">)</span>
+    <span class="n">encoder</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">code_size</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;encoder&quot;</span><span class="p">)(</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;decoder&quot;</span><span class="p">)(</span><span class="n">encoder</span><span class="p">)</span>
+
+    <span class="n">loss</span> <span class="o">=</span> <span class="o">...</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">([</span><span class="n">inputs</span><span class="p">],</span> <span class="p">[</span><span class="n">outputs</span><span class="p">])</span>    
+    <span class="n">model</span><span class="o">.</span><span class="n">add_loss</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>to manually check your code verify that you get the same results with your model and with the function from previous exercise. Observe the possible difference in number precisions (32 vs 64 bits)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># output and loss from TF model in this task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_loss</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">Xinput</span><span class="p">):</span>
+    <span class="n">input_layer</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">)</span>
+    <span class="n">loss_layer</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_layer</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">layers</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;add_loss&quot;</span><span class="p">)][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">ml</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">input_layer</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">loss_layer</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">ml</span><span class="p">(</span><span class="n">Xinput</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">code_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+<span class="nb">print</span> <span class="p">(</span><span class="n">get_loss</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X_train</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># output and loss from previous task</span>
+<span class="n">We</span><span class="p">,</span> <span class="n">be</span><span class="p">,</span> <span class="n">Wd</span><span class="p">,</span> <span class="n">wd</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
+<span class="n">Xout</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">apply_autoencoder</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">We</span><span class="p">,</span> <span class="n">be</span><span class="p">,</span> <span class="n">Wd</span><span class="p">,</span> <span class="n">wd</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Xout</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>you can now train the autoencoder and check its behavior</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="test-the-reconstruction">
+<h3>test the reconstruction<a class="headerlink" href="#test-the-reconstruction" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X_sample</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:</span><span class="mi">10</span><span class="p">]</span>
+<span class="n">X_pred</span>   <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_sample</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_sample</span><span class="p">)):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">X_sample</span><span class="p">),</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">X_sample</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys_r</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">X_sample</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">X_sample</span><span class="p">)</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">X_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys_r</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>In a similar fashion to the corresponding course ntoes, you can inspect the encoder and decoder weights, and also the activations and distributions in the latent space.</p>
+<p>For activations you should get something similar to this, indicating a much more sparse representation</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="p">(</span><span class="s2">&quot;local/imgs/ae_sparse_activations.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/3a48ff49599f5b4b2a123fd95f5c8bfe03933c30ce763010e69b57353450b1f6.png" src="../_images/3a48ff49599f5b4b2a123fd95f5c8bfe03933c30ce763010e69b57353450b1f6.png" />
+</div>
+</div>
+<p>indicating most activations are now very close to zero</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;local/imgs/ae_activations_distribution.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f7869d14fe8f39ed9126f2c8f8b18b36d34372dc0e48880e515a195fb6e3d3b3.png" src="../_images/f7869d14fe8f39ed9126f2c8f8b18b36d34372dc0e48880e515a195fb6e3d3b3.png" />
+</div>
+</div>
+<p>And you should see some latent neurons <strong>got specialized</strong> when inspecting the decoder weights</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;local/imgs/decoder_weights.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/aeb179db0653a77fb34f01851504c3a3ffd3595bf935218c3e4b01a9d6673898.png" src="../_images/aeb179db0653a77fb34f01851504c3a3ffd3595bf935218c3e4b01a9d6673898.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">show_img_grid</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">wi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">wi</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys_r</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Registra tu solución en linea</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">student</span><span class="o">.</span><span class="n">submit_task</span><span class="p">(</span><span class="n">namespace</span><span class="o">=</span><span class="nb">globals</span><span class="p">(),</span> <span class="n">task_id</span><span class="o">=</span><span class="s1">&#39;T2&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="U2%20LAB%2001%20-%20Customized%20loss%20functions%20and%20regularization.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">LAB 2.1 - Customized loss function</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="U2%20LAB%2003%20-%20Pairwise%20image%20classification.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">LAB 2.3 - Pairwise classification</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lab-summary">LAB SUMMARY</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#task-01-handcrafted-sparse-autoencoder">TASK 01: Handcrafted sparse autoencoder</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#task-02-sparse-autoencoder-model">TASK 02: Sparse autoencoder model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-the-reconstruction">test the reconstruction</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Raúl Ramos, Julián Arias / Universidad de Antioquia
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

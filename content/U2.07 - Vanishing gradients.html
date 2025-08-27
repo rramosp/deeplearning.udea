@@ -1,0 +1,1768 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>2.7 - Vanishing gradients &#8212; Fundamentos de Deep Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-43235448-3"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'UA-43235448-3');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'UA-43235448-3');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/U2.07 - Vanishing gradients';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2.8 - Weights initialization" href="U2.08%20-%20Weights%20initialization.html" />
+    <link rel="prev" title="2.6 - Multimodal architectures" href="U2.06%20-%20Network%20Architectures%20-%20Multimodal%20information.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/fudea.jpg" class="logo__image only-light" alt="Fundamentos de Deep Learning - Home"/>
+    <script>document.write(`<img src="../_static/fudea.jpg" class="logo__image only-dark" alt="Fundamentos de Deep Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="M00_20252_pre.html">Info 2025.2 - UdeA</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M01.html">01 - INTRODUCTION</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U1.01%20-%20DL%20Overview.html">1.1 - DL Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1.02%20-%20Modelos%20derivados%20de%20los%20datos.html">1.2 - Models derived from data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1.03%20-%20Como%20se%20disena%20un%20algoritmo%20de%20Machine%20Learning.html">1.3 - ML algorithm design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U1%20LAB%2001%20-%20WARMUP.html">LAB 01.01 - WARM UP</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="M02.html">02 - NEURAL NETWORKS</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="U2.01%20-%20The%20Perceptron.html">2.1 - The Perceptron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.02%20-%20The%20Multilayer%20Perceptron.html">2.2 - The Multilayer Perceptron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.03%20-%20Overfitting%20and%20regularization.html">2.3 - Overfitting and regularization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.04%20-%20Loss%20functions.html">2.4 - Loss functions in Tensorflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.05%20-%20Network%20Architectures%20-%20Autoencoders.html">2.5 - Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.06%20-%20Network%20Architectures%20-%20Multimodal%20information.html">2.6 - Multimodal architectures</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">2.7 - Vanishing gradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2.08%20-%20Weights%20initialization.html">2.8 - Weights initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2001%20-%20Customized%20loss%20functions%20and%20regularization.html">LAB 2.1 - Customized loss function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2002%20-%20Autoencoders.html">LAB 2.2 - Sparse Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2003%20-%20Pairwise%20image%20classification.html">LAB 2.3 - Pairwise classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U2%20LAB%2004%20-%20Model%20instrumentation%20and%20monitoring.html">LAB 2.4 - Model instrumentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M03.html">03 - TENSORFLOW CORE</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U3.01%20-%20Simbolic%20computing%20for%20ML.html">3.1 - Symbolic computing for ML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.02%20-%20TF%20for%20symbolic%20computing.html">3.2 - TF symbolic engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.03%20-%20Using%20tf.function.html">3.3 - Using <code class="docutils literal notranslate"><span class="pre">tf.function</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3.04%20-%20Batch%20Normalization.html">3.4 - Batch normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3%20LAB%2001%20-%20Tensorflow%20model%20subclassing.html">LAB 3.1 - TF model subclassing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U3%20LAB%2002%20-%20Low%20level%20Tensorflow.html">LAB 3.2 - Low level <code class="docutils literal notranslate"><span class="pre">tensorflow</span></code></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M04.html">04 - CONVOLUTIONAL NETWORKS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U4.01%20-%20Convolutions.html">4.1 - Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.02%20-%20Convolutional%20Neural%20Networks.html">4.2 - Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.03%20-%20Dropout%2C%20pooling.html">4.3 - Dropout, pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.04%20-%20CNN%20Architectures.html">4.4 - CNN Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.05%20-%20Transfer%20learning.html">4.5 - Transfer learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.06%20-%20Object%20Detection.html">4.6 - Object detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.07%20-%20Transposed%20convolutions.html">4.7 - Transposed convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.08%20-%20UNet%20image%20segmentation.html"><strong>4.8</strong> - UNet Image segmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4.09%20-%20Atrous%20convolutions.html">4.9 - Atrous convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2001%20-%20Convolutions.html">LAB 4.1 - Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2002%20-%20Transfer%20Learning.html">LAB 4.2 - Transfer learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2003%20-%20Object%20Detection.html">LAB 4.3 - Object detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U4%20LAB%2004%20-%20Semantic%20segmentation.html">LAB 4.4 - Semantic segmentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="M05.html">05 - SEQUENCE MODELS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="U5.00%20-%20Intro%20time%20series.html">5.0 Crossvalidation in time series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.01%20-%20Recurrent%20Neural%20Networks.html">5.1 Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.02%20-%20Long%20Short%20Term%20Memory%20RNN.html">5.2 LSTM and GRU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.03%20-%20Truncated%20BPTT.html">5.3 Truncated BPTT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.04%20-%20Basic%20concepts%20of%20text%20processing.html">5.4 Text processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.05%20-%20Sequences%20generation%20using%20LSTM.html">5.5 Sequences generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.06%20-%20Bidirectional%20RNNs%20-%20Attention%20Model.html">5.6 Bidirectional RNNs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.07%20-%20ELMo%20-%20NER.html">5.7 ELMo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.08%20-%20Self-Attention%20-%20Transformer%20-%20BERT.html">5.8 Transformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5.09%20-%20CNN-LSTM%20architectures.html">5.9  CNN-LSTM architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2001%20-%20Multivariate%20time%20series%20prediction.html">LAB 5.1 - Time series prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2002%20-%20Padding%2C%20Masking%20-%20Sentiment%20Analysis.html">LAB 5.2 - Padding - Masking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U5%20LAB%2003%20-%20Sentiment%20Analysis%20using%20BERT.html">LAB 5.3 - Transformer - BERT</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/rramosp/2021.deeplearning/blob/master/content/U2.07 - Vanishing gradients.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/content/U2.07 - Vanishing gradients.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>2.7 - Vanishing gradients</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualizing-and-understanding-vanishing-gradients">Visualizing and understanding vanishing gradients</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sigmoid">sigmoid</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tanh">tanh</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relu-rectified-linear-unit">ReLU (Rectified Linear Unit)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#leaky-relu-rectified-linear-unit">Leaky ReLU (Rectified Linear Unit)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#load-sample-mnist-data-as-customary">load sample MNIST data as customary</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-basic-multi-layered-dense-model">A basic multi layered dense model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sigmoid-activation">SIGMOID activation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relu-activation">RELU activation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#leaky-relu-activation">Leaky RELU activation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sigmoid-activation-but-longer-run-epochs">SIGMOID activation but longer run (epochs)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-observations-on-tensorboard">Experiment observations, on Tensorboard</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="vanishing-gradients">
+<h1>2.7 - Vanishing gradients<a class="headerlink" href="#vanishing-gradients" title="Link to this heading">#</a></h1>
+<p>Course’s materials require a <code class="docutils literal notranslate"><span class="pre">tensorflow</span></code> version lower than the default one used in Google Colab. Run the following cell to downgrade TensorFlow accordingly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">downgrade_tf_version</span><span class="p">():</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;!yes | pip uninstall -y tensorflow&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;!yes | pip install tensorflow==2.12.0&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">downgrade_tf_version</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>wget<span class="w"> </span>-nc<span class="w"> </span>--no-cache<span class="w"> </span>-O<span class="w"> </span>init.py<span class="w"> </span>-q<span class="w"> </span>https://raw.githubusercontent.com/rramosp/2021.deeplearning/main/content/init.py
+<span class="kn">import</span><span class="w"> </span><span class="nn">init</span><span class="p">;</span> <span class="n">init</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">);</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
+<span class="n">tf</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;2.1.0&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<p>forward/back propagation calculations <a class="reference external" href="https://medium.com/&#64;14prakash/back-propagation-is-very-simple-who-made-it-complicated-97b794c97e5c">https://medium.com/&#64;14prakash/back-propagation-is-very-simple-who-made-it-complicated-97b794c97e5c</a></p>
+<p>Vanishing gradient example: <a class="github reference external" href="https://github.com/harinisuresh/VanishingGradient/blob/master/Vanishing%20Gradient%20Example.ipynb">harinisuresh/VanishingGradient</a></p>
+<p><a class="reference external" href="https://adventuresinmachinelearning.com/vanishing-gradient-problem-tensorflow/">https://adventuresinmachinelearning.com/vanishing-gradient-problem-tensorflow/</a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">keras</span>
+
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+</div>
+<section id="visualizing-and-understanding-vanishing-gradients">
+<h2>Visualizing and understanding vanishing gradients<a class="headerlink" href="#visualizing-and-understanding-vanishing-gradients" title="Link to this heading">#</a></h2>
+<p>Make sure you understand well the backpropagation algorithm. You may perform by hand the calculations as illustrated <a class="reference external" href="https://medium.com/&#64;14prakash/back-propagation-is-very-simple-who-made-it-complicated-97b794c97e5c">here</a> to consolidate your understanding.</p>
+<p>We will be using three activation functions. Observe under which what values each function’s gradient becomes negligible (very near zero)</p>
+<section id="sigmoid">
+<h3>sigmoid<a class="headerlink" href="#sigmoid" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\text{sigm(z)} = \frac{1}{1-e^{-z}}\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\partial \;\text{sigm}}{\partial \; z} = \text{sigm}(z)(1-\text{sigm}(z))\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="n">sigm</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">))</span>
+
+<span class="n">dsigm</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="n">sigm</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">sigm</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">sigm</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;sigm&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">dsigm</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;grad sigm&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fb43fbffeb8&gt;
+</pre></div>
+</div>
+<img alt="../_images/993c6c44321b46a07c6c37589f82f4b751e869a12baee0eb7afcfa93ee55d48e.png" src="../_images/993c6c44321b46a07c6c37589f82f4b751e869a12baee0eb7afcfa93ee55d48e.png" />
+</div>
+</div>
+</section>
+<section id="tanh">
+<h3>tanh<a class="headerlink" href="#tanh" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\text{tanh(z)} = \frac{e^z - e^{-z}}{e^z-e^{-z}}\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\partial \;\text{tanh}}{\partial \; z} = 1-\text{tanh}(z)^2\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="n">tanh</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">))</span>
+
+<span class="n">dtanh</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">tanh</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">tanh</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;tanh&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">dtanh</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;grad tanh&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fb43fd2ef60&gt;
+</pre></div>
+</div>
+<img alt="../_images/4287d81175dffd34f3abd09465b6aa652646ed25efbb0c2cca3016aaf5b6feba.png" src="../_images/4287d81175dffd34f3abd09465b6aa652646ed25efbb0c2cca3016aaf5b6feba.png" />
+</div>
+</div>
+</section>
+<section id="relu-rectified-linear-unit">
+<h3>ReLU (Rectified Linear Unit)<a class="headerlink" href="#relu-rectified-linear-unit" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\text{relu}(z) = \text{z if }z&lt;0\;;\;0\text{ otherwise}\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\partial \;\text{relu}}{\partial \; z} = \text{1 if }z&lt;0\;;\;0\text{ otherwise}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="n">relu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="n">z</span> <span class="k">if</span> <span class="n">z</span><span class="o">&gt;</span><span class="mi">0</span> <span class="k">else</span> <span class="mf">0.</span><span class="p">)</span>
+
+<span class="n">drelu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">z</span><span class="o">&gt;</span><span class="mi">0</span> <span class="k">else</span> <span class="mf">0.</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">relu</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">drelu</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;grad relu&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fb43fe39780&gt;
+</pre></div>
+</div>
+<img alt="../_images/c15d4a621771cb6a85deaad3024093934d38a31e650b968cfa36e1d50a47cecf.png" src="../_images/c15d4a621771cb6a85deaad3024093934d38a31e650b968cfa36e1d50a47cecf.png" />
+</div>
+</div>
+</section>
+<section id="leaky-relu-rectified-linear-unit">
+<h3>Leaky ReLU (Rectified Linear Unit)<a class="headerlink" href="#leaky-relu-rectified-linear-unit" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\text{relu}(z) = \text{z if }z&lt;0\;;\;kz\text{ otherwise with }k&lt;&lt;1\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\partial \;\text{relu}}{\partial \; z} = \text{1 if }z&lt;0\;;\;k\text{ otherwise}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="n">relu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="n">z</span> <span class="k">if</span> <span class="n">z</span><span class="o">&gt;</span><span class="mi">0</span> <span class="k">else</span> <span class="mf">.1</span><span class="o">*</span><span class="n">z</span><span class="p">)</span>
+
+<span class="n">drelu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">z</span><span class="o">&gt;</span><span class="mi">0</span> <span class="k">else</span> <span class="mf">.1</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">relu</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">drelu</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;grad relu&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">();</span> 
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fb43fec0dd8&gt;
+</pre></div>
+</div>
+<img alt="../_images/a49479a8a04b9bdfa272d356be02d1d221ad0f133867017327557b7646390965.png" src="../_images/a49479a8a04b9bdfa272d356be02d1d221ad0f133867017327557b7646390965.png" />
+</div>
+</div>
+</section>
+<section id="load-sample-mnist-data-as-customary">
+<h3>load sample MNIST data as customary<a class="headerlink" href="#load-sample-mnist-data-as-customary" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mnist</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;local/data/mnist1.5k.csv.gz&quot;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+<span class="n">X</span><span class="o">=</span><span class="n">mnist</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">785</span><span class="p">]</span><span class="o">/</span><span class="mf">255.</span>
+<span class="n">y</span><span class="o">=</span><span class="n">mnist</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dimension de las imagenes y las clases&quot;</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dimension de las imagenes y las clases (1500, 784) (1500,)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">.2</span><span class="p">)</span>
+<span class="n">X_train</span> <span class="o">=</span> <span class="n">X_train</span>
+<span class="n">X_test</span>  <span class="o">=</span> <span class="n">X_test</span>
+<span class="n">y_train_oh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">10</span><span class="p">)[</span><span class="n">y_train</span><span class="p">]</span>
+<span class="n">y_test_oh</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">10</span><span class="p">)[</span><span class="n">y_test</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_train_oh</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1200, 784) (1200, 10)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequential</span><span class="p">,</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.layers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Dropout</span><span class="p">,</span> <span class="n">Flatten</span><span class="p">,</span> <span class="n">concatenate</span><span class="p">,</span> <span class="n">Input</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.backend</span><span class="w"> </span><span class="kn">import</span> <span class="n">clear_session</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">keras</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="a-basic-multi-layered-dense-model">
+<h3>A basic multi layered dense model<a class="headerlink" href="#a-basic-multi-layered-dense-model" title="Link to this heading">#</a></h3>
+<p>observe that the function allows us to parametrize the number of hidden layers and their activation function</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>rm<span class="w"> </span>-rf<span class="w"> </span>log<span class="w"> </span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_model</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="mi">784</span><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_hidden_layers</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">):</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">,</span> <span class="n">input_dim</span><span class="o">=</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Layer_</span><span class="si">%02d</span><span class="s2">_Input&quot;</span><span class="o">%</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_hidden_layers</span><span class="p">):</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Layer_</span><span class="si">%02d</span><span class="s2">_Hidden&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+   
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">output_dim</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;softmax&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Layer_</span><span class="si">%02d</span><span class="s2">_Output&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">num_hidden_layers</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+    
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="sigmoid-activation">
+<h3>SIGMOID activation<a class="headerlink" href="#sigmoid-activation" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="n">num_hidden_layers</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">)</span>
+<span class="o">!</span>rm<span class="w"> </span>-rf<span class="w"> </span>log/sigmoid
+<span class="n">tb_callback</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">TensorBoard</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="s1">&#39;./log/sigmoid&#39;</span><span class="p">,</span> <span class="n">histogram_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="n">write_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">write_images</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train_oh</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test_oh</span><span class="p">),</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">tb_callback</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Train on 1200 samples, validate on 300 samples
+Epoch 1/30
+1200/1200 [==============================] - 1s 528us/sample - loss: 2.3860 - accuracy: 0.0933 - val_loss: 2.3674 - val_accuracy: 0.0967
+Epoch 2/30
+1200/1200 [==============================] - 0s 124us/sample - loss: 2.3391 - accuracy: 0.0933 - val_loss: 2.3356 - val_accuracy: 0.0967
+Epoch 3/30
+1200/1200 [==============================] - 0s 129us/sample - loss: 2.3174 - accuracy: 0.1050 - val_loss: 2.3181 - val_accuracy: 0.0733
+Epoch 4/30
+1200/1200 [==============================] - 0s 102us/sample - loss: 2.3073 - accuracy: 0.1083 - val_loss: 2.3097 - val_accuracy: 0.0733
+Epoch 5/30
+1200/1200 [==============================] - 0s 106us/sample - loss: 2.3023 - accuracy: 0.1025 - val_loss: 2.3059 - val_accuracy: 0.1367
+Epoch 6/30
+1200/1200 [==============================] - 0s 97us/sample - loss: 2.3006 - accuracy: 0.1208 - val_loss: 2.3029 - val_accuracy: 0.1367
+Epoch 7/30
+1200/1200 [==============================] - 0s 95us/sample - loss: 2.2994 - accuracy: 0.1208 - val_loss: 2.3017 - val_accuracy: 0.1367
+Epoch 8/30
+1200/1200 [==============================] - 0s 88us/sample - loss: 2.2993 - accuracy: 0.1208 - val_loss: 2.3029 - val_accuracy: 0.1367
+Epoch 9/30
+1200/1200 [==============================] - 0s 87us/sample - loss: 2.2990 - accuracy: 0.1208 - val_loss: 2.3012 - val_accuracy: 0.1367
+Epoch 10/30
+1200/1200 [==============================] - 0s 87us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3008 - val_accuracy: 0.1367
+Epoch 11/30
+1200/1200 [==============================] - 0s 88us/sample - loss: 2.2990 - accuracy: 0.1208 - val_loss: 2.3020 - val_accuracy: 0.1367
+Epoch 12/30
+1200/1200 [==============================] - 0s 90us/sample - loss: 2.2994 - accuracy: 0.1208 - val_loss: 2.3006 - val_accuracy: 0.1367
+Epoch 13/30
+1200/1200 [==============================] - 0s 86us/sample - loss: 2.2990 - accuracy: 0.1208 - val_loss: 2.3012 - val_accuracy: 0.1367
+Epoch 14/30
+1200/1200 [==============================] - 0s 96us/sample - loss: 2.2993 - accuracy: 0.1208 - val_loss: 2.3024 - val_accuracy: 0.1367
+Epoch 15/30
+1200/1200 [==============================] - 0s 87us/sample - loss: 2.2989 - accuracy: 0.1208 - val_loss: 2.2997 - val_accuracy: 0.1367
+Epoch 16/30
+1200/1200 [==============================] - 0s 77us/sample - loss: 2.2994 - accuracy: 0.1208 - val_loss: 2.3006 - val_accuracy: 0.1367
+Epoch 17/30
+1200/1200 [==============================] - 0s 85us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3010 - val_accuracy: 0.1367
+Epoch 18/30
+1200/1200 [==============================] - 0s 79us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3006 - val_accuracy: 0.1367
+Epoch 19/30
+1200/1200 [==============================] - 0s 86us/sample - loss: 2.2989 - accuracy: 0.1208 - val_loss: 2.3017 - val_accuracy: 0.1367
+Epoch 20/30
+1200/1200 [==============================] - 0s 79us/sample - loss: 2.2989 - accuracy: 0.1208 - val_loss: 2.3013 - val_accuracy: 0.1367
+Epoch 21/30
+1200/1200 [==============================] - 0s 87us/sample - loss: 2.2990 - accuracy: 0.1208 - val_loss: 2.3010 - val_accuracy: 0.1367
+Epoch 22/30
+1200/1200 [==============================] - 0s 83us/sample - loss: 2.2986 - accuracy: 0.1208 - val_loss: 2.3014 - val_accuracy: 0.1367
+Epoch 23/30
+1200/1200 [==============================] - 0s 74us/sample - loss: 2.2988 - accuracy: 0.1208 - val_loss: 2.3011 - val_accuracy: 0.1367
+Epoch 24/30
+1200/1200 [==============================] - 0s 96us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3023 - val_accuracy: 0.1367
+Epoch 25/30
+1200/1200 [==============================] - 0s 94us/sample - loss: 2.2990 - accuracy: 0.1208 - val_loss: 2.3006 - val_accuracy: 0.1367
+Epoch 26/30
+1200/1200 [==============================] - 0s 89us/sample - loss: 2.2990 - accuracy: 0.1208 - val_loss: 2.3007 - val_accuracy: 0.1367
+Epoch 27/30
+1200/1200 [==============================] - 0s 92us/sample - loss: 2.2993 - accuracy: 0.1208 - val_loss: 2.3010 - val_accuracy: 0.1367
+Epoch 28/30
+1200/1200 [==============================] - 0s 89us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3019 - val_accuracy: 0.1367
+Epoch 29/30
+1200/1200 [==============================] - 0s 84us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3023 - val_accuracy: 0.1367
+Epoch 30/30
+1200/1200 [==============================] - 0s 84us/sample - loss: 2.2989 - accuracy: 0.1208 - val_loss: 2.3014 - val_accuracy: 0.1367
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;tensorflow.python.keras.callbacks.History at 0x7fb426ebe710&gt;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="relu-activation">
+<h3>RELU activation<a class="headerlink" href="#relu-activation" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="n">num_hidden_layers</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">)</span>
+<span class="o">!</span>rm<span class="w"> </span>-rf<span class="w"> </span>log/relu
+<span class="n">tb_callback</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">TensorBoard</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="s1">&#39;./log/relu&#39;</span><span class="p">,</span> <span class="n">histogram_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="n">write_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">write_images</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train_oh</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test_oh</span><span class="p">),</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">tb_callback</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Train on 1200 samples, validate on 300 samples
+Epoch 1/30
+1200/1200 [==============================] - 1s 595us/sample - loss: 2.2625 - accuracy: 0.1167 - val_loss: 2.1966 - val_accuracy: 0.1167
+Epoch 2/30
+1200/1200 [==============================] - 0s 109us/sample - loss: 2.0998 - accuracy: 0.1950 - val_loss: 2.0889 - val_accuracy: 0.2233
+Epoch 3/30
+1200/1200 [==============================] - 0s 99us/sample - loss: 2.0089 - accuracy: 0.1867 - val_loss: 2.0127 - val_accuracy: 0.1667
+Epoch 4/30
+1200/1200 [==============================] - 0s 104us/sample - loss: 1.9355 - accuracy: 0.1883 - val_loss: 1.9451 - val_accuracy: 0.1600
+Epoch 5/30
+1200/1200 [==============================] - 0s 113us/sample - loss: 1.8051 - accuracy: 0.2050 - val_loss: 1.8259 - val_accuracy: 0.1833
+Epoch 6/30
+1200/1200 [==============================] - 0s 99us/sample - loss: 1.6390 - accuracy: 0.3275 - val_loss: 1.7357 - val_accuracy: 0.2933
+Epoch 7/30
+1200/1200 [==============================] - 0s 105us/sample - loss: 1.4954 - accuracy: 0.3950 - val_loss: 1.6874 - val_accuracy: 0.3367
+Epoch 8/30
+1200/1200 [==============================] - 0s 106us/sample - loss: 1.3708 - accuracy: 0.4333 - val_loss: 1.6481 - val_accuracy: 0.3567
+Epoch 9/30
+1200/1200 [==============================] - 0s 104us/sample - loss: 1.2762 - accuracy: 0.4675 - val_loss: 1.5920 - val_accuracy: 0.3900
+Epoch 10/30
+1200/1200 [==============================] - 0s 93us/sample - loss: 1.2343 - accuracy: 0.5058 - val_loss: 1.7282 - val_accuracy: 0.4000
+Epoch 11/30
+1200/1200 [==============================] - 0s 79us/sample - loss: 1.1764 - accuracy: 0.5625 - val_loss: 1.5635 - val_accuracy: 0.5000
+Epoch 12/30
+1200/1200 [==============================] - 0s 92us/sample - loss: 1.1067 - accuracy: 0.5883 - val_loss: 1.5779 - val_accuracy: 0.5100
+Epoch 13/30
+1200/1200 [==============================] - 0s 93us/sample - loss: 1.0479 - accuracy: 0.6333 - val_loss: 1.5841 - val_accuracy: 0.5567
+Epoch 14/30
+1200/1200 [==============================] - 0s 81us/sample - loss: 0.9873 - accuracy: 0.6758 - val_loss: 1.5683 - val_accuracy: 0.5433
+Epoch 15/30
+1200/1200 [==============================] - 0s 81us/sample - loss: 0.9450 - accuracy: 0.6967 - val_loss: 1.6503 - val_accuracy: 0.5833
+Epoch 16/30
+1200/1200 [==============================] - 0s 84us/sample - loss: 0.9341 - accuracy: 0.6867 - val_loss: 1.4999 - val_accuracy: 0.5833
+Epoch 17/30
+1200/1200 [==============================] - 0s 75us/sample - loss: 0.8636 - accuracy: 0.7267 - val_loss: 1.6228 - val_accuracy: 0.6167
+Epoch 18/30
+1200/1200 [==============================] - 0s 78us/sample - loss: 0.8360 - accuracy: 0.7333 - val_loss: 1.6590 - val_accuracy: 0.6133
+Epoch 19/30
+1200/1200 [==============================] - 0s 88us/sample - loss: 0.7785 - accuracy: 0.7667 - val_loss: 1.8198 - val_accuracy: 0.5900
+Epoch 20/30
+1200/1200 [==============================] - 0s 84us/sample - loss: 0.7462 - accuracy: 0.7675 - val_loss: 1.7269 - val_accuracy: 0.6200
+Epoch 21/30
+1200/1200 [==============================] - 0s 74us/sample - loss: 0.7176 - accuracy: 0.7692 - val_loss: 1.6506 - val_accuracy: 0.6133
+Epoch 22/30
+1200/1200 [==============================] - 0s 92us/sample - loss: 0.6872 - accuracy: 0.7842 - val_loss: 1.7374 - val_accuracy: 0.6333
+Epoch 23/30
+1200/1200 [==============================] - 0s 93us/sample - loss: 0.6497 - accuracy: 0.7983 - val_loss: 1.8901 - val_accuracy: 0.6400
+Epoch 24/30
+1200/1200 [==============================] - 0s 95us/sample - loss: 0.6204 - accuracy: 0.8125 - val_loss: 1.9670 - val_accuracy: 0.6567
+Epoch 25/30
+1200/1200 [==============================] - 0s 98us/sample - loss: 0.5886 - accuracy: 0.8258 - val_loss: 1.9190 - val_accuracy: 0.6767
+Epoch 26/30
+1200/1200 [==============================] - 0s 100us/sample - loss: 0.5759 - accuracy: 0.8342 - val_loss: 1.9192 - val_accuracy: 0.6200
+Epoch 27/30
+1200/1200 [==============================] - 0s 96us/sample - loss: 0.5506 - accuracy: 0.8292 - val_loss: 1.9242 - val_accuracy: 0.6300
+Epoch 28/30
+1200/1200 [==============================] - 0s 108us/sample - loss: 0.5741 - accuracy: 0.8233 - val_loss: 2.0804 - val_accuracy: 0.6533
+Epoch 29/30
+1200/1200 [==============================] - 0s 122us/sample - loss: 0.5592 - accuracy: 0.8317 - val_loss: 1.9038 - val_accuracy: 0.6633
+Epoch 30/30
+1200/1200 [==============================] - 0s 105us/sample - loss: 0.5054 - accuracy: 0.8458 - val_loss: 1.9272 - val_accuracy: 0.6967
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;tensorflow.python.keras.callbacks.History at 0x7fb4207b0630&gt;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="leaky-relu-activation">
+<h3>Leaky RELU activation<a class="headerlink" href="#leaky-relu-activation" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="n">num_hidden_layers</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">leaky_relu</span><span class="p">)</span>
+<span class="o">!</span>rm<span class="w"> </span>-rf<span class="w"> </span>log/leaky_relu
+<span class="n">tb_callback</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">TensorBoard</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="s1">&#39;./log/leaky_relu&#39;</span><span class="p">,</span> <span class="n">histogram_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">write_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">write_images</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train_oh</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test_oh</span><span class="p">),</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">tb_callback</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Train on 1200 samples, validate on 300 samples
+Epoch 1/30
+1200/1200 [==============================] - 1s 562us/sample - loss: 2.2907 - accuracy: 0.1617 - val_loss: 2.2538 - val_accuracy: 0.1700
+Epoch 2/30
+1200/1200 [==============================] - 0s 120us/sample - loss: 2.1105 - accuracy: 0.1933 - val_loss: 2.0408 - val_accuracy: 0.1867
+Epoch 3/30
+1200/1200 [==============================] - 0s 112us/sample - loss: 1.9159 - accuracy: 0.2242 - val_loss: 1.8557 - val_accuracy: 0.2367
+Epoch 4/30
+1200/1200 [==============================] - 0s 93us/sample - loss: 1.7480 - accuracy: 0.2817 - val_loss: 1.7438 - val_accuracy: 0.2800
+Epoch 5/30
+1200/1200 [==============================] - 0s 86us/sample - loss: 1.5951 - accuracy: 0.3467 - val_loss: 1.6657 - val_accuracy: 0.3400
+Epoch 6/30
+1200/1200 [==============================] - 0s 91us/sample - loss: 1.4818 - accuracy: 0.3917 - val_loss: 1.5912 - val_accuracy: 0.3567
+Epoch 7/30
+1200/1200 [==============================] - 0s 97us/sample - loss: 1.3874 - accuracy: 0.4400 - val_loss: 1.5629 - val_accuracy: 0.3700
+Epoch 8/30
+1200/1200 [==============================] - 0s 104us/sample - loss: 1.3259 - accuracy: 0.4517 - val_loss: 1.5423 - val_accuracy: 0.4733
+Epoch 9/30
+1200/1200 [==============================] - 0s 85us/sample - loss: 1.2746 - accuracy: 0.4750 - val_loss: 1.5676 - val_accuracy: 0.4567
+Epoch 10/30
+1200/1200 [==============================] - 0s 78us/sample - loss: 1.2824 - accuracy: 0.4775 - val_loss: 1.4695 - val_accuracy: 0.4867
+Epoch 11/30
+1200/1200 [==============================] - 0s 80us/sample - loss: 1.2036 - accuracy: 0.5150 - val_loss: 1.4573 - val_accuracy: 0.5067
+Epoch 12/30
+1200/1200 [==============================] - 0s 73us/sample - loss: 1.1421 - accuracy: 0.5367 - val_loss: 1.5400 - val_accuracy: 0.4400
+Epoch 13/30
+1200/1200 [==============================] - 0s 80us/sample - loss: 1.1279 - accuracy: 0.5450 - val_loss: 1.4324 - val_accuracy: 0.5733
+Epoch 14/30
+1200/1200 [==============================] - 0s 75us/sample - loss: 1.0589 - accuracy: 0.5950 - val_loss: 1.4561 - val_accuracy: 0.5167
+Epoch 15/30
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.0217 - accuracy: 0.5983 - val_loss: 1.4408 - val_accuracy: 0.5633
+Epoch 16/30
+1200/1200 [==============================] - 0s 82us/sample - loss: 1.0207 - accuracy: 0.5958 - val_loss: 1.4444 - val_accuracy: 0.5667
+Epoch 17/30
+1200/1200 [==============================] - 0s 89us/sample - loss: 0.9661 - accuracy: 0.6417 - val_loss: 1.4375 - val_accuracy: 0.5733
+Epoch 18/30
+1200/1200 [==============================] - 0s 94us/sample - loss: 0.9385 - accuracy: 0.6500 - val_loss: 1.4495 - val_accuracy: 0.5833
+Epoch 19/30
+1200/1200 [==============================] - 0s 94us/sample - loss: 0.9147 - accuracy: 0.6608 - val_loss: 1.4188 - val_accuracy: 0.5967
+Epoch 20/30
+1200/1200 [==============================] - 0s 75us/sample - loss: 0.8848 - accuracy: 0.6792 - val_loss: 1.4052 - val_accuracy: 0.6267
+Epoch 21/30
+1200/1200 [==============================] - 0s 73us/sample - loss: 0.8333 - accuracy: 0.7025 - val_loss: 1.4286 - val_accuracy: 0.6067
+Epoch 22/30
+1200/1200 [==============================] - 0s 77us/sample - loss: 0.8110 - accuracy: 0.7150 - val_loss: 1.4007 - val_accuracy: 0.6033
+Epoch 23/30
+1200/1200 [==============================] - 0s 78us/sample - loss: 0.7738 - accuracy: 0.7217 - val_loss: 1.3882 - val_accuracy: 0.6233
+Epoch 24/30
+1200/1200 [==============================] - 0s 80us/sample - loss: 0.7247 - accuracy: 0.7425 - val_loss: 1.3937 - val_accuracy: 0.5967
+Epoch 25/30
+1200/1200 [==============================] - 0s 72us/sample - loss: 0.7083 - accuracy: 0.7417 - val_loss: 1.3503 - val_accuracy: 0.6200
+Epoch 26/30
+1200/1200 [==============================] - 0s 80us/sample - loss: 0.6978 - accuracy: 0.7467 - val_loss: 1.3394 - val_accuracy: 0.6167
+Epoch 27/30
+1200/1200 [==============================] - 0s 75us/sample - loss: 0.6619 - accuracy: 0.7642 - val_loss: 1.3664 - val_accuracy: 0.6167
+Epoch 28/30
+1200/1200 [==============================] - 0s 92us/sample - loss: 0.6395 - accuracy: 0.7733 - val_loss: 1.3765 - val_accuracy: 0.6333
+Epoch 29/30
+1200/1200 [==============================] - 0s 92us/sample - loss: 0.6028 - accuracy: 0.7833 - val_loss: 1.3866 - val_accuracy: 0.6200
+Epoch 30/30
+1200/1200 [==============================] - 0s 95us/sample - loss: 0.5917 - accuracy: 0.7825 - val_loss: 1.3683 - val_accuracy: 0.6300
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;tensorflow.python.keras.callbacks.History at 0x7fb424db1860&gt;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="sigmoid-activation-but-longer-run-epochs">
+<h3>SIGMOID activation but longer run (epochs)<a class="headerlink" href="#sigmoid-activation-but-longer-run-epochs" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="n">num_hidden_layers</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">)</span>
+<span class="o">!</span>rm<span class="w"> </span>-rf<span class="w"> </span>log/sigmoid_longrun
+<span class="n">tb_callback</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">TensorBoard</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="s1">&#39;./log/sigmoid_longrun&#39;</span><span class="p">,</span> <span class="n">histogram_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">write_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">write_images</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train_oh</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test_oh</span><span class="p">),</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">tb_callback</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Train on 1200 samples, validate on 300 samples
+Epoch 1/300
+1200/1200 [==============================] - 1s 651us/sample - loss: 2.4060 - accuracy: 0.1083 - val_loss: 2.4034 - val_accuracy: 0.0733
+Epoch 2/300
+1200/1200 [==============================] - 0s 146us/sample - loss: 2.3483 - accuracy: 0.1083 - val_loss: 2.3558 - val_accuracy: 0.0733
+Epoch 3/300
+1200/1200 [==============================] - 0s 95us/sample - loss: 2.3228 - accuracy: 0.1083 - val_loss: 2.3319 - val_accuracy: 0.0733
+Epoch 4/300
+1200/1200 [==============================] - 0s 94us/sample - loss: 2.3105 - accuracy: 0.1083 - val_loss: 2.3200 - val_accuracy: 0.0733
+Epoch 5/300
+1200/1200 [==============================] - 0s 93us/sample - loss: 2.3049 - accuracy: 0.1083 - val_loss: 2.3140 - val_accuracy: 0.0733
+Epoch 6/300
+1200/1200 [==============================] - 0s 98us/sample - loss: 2.3020 - accuracy: 0.1083 - val_loss: 2.3091 - val_accuracy: 0.0733
+Epoch 7/300
+1200/1200 [==============================] - 0s 103us/sample - loss: 2.3004 - accuracy: 0.1175 - val_loss: 2.3061 - val_accuracy: 0.1367
+Epoch 8/300
+1200/1200 [==============================] - 0s 99us/sample - loss: 2.2997 - accuracy: 0.1208 - val_loss: 2.3052 - val_accuracy: 0.1367
+Epoch 9/300
+1200/1200 [==============================] - 0s 89us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3035 - val_accuracy: 0.1367
+Epoch 10/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 2.2993 - accuracy: 0.1208 - val_loss: 2.3022 - val_accuracy: 0.1367
+Epoch 11/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 2.2987 - accuracy: 0.1208 - val_loss: 2.3025 - val_accuracy: 0.1367
+Epoch 12/300
+1200/1200 [==============================] - 0s 87us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3021 - val_accuracy: 0.1367
+Epoch 13/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 2.2986 - accuracy: 0.1208 - val_loss: 2.3020 - val_accuracy: 0.1367
+Epoch 14/300
+1200/1200 [==============================] - 0s 88us/sample - loss: 2.2988 - accuracy: 0.1208 - val_loss: 2.3013 - val_accuracy: 0.1367
+Epoch 15/300
+1200/1200 [==============================] - 0s 80us/sample - loss: 2.2994 - accuracy: 0.1208 - val_loss: 2.3014 - val_accuracy: 0.1367
+Epoch 16/300
+1200/1200 [==============================] - 0s 86us/sample - loss: 2.2985 - accuracy: 0.1208 - val_loss: 2.3012 - val_accuracy: 0.1367
+Epoch 17/300
+1200/1200 [==============================] - 0s 98us/sample - loss: 2.2986 - accuracy: 0.1208 - val_loss: 2.3021 - val_accuracy: 0.1367
+Epoch 18/300
+1200/1200 [==============================] - 0s 93us/sample - loss: 2.2988 - accuracy: 0.1208 - val_loss: 2.3014 - val_accuracy: 0.1367
+Epoch 19/300
+1200/1200 [==============================] - 0s 75us/sample - loss: 2.2987 - accuracy: 0.1208 - val_loss: 2.3014 - val_accuracy: 0.1367
+Epoch 20/300
+1200/1200 [==============================] - 0s 87us/sample - loss: 2.2989 - accuracy: 0.1208 - val_loss: 2.3015 - val_accuracy: 0.1367
+Epoch 21/300
+1200/1200 [==============================] - 0s 77us/sample - loss: 2.2989 - accuracy: 0.1208 - val_loss: 2.3010 - val_accuracy: 0.1367
+Epoch 22/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3015 - val_accuracy: 0.1367
+Epoch 23/300
+1200/1200 [==============================] - 0s 89us/sample - loss: 2.2987 - accuracy: 0.1208 - val_loss: 2.3022 - val_accuracy: 0.1367
+Epoch 24/300
+1200/1200 [==============================] - 0s 85us/sample - loss: 2.2988 - accuracy: 0.1208 - val_loss: 2.3016 - val_accuracy: 0.1367
+Epoch 25/300
+1200/1200 [==============================] - 0s 88us/sample - loss: 2.2988 - accuracy: 0.1208 - val_loss: 2.3012 - val_accuracy: 0.1367
+Epoch 26/300
+1200/1200 [==============================] - 0s 86us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3022 - val_accuracy: 0.1367
+Epoch 27/300
+1200/1200 [==============================] - 0s 88us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3009 - val_accuracy: 0.1367
+Epoch 28/300
+1200/1200 [==============================] - 0s 83us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3017 - val_accuracy: 0.1367
+Epoch 29/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 2.2992 - accuracy: 0.1208 - val_loss: 2.3021 - val_accuracy: 0.1367
+Epoch 30/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 2.2989 - accuracy: 0.1208 - val_loss: 2.3005 - val_accuracy: 0.1367
+Epoch 31/300
+1200/1200 [==============================] - 0s 86us/sample - loss: 2.2997 - accuracy: 0.1208 - val_loss: 2.3007 - val_accuracy: 0.1367
+Epoch 32/300
+1200/1200 [==============================] - 0s 85us/sample - loss: 2.2987 - accuracy: 0.1208 - val_loss: 2.3009 - val_accuracy: 0.1367
+Epoch 33/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 2.2989 - accuracy: 0.1208 - val_loss: 2.3012 - val_accuracy: 0.1367
+Epoch 34/300
+1200/1200 [==============================] - 0s 86us/sample - loss: 2.2986 - accuracy: 0.1208 - val_loss: 2.3012 - val_accuracy: 0.1367
+Epoch 35/300
+1200/1200 [==============================] - 0s 77us/sample - loss: 2.2992 - accuracy: 0.1208 - val_loss: 2.3008 - val_accuracy: 0.1367
+Epoch 36/300
+1200/1200 [==============================] - 0s 90us/sample - loss: 2.2989 - accuracy: 0.1208 - val_loss: 2.3013 - val_accuracy: 0.1367
+Epoch 37/300
+1200/1200 [==============================] - 0s 86us/sample - loss: 2.2990 - accuracy: 0.1208 - val_loss: 2.3010 - val_accuracy: 0.1367
+Epoch 38/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3022 - val_accuracy: 0.1367
+Epoch 39/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3015 - val_accuracy: 0.1367
+Epoch 40/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 2.2992 - accuracy: 0.1208 - val_loss: 2.2998 - val_accuracy: 0.1367
+Epoch 41/300
+1200/1200 [==============================] - 0s 87us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3014 - val_accuracy: 0.1367
+Epoch 42/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3010 - val_accuracy: 0.1367
+Epoch 43/300
+1200/1200 [==============================] - 0s 96us/sample - loss: 2.2990 - accuracy: 0.1208 - val_loss: 2.3010 - val_accuracy: 0.1367
+Epoch 44/300
+1200/1200 [==============================] - 0s 85us/sample - loss: 2.2986 - accuracy: 0.1208 - val_loss: 2.3009 - val_accuracy: 0.1367
+Epoch 45/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 2.2990 - accuracy: 0.1208 - val_loss: 2.3024 - val_accuracy: 0.1367
+Epoch 46/300
+1200/1200 [==============================] - 0s 95us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3013 - val_accuracy: 0.1367
+Epoch 47/300
+1200/1200 [==============================] - 0s 83us/sample - loss: 2.2994 - accuracy: 0.1208 - val_loss: 2.3003 - val_accuracy: 0.1367
+Epoch 48/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 2.2987 - accuracy: 0.1208 - val_loss: 2.3014 - val_accuracy: 0.1367
+Epoch 49/300
+1200/1200 [==============================] - 0s 82us/sample - loss: 2.2990 - accuracy: 0.1208 - val_loss: 2.3015 - val_accuracy: 0.1367
+Epoch 50/300
+1200/1200 [==============================] - 0s 83us/sample - loss: 2.2990 - accuracy: 0.1208 - val_loss: 2.3017 - val_accuracy: 0.1367
+Epoch 51/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3007 - val_accuracy: 0.1367
+Epoch 52/300
+1200/1200 [==============================] - 0s 77us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3006 - val_accuracy: 0.1367
+Epoch 53/300
+1200/1200 [==============================] - 0s 86us/sample - loss: 2.2988 - accuracy: 0.1208 - val_loss: 2.3013 - val_accuracy: 0.1367
+Epoch 54/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 2.2987 - accuracy: 0.1208 - val_loss: 2.3014 - val_accuracy: 0.1367
+Epoch 55/300
+1200/1200 [==============================] - 0s 100us/sample - loss: 2.2988 - accuracy: 0.1208 - val_loss: 2.3018 - val_accuracy: 0.1367
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch 56/300
+1200/1200 [==============================] - 0s 95us/sample - loss: 2.2988 - accuracy: 0.1208 - val_loss: 2.3012 - val_accuracy: 0.1367
+Epoch 57/300
+1200/1200 [==============================] - 0s 98us/sample - loss: 2.2991 - accuracy: 0.1208 - val_loss: 2.3012 - val_accuracy: 0.1367
+Epoch 58/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 2.2993 - accuracy: 0.1208 - val_loss: 2.3025 - val_accuracy: 0.1367
+Epoch 59/300
+1200/1200 [==============================] - 0s 75us/sample - loss: 2.2987 - accuracy: 0.1208 - val_loss: 2.3010 - val_accuracy: 0.1367
+Epoch 60/300
+1200/1200 [==============================] - 0s 73us/sample - loss: 2.2992 - accuracy: 0.1208 - val_loss: 2.3007 - val_accuracy: 0.1367
+Epoch 61/300
+1200/1200 [==============================] - 0s 70us/sample - loss: 2.2989 - accuracy: 0.1208 - val_loss: 2.3018 - val_accuracy: 0.1367
+Epoch 62/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 2.2987 - accuracy: 0.1208 - val_loss: 2.3013 - val_accuracy: 0.1367
+Epoch 63/300
+1200/1200 [==============================] - 0s 71us/sample - loss: 2.2989 - accuracy: 0.1208 - val_loss: 2.3015 - val_accuracy: 0.1367
+Epoch 64/300
+1200/1200 [==============================] - 0s 75us/sample - loss: 2.2987 - accuracy: 0.1208 - val_loss: 2.3009 - val_accuracy: 0.1367
+Epoch 65/300
+1200/1200 [==============================] - 0s 80us/sample - loss: 2.2988 - accuracy: 0.1208 - val_loss: 2.3012 - val_accuracy: 0.1367
+Epoch 66/300
+1200/1200 [==============================] - 0s 92us/sample - loss: 2.2986 - accuracy: 0.1208 - val_loss: 2.2998 - val_accuracy: 0.1367
+Epoch 67/300
+1200/1200 [==============================] - 0s 123us/sample - loss: 2.2981 - accuracy: 0.1208 - val_loss: 2.3011 - val_accuracy: 0.1367
+Epoch 68/300
+1200/1200 [==============================] - 0s 87us/sample - loss: 2.2979 - accuracy: 0.1208 - val_loss: 2.2991 - val_accuracy: 0.1367
+Epoch 69/300
+1200/1200 [==============================] - 0s 95us/sample - loss: 2.2965 - accuracy: 0.1208 - val_loss: 2.2994 - val_accuracy: 0.1367
+Epoch 70/300
+1200/1200 [==============================] - 0s 120us/sample - loss: 2.2942 - accuracy: 0.1208 - val_loss: 2.2961 - val_accuracy: 0.1367
+Epoch 71/300
+1200/1200 [==============================] - 0s 88us/sample - loss: 2.2903 - accuracy: 0.1208 - val_loss: 2.2911 - val_accuracy: 0.1367
+Epoch 72/300
+1200/1200 [==============================] - 0s 77us/sample - loss: 2.2834 - accuracy: 0.1208 - val_loss: 2.2844 - val_accuracy: 0.1367
+Epoch 73/300
+1200/1200 [==============================] - 0s 80us/sample - loss: 2.2721 - accuracy: 0.1892 - val_loss: 2.2724 - val_accuracy: 0.1967
+Epoch 74/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 2.2529 - accuracy: 0.2208 - val_loss: 2.2524 - val_accuracy: 0.1867
+Epoch 75/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 2.2274 - accuracy: 0.2167 - val_loss: 2.2272 - val_accuracy: 0.1933
+Epoch 76/300
+1200/1200 [==============================] - 0s 91us/sample - loss: 2.1899 - accuracy: 0.2175 - val_loss: 2.1966 - val_accuracy: 0.1900
+Epoch 77/300
+1200/1200 [==============================] - 0s 82us/sample - loss: 2.1599 - accuracy: 0.2125 - val_loss: 2.1768 - val_accuracy: 0.1867
+Epoch 78/300
+1200/1200 [==============================] - 0s 80us/sample - loss: 2.1414 - accuracy: 0.1942 - val_loss: 2.1362 - val_accuracy: 0.1867
+Epoch 79/300
+1200/1200 [==============================] - 0s 80us/sample - loss: 2.1016 - accuracy: 0.2142 - val_loss: 2.1332 - val_accuracy: 0.1767
+Epoch 80/300
+1200/1200 [==============================] - 0s 73us/sample - loss: 2.0676 - accuracy: 0.2167 - val_loss: 2.0811 - val_accuracy: 0.1900
+Epoch 81/300
+1200/1200 [==============================] - 0s 72us/sample - loss: 2.0350 - accuracy: 0.2158 - val_loss: 2.0669 - val_accuracy: 0.1900
+Epoch 82/300
+1200/1200 [==============================] - 0s 77us/sample - loss: 2.0002 - accuracy: 0.2192 - val_loss: 2.0515 - val_accuracy: 0.1900
+Epoch 83/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.9843 - accuracy: 0.2192 - val_loss: 2.1011 - val_accuracy: 0.1900
+Epoch 84/300
+1200/1200 [==============================] - 0s 71us/sample - loss: 1.9793 - accuracy: 0.2150 - val_loss: 2.0330 - val_accuracy: 0.1867
+Epoch 85/300
+1200/1200 [==============================] - 0s 77us/sample - loss: 1.9727 - accuracy: 0.2200 - val_loss: 2.0690 - val_accuracy: 0.1900
+Epoch 86/300
+1200/1200 [==============================] - 0s 145us/sample - loss: 1.9660 - accuracy: 0.2183 - val_loss: 2.0241 - val_accuracy: 0.1900
+Epoch 87/300
+1200/1200 [==============================] - 0s 90us/sample - loss: 1.9452 - accuracy: 0.2183 - val_loss: 2.0296 - val_accuracy: 0.1900
+Epoch 88/300
+1200/1200 [==============================] - 0s 74us/sample - loss: 1.9365 - accuracy: 0.2192 - val_loss: 2.0107 - val_accuracy: 0.1800
+Epoch 89/300
+1200/1200 [==============================] - 0s 71us/sample - loss: 1.9346 - accuracy: 0.2175 - val_loss: 2.0179 - val_accuracy: 0.1900
+Epoch 90/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 1.9975 - accuracy: 0.2142 - val_loss: 2.0609 - val_accuracy: 0.1800
+Epoch 91/300
+1200/1200 [==============================] - 0s 71us/sample - loss: 1.9717 - accuracy: 0.2133 - val_loss: 2.0486 - val_accuracy: 0.1833
+Epoch 92/300
+1200/1200 [==============================] - 0s 77us/sample - loss: 1.9351 - accuracy: 0.2158 - val_loss: 2.0209 - val_accuracy: 0.1833
+Epoch 93/300
+1200/1200 [==============================] - 0s 71us/sample - loss: 1.9267 - accuracy: 0.2183 - val_loss: 2.0260 - val_accuracy: 0.1867
+Epoch 94/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.9077 - accuracy: 0.2175 - val_loss: 2.0094 - val_accuracy: 0.1833
+Epoch 95/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 1.9248 - accuracy: 0.2142 - val_loss: 1.9952 - val_accuracy: 0.1833
+Epoch 96/300
+1200/1200 [==============================] - 0s 91us/sample - loss: 1.9120 - accuracy: 0.2158 - val_loss: 2.0209 - val_accuracy: 0.1833
+Epoch 97/300
+1200/1200 [==============================] - 0s 88us/sample - loss: 1.9041 - accuracy: 0.2175 - val_loss: 2.0068 - val_accuracy: 0.1800
+Epoch 98/300
+1200/1200 [==============================] - 0s 99us/sample - loss: 1.9082 - accuracy: 0.2150 - val_loss: 1.9851 - val_accuracy: 0.1833
+Epoch 99/300
+1200/1200 [==============================] - 0s 102us/sample - loss: 1.9112 - accuracy: 0.2142 - val_loss: 2.0040 - val_accuracy: 0.1833
+Epoch 100/300
+1200/1200 [==============================] - 0s 97us/sample - loss: 1.9115 - accuracy: 0.2158 - val_loss: 2.0031 - val_accuracy: 0.1833
+Epoch 101/300
+1200/1200 [==============================] - 0s 89us/sample - loss: 1.9033 - accuracy: 0.2158 - val_loss: 2.0025 - val_accuracy: 0.1833
+Epoch 102/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 1.9050 - accuracy: 0.2167 - val_loss: 1.9681 - val_accuracy: 0.1867
+Epoch 103/300
+1200/1200 [==============================] - 0s 84us/sample - loss: 1.9134 - accuracy: 0.2125 - val_loss: 1.9681 - val_accuracy: 0.1800
+Epoch 104/300
+1200/1200 [==============================] - 0s 80us/sample - loss: 1.9077 - accuracy: 0.2133 - val_loss: 1.9803 - val_accuracy: 0.1767
+Epoch 105/300
+1200/1200 [==============================] - 0s 94us/sample - loss: 1.9369 - accuracy: 0.2108 - val_loss: 2.0576 - val_accuracy: 0.1900
+Epoch 106/300
+1200/1200 [==============================] - 0s 83us/sample - loss: 1.9377 - accuracy: 0.2117 - val_loss: 1.9591 - val_accuracy: 0.1900
+Epoch 107/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 1.8826 - accuracy: 0.2092 - val_loss: 1.9718 - val_accuracy: 0.2000
+Epoch 108/300
+1200/1200 [==============================] - 0s 77us/sample - loss: 1.8820 - accuracy: 0.2200 - val_loss: 1.9902 - val_accuracy: 0.1900
+Epoch 109/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.8769 - accuracy: 0.2175 - val_loss: 2.0173 - val_accuracy: 0.1933
+Epoch 110/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 1.9608 - accuracy: 0.2017 - val_loss: 1.9729 - val_accuracy: 0.1967
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch 111/300
+1200/1200 [==============================] - 0s 116us/sample - loss: 1.8808 - accuracy: 0.2125 - val_loss: 1.9769 - val_accuracy: 0.1833
+Epoch 112/300
+1200/1200 [==============================] - 0s 86us/sample - loss: 1.8805 - accuracy: 0.2150 - val_loss: 1.9790 - val_accuracy: 0.1867
+Epoch 113/300
+1200/1200 [==============================] - 0s 103us/sample - loss: 1.8834 - accuracy: 0.2175 - val_loss: 1.9581 - val_accuracy: 0.1900
+Epoch 114/300
+1200/1200 [==============================] - 0s 88us/sample - loss: 1.8809 - accuracy: 0.2175 - val_loss: 1.9681 - val_accuracy: 0.1867
+Epoch 115/300
+1200/1200 [==============================] - 0s 84us/sample - loss: 1.8578 - accuracy: 0.2200 - val_loss: 1.9434 - val_accuracy: 0.1967
+Epoch 116/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 1.8657 - accuracy: 0.2192 - val_loss: 1.9675 - val_accuracy: 0.1867
+Epoch 117/300
+1200/1200 [==============================] - 0s 83us/sample - loss: 1.8694 - accuracy: 0.2175 - val_loss: 1.9602 - val_accuracy: 0.1867
+Epoch 118/300
+1200/1200 [==============================] - 0s 88us/sample - loss: 1.8595 - accuracy: 0.2175 - val_loss: 1.9881 - val_accuracy: 0.1900
+Epoch 119/300
+1200/1200 [==============================] - 0s 73us/sample - loss: 1.8951 - accuracy: 0.2150 - val_loss: 2.0302 - val_accuracy: 0.1933
+Epoch 120/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 1.8800 - accuracy: 0.2167 - val_loss: 1.9643 - val_accuracy: 0.1900
+Epoch 121/300
+1200/1200 [==============================] - 0s 80us/sample - loss: 1.8553 - accuracy: 0.2183 - val_loss: 1.9638 - val_accuracy: 0.1900
+Epoch 122/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 1.8545 - accuracy: 0.2183 - val_loss: 1.9543 - val_accuracy: 0.1900
+Epoch 123/300
+1200/1200 [==============================] - 0s 127us/sample - loss: 1.8503 - accuracy: 0.2183 - val_loss: 1.9554 - val_accuracy: 0.1933
+Epoch 124/300
+1200/1200 [==============================] - 0s 111us/sample - loss: 1.8555 - accuracy: 0.2183 - val_loss: 1.9528 - val_accuracy: 0.1933
+Epoch 125/300
+1200/1200 [==============================] - 0s 96us/sample - loss: 1.8701 - accuracy: 0.2183 - val_loss: 1.9569 - val_accuracy: 0.1933
+Epoch 126/300
+1200/1200 [==============================] - 0s 73us/sample - loss: 1.8521 - accuracy: 0.2200 - val_loss: 1.9638 - val_accuracy: 0.1900
+Epoch 127/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.8495 - accuracy: 0.2200 - val_loss: 1.9522 - val_accuracy: 0.1933
+Epoch 128/300
+1200/1200 [==============================] - 0s 71us/sample - loss: 1.8432 - accuracy: 0.2217 - val_loss: 1.9532 - val_accuracy: 0.1933
+Epoch 129/300
+1200/1200 [==============================] - 0s 73us/sample - loss: 1.8444 - accuracy: 0.2108 - val_loss: 1.9593 - val_accuracy: 0.1933
+Epoch 130/300
+1200/1200 [==============================] - 0s 86us/sample - loss: 1.8852 - accuracy: 0.2158 - val_loss: 2.0278 - val_accuracy: 0.1933
+Epoch 131/300
+1200/1200 [==============================] - 0s 94us/sample - loss: 1.8620 - accuracy: 0.2192 - val_loss: 1.9660 - val_accuracy: 0.1900
+Epoch 132/300
+1200/1200 [==============================] - 0s 109us/sample - loss: 1.8459 - accuracy: 0.2208 - val_loss: 1.9659 - val_accuracy: 0.1900
+Epoch 133/300
+1200/1200 [==============================] - 0s 102us/sample - loss: 1.8448 - accuracy: 0.2208 - val_loss: 1.9651 - val_accuracy: 0.1900
+Epoch 134/300
+1200/1200 [==============================] - 0s 111us/sample - loss: 1.8442 - accuracy: 0.2208 - val_loss: 1.9660 - val_accuracy: 0.1900
+Epoch 135/300
+1200/1200 [==============================] - 0s 84us/sample - loss: 1.8438 - accuracy: 0.2208 - val_loss: 1.9655 - val_accuracy: 0.1900
+Epoch 136/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 1.8432 - accuracy: 0.2208 - val_loss: 1.9669 - val_accuracy: 0.1900
+Epoch 137/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 1.8430 - accuracy: 0.2208 - val_loss: 1.9678 - val_accuracy: 0.1900
+Epoch 138/300
+1200/1200 [==============================] - 0s 75us/sample - loss: 1.8430 - accuracy: 0.2208 - val_loss: 1.9682 - val_accuracy: 0.1900
+Epoch 139/300
+1200/1200 [==============================] - 0s 77us/sample - loss: 1.8407 - accuracy: 0.2075 - val_loss: 1.9602 - val_accuracy: 0.1900
+Epoch 140/300
+1200/1200 [==============================] - 0s 77us/sample - loss: 1.9064 - accuracy: 0.2175 - val_loss: 1.9759 - val_accuracy: 0.1867
+Epoch 141/300
+1200/1200 [==============================] - 0s 73us/sample - loss: 1.8976 - accuracy: 0.2183 - val_loss: 1.9767 - val_accuracy: 0.1833
+Epoch 142/300
+1200/1200 [==============================] - 0s 75us/sample - loss: 1.8879 - accuracy: 0.2183 - val_loss: 1.9758 - val_accuracy: 0.1833
+Epoch 143/300
+1200/1200 [==============================] - 0s 73us/sample - loss: 1.8791 - accuracy: 0.2183 - val_loss: 1.9566 - val_accuracy: 0.1933
+Epoch 144/300
+1200/1200 [==============================] - 0s 90us/sample - loss: 1.8941 - accuracy: 0.2167 - val_loss: 2.0898 - val_accuracy: 0.1900
+Epoch 145/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.8760 - accuracy: 0.2167 - val_loss: 1.9859 - val_accuracy: 0.1833
+Epoch 146/300
+1200/1200 [==============================] - 0s 73us/sample - loss: 1.8633 - accuracy: 0.2192 - val_loss: 1.9945 - val_accuracy: 0.1900
+Epoch 147/300
+1200/1200 [==============================] - 0s 109us/sample - loss: 1.8580 - accuracy: 0.2208 - val_loss: 1.9748 - val_accuracy: 0.1900
+Epoch 148/300
+1200/1200 [==============================] - 0s 86us/sample - loss: 1.8604 - accuracy: 0.2217 - val_loss: 1.9767 - val_accuracy: 0.1900
+Epoch 149/300
+1200/1200 [==============================] - 0s 72us/sample - loss: 1.8514 - accuracy: 0.2217 - val_loss: 1.9815 - val_accuracy: 0.1900
+Epoch 150/300
+1200/1200 [==============================] - 0s 91us/sample - loss: 1.8605 - accuracy: 0.2200 - val_loss: 1.9907 - val_accuracy: 0.1900
+Epoch 151/300
+1200/1200 [==============================] - 0s 74us/sample - loss: 1.8762 - accuracy: 0.2167 - val_loss: 1.9933 - val_accuracy: 0.1833
+Epoch 152/300
+1200/1200 [==============================] - 0s 75us/sample - loss: 1.8940 - accuracy: 0.2142 - val_loss: 1.9884 - val_accuracy: 0.1800
+Epoch 153/300
+1200/1200 [==============================] - 0s 74us/sample - loss: 1.8605 - accuracy: 0.2142 - val_loss: 1.9949 - val_accuracy: 0.1800
+Epoch 154/300
+1200/1200 [==============================] - 0s 90us/sample - loss: 1.8479 - accuracy: 0.2125 - val_loss: 1.9862 - val_accuracy: 0.1867
+Epoch 155/300
+1200/1200 [==============================] - 0s 74us/sample - loss: 1.8471 - accuracy: 0.2217 - val_loss: 1.9922 - val_accuracy: 0.1833
+Epoch 156/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 1.8567 - accuracy: 0.2025 - val_loss: 2.0004 - val_accuracy: 0.1833
+Epoch 157/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 1.8575 - accuracy: 0.2217 - val_loss: 2.0125 - val_accuracy: 0.1867
+Epoch 158/300
+1200/1200 [==============================] - 0s 71us/sample - loss: 1.8412 - accuracy: 0.2242 - val_loss: 1.9838 - val_accuracy: 0.1800
+Epoch 159/300
+1200/1200 [==============================] - 0s 73us/sample - loss: 1.8577 - accuracy: 0.2192 - val_loss: 1.9833 - val_accuracy: 0.1800
+Epoch 160/300
+1200/1200 [==============================] - 0s 73us/sample - loss: 1.8519 - accuracy: 0.2192 - val_loss: 1.9968 - val_accuracy: 0.1800
+Epoch 161/300
+1200/1200 [==============================] - 0s 74us/sample - loss: 1.8751 - accuracy: 0.2167 - val_loss: 1.9861 - val_accuracy: 0.1800
+Epoch 162/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 1.8681 - accuracy: 0.2183 - val_loss: 1.9815 - val_accuracy: 0.1767
+Epoch 163/300
+1200/1200 [==============================] - 0s 70us/sample - loss: 1.8543 - accuracy: 0.2208 - val_loss: 1.9673 - val_accuracy: 0.1900
+Epoch 164/300
+1200/1200 [==============================] - 0s 93us/sample - loss: 1.8358 - accuracy: 0.2225 - val_loss: 1.9659 - val_accuracy: 0.1900
+Epoch 165/300
+1200/1200 [==============================] - 0s 88us/sample - loss: 1.8482 - accuracy: 0.2225 - val_loss: 2.0217 - val_accuracy: 0.1900
+Epoch 166/300
+1200/1200 [==============================] - 0s 94us/sample - loss: 1.8488 - accuracy: 0.2217 - val_loss: 2.0187 - val_accuracy: 0.1933
+Epoch 167/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 1.8617 - accuracy: 0.2225 - val_loss: 2.0132 - val_accuracy: 0.1933
+Epoch 168/300
+1200/1200 [==============================] - 0s 73us/sample - loss: 1.8387 - accuracy: 0.2217 - val_loss: 2.0226 - val_accuracy: 0.1900
+Epoch 169/300
+1200/1200 [==============================] - 0s 92us/sample - loss: 1.8397 - accuracy: 0.2092 - val_loss: 1.9586 - val_accuracy: 0.1900
+Epoch 170/300
+1200/1200 [==============================] - 0s 96us/sample - loss: 1.9185 - accuracy: 0.2042 - val_loss: 2.0121 - val_accuracy: 0.1800
+Epoch 171/300
+1200/1200 [==============================] - 0s 105us/sample - loss: 1.8928 - accuracy: 0.2192 - val_loss: 1.9718 - val_accuracy: 0.1867
+Epoch 172/300
+1200/1200 [==============================] - 0s 104us/sample - loss: 1.8420 - accuracy: 0.2100 - val_loss: 1.9889 - val_accuracy: 0.1900
+Epoch 173/300
+1200/1200 [==============================] - 0s 71us/sample - loss: 1.8351 - accuracy: 0.2225 - val_loss: 1.9906 - val_accuracy: 0.1900
+Epoch 174/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.8286 - accuracy: 0.2225 - val_loss: 1.9779 - val_accuracy: 0.1933
+Epoch 175/300
+1200/1200 [==============================] - 0s 85us/sample - loss: 1.8306 - accuracy: 0.2225 - val_loss: 1.9559 - val_accuracy: 0.1933
+Epoch 176/300
+1200/1200 [==============================] - 0s 82us/sample - loss: 1.8241 - accuracy: 0.2225 - val_loss: 1.9723 - val_accuracy: 0.1900
+Epoch 177/300
+1200/1200 [==============================] - 0s 136us/sample - loss: 1.8254 - accuracy: 0.2217 - val_loss: 2.0305 - val_accuracy: 0.1900
+Epoch 178/300
+1200/1200 [==============================] - 0s 97us/sample - loss: 1.8396 - accuracy: 0.2217 - val_loss: 1.9988 - val_accuracy: 0.1867
+Epoch 179/300
+1200/1200 [==============================] - 0s 110us/sample - loss: 1.8355 - accuracy: 0.2100 - val_loss: 1.9613 - val_accuracy: 0.1867
+Epoch 180/300
+1200/1200 [==============================] - 0s 66us/sample - loss: 1.8311 - accuracy: 0.2117 - val_loss: 1.9697 - val_accuracy: 0.1867
+Epoch 181/300
+1200/1200 [==============================] - 0s 63us/sample - loss: 1.8299 - accuracy: 0.2225 - val_loss: 1.9758 - val_accuracy: 0.1900
+Epoch 182/300
+1200/1200 [==============================] - 0s 66us/sample - loss: 1.8364 - accuracy: 0.2208 - val_loss: 1.9917 - val_accuracy: 0.1867
+Epoch 183/300
+1200/1200 [==============================] - 0s 65us/sample - loss: 1.8319 - accuracy: 0.2225 - val_loss: 2.0343 - val_accuracy: 0.1833
+Epoch 184/300
+1200/1200 [==============================] - 0s 73us/sample - loss: 1.8553 - accuracy: 0.2217 - val_loss: 1.9863 - val_accuracy: 0.1867
+Epoch 185/300
+1200/1200 [==============================] - 0s 87us/sample - loss: 1.8457 - accuracy: 0.2200 - val_loss: 1.9804 - val_accuracy: 0.1833
+Epoch 186/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 1.8398 - accuracy: 0.2067 - val_loss: 1.9800 - val_accuracy: 0.1867
+Epoch 187/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 1.8420 - accuracy: 0.2100 - val_loss: 1.9673 - val_accuracy: 0.1867
+Epoch 188/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 1.8277 - accuracy: 0.2225 - val_loss: 1.9874 - val_accuracy: 0.1867
+Epoch 189/300
+1200/1200 [==============================] - 0s 72us/sample - loss: 1.8313 - accuracy: 0.2217 - val_loss: 1.9742 - val_accuracy: 0.1867
+Epoch 190/300
+1200/1200 [==============================] - 0s 72us/sample - loss: 1.8240 - accuracy: 0.2225 - val_loss: 1.9724 - val_accuracy: 0.1900
+Epoch 191/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 1.8232 - accuracy: 0.2225 - val_loss: 1.9720 - val_accuracy: 0.1867
+Epoch 192/300
+1200/1200 [==============================] - 0s 71us/sample - loss: 1.8226 - accuracy: 0.2225 - val_loss: 1.9721 - val_accuracy: 0.1867
+Epoch 193/300
+1200/1200 [==============================] - 0s 73us/sample - loss: 1.8224 - accuracy: 0.2142 - val_loss: 1.9728 - val_accuracy: 0.1867
+Epoch 194/300
+1200/1200 [==============================] - 0s 85us/sample - loss: 1.8227 - accuracy: 0.2225 - val_loss: 1.9719 - val_accuracy: 0.1867
+Epoch 195/300
+1200/1200 [==============================] - 0s 89us/sample - loss: 1.8223 - accuracy: 0.2233 - val_loss: 1.9797 - val_accuracy: 0.1867
+Epoch 196/300
+1200/1200 [==============================] - 0s 80us/sample - loss: 1.8246 - accuracy: 0.2125 - val_loss: 1.9667 - val_accuracy: 0.2000
+Epoch 197/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.8246 - accuracy: 0.2233 - val_loss: 1.9738 - val_accuracy: 0.1867
+Epoch 198/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 1.8242 - accuracy: 0.2225 - val_loss: 1.9749 - val_accuracy: 0.1867
+Epoch 199/300
+1200/1200 [==============================] - 0s 71us/sample - loss: 1.8237 - accuracy: 0.2225 - val_loss: 1.9751 - val_accuracy: 0.1867
+Epoch 200/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 1.8220 - accuracy: 0.2183 - val_loss: 1.9761 - val_accuracy: 0.2000
+Epoch 201/300
+1200/1200 [==============================] - 0s 70us/sample - loss: 1.8220 - accuracy: 0.2167 - val_loss: 1.9754 - val_accuracy: 0.1867
+Epoch 202/300
+1200/1200 [==============================] - 0s 99us/sample - loss: 1.8222 - accuracy: 0.2225 - val_loss: 1.9754 - val_accuracy: 0.1867
+Epoch 203/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.8219 - accuracy: 0.2133 - val_loss: 1.9748 - val_accuracy: 0.1867
+Epoch 204/300
+1200/1200 [==============================] - 0s 77us/sample - loss: 1.8217 - accuracy: 0.2225 - val_loss: 1.9748 - val_accuracy: 0.1867
+Epoch 205/300
+1200/1200 [==============================] - 0s 87us/sample - loss: 1.8218 - accuracy: 0.2225 - val_loss: 1.9749 - val_accuracy: 0.1867
+Epoch 206/300
+1200/1200 [==============================] - 0s 90us/sample - loss: 1.8219 - accuracy: 0.2108 - val_loss: 1.9739 - val_accuracy: 0.1867
+Epoch 207/300
+1200/1200 [==============================] - 0s 82us/sample - loss: 1.8221 - accuracy: 0.2225 - val_loss: 1.9714 - val_accuracy: 0.1900
+Epoch 208/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 1.8219 - accuracy: 0.2175 - val_loss: 1.9731 - val_accuracy: 0.2000
+Epoch 209/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.8206 - accuracy: 0.2158 - val_loss: 2.0009 - val_accuracy: 0.1867
+Epoch 210/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.8241 - accuracy: 0.2133 - val_loss: 2.0123 - val_accuracy: 0.2033
+Epoch 211/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.8302 - accuracy: 0.2175 - val_loss: 1.9725 - val_accuracy: 0.1900
+Epoch 212/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 1.8232 - accuracy: 0.2208 - val_loss: 1.9676 - val_accuracy: 0.1933
+Epoch 213/300
+1200/1200 [==============================] - 0s 71us/sample - loss: 1.8314 - accuracy: 0.2208 - val_loss: 1.9646 - val_accuracy: 0.1833
+Epoch 214/300
+1200/1200 [==============================] - 0s 99us/sample - loss: 1.8412 - accuracy: 0.2125 - val_loss: 1.9890 - val_accuracy: 0.1900
+Epoch 215/300
+1200/1200 [==============================] - 0s 85us/sample - loss: 1.8199 - accuracy: 0.2225 - val_loss: 1.9928 - val_accuracy: 0.1900
+Epoch 216/300
+1200/1200 [==============================] - 0s 80us/sample - loss: 1.8175 - accuracy: 0.2225 - val_loss: 1.9923 - val_accuracy: 0.1900
+Epoch 217/300
+1200/1200 [==============================] - 0s 75us/sample - loss: 1.8230 - accuracy: 0.2142 - val_loss: 1.9780 - val_accuracy: 0.1900
+Epoch 218/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 1.8272 - accuracy: 0.2225 - val_loss: 1.9601 - val_accuracy: 0.1900
+Epoch 219/300
+1200/1200 [==============================] - 0s 71us/sample - loss: 1.8187 - accuracy: 0.2217 - val_loss: 1.9708 - val_accuracy: 0.1867
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch 220/300
+1200/1200 [==============================] - 0s 77us/sample - loss: 1.8191 - accuracy: 0.2150 - val_loss: 1.9720 - val_accuracy: 0.2067
+Epoch 221/300
+1200/1200 [==============================] - 0s 85us/sample - loss: 1.8210 - accuracy: 0.2175 - val_loss: 1.9725 - val_accuracy: 0.1867
+Epoch 222/300
+1200/1200 [==============================] - 0s 71us/sample - loss: 1.8351 - accuracy: 0.2200 - val_loss: 2.0701 - val_accuracy: 0.2067
+Epoch 223/300
+1200/1200 [==============================] - 0s 80us/sample - loss: 1.9326 - accuracy: 0.2208 - val_loss: 2.0633 - val_accuracy: 0.2033
+Epoch 224/300
+1200/1200 [==============================] - 0s 70us/sample - loss: 1.8287 - accuracy: 0.2217 - val_loss: 1.9644 - val_accuracy: 0.1867
+Epoch 225/300
+1200/1200 [==============================] - 0s 80us/sample - loss: 1.8126 - accuracy: 0.2225 - val_loss: 1.9478 - val_accuracy: 0.1933
+Epoch 226/300
+1200/1200 [==============================] - 0s 84us/sample - loss: 1.7974 - accuracy: 0.2167 - val_loss: 1.9703 - val_accuracy: 0.1933
+Epoch 227/300
+1200/1200 [==============================] - 0s 83us/sample - loss: 1.8058 - accuracy: 0.2233 - val_loss: 1.9449 - val_accuracy: 0.1933
+Epoch 228/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 1.8028 - accuracy: 0.2158 - val_loss: 1.9611 - val_accuracy: 0.1933
+Epoch 229/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 1.7992 - accuracy: 0.2233 - val_loss: 1.9618 - val_accuracy: 0.1933
+Epoch 230/300
+1200/1200 [==============================] - 0s 87us/sample - loss: 1.7986 - accuracy: 0.2242 - val_loss: 1.9631 - val_accuracy: 0.1933
+Epoch 231/300
+1200/1200 [==============================] - 0s 80us/sample - loss: 1.7984 - accuracy: 0.2150 - val_loss: 1.9418 - val_accuracy: 0.2067
+Epoch 232/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.8031 - accuracy: 0.2183 - val_loss: 1.9612 - val_accuracy: 0.1967
+Epoch 233/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 1.7978 - accuracy: 0.2233 - val_loss: 1.9331 - val_accuracy: 0.1933
+Epoch 234/300
+1200/1200 [==============================] - 0s 72us/sample - loss: 1.7962 - accuracy: 0.2108 - val_loss: 1.9264 - val_accuracy: 0.1933
+Epoch 235/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 1.8410 - accuracy: 0.2200 - val_loss: 1.9226 - val_accuracy: 0.1933
+Epoch 236/300
+1200/1200 [==============================] - 0s 86us/sample - loss: 1.7978 - accuracy: 0.2092 - val_loss: 1.9689 - val_accuracy: 0.1933
+Epoch 237/300
+1200/1200 [==============================] - 0s 85us/sample - loss: 1.7963 - accuracy: 0.2233 - val_loss: 1.9378 - val_accuracy: 0.1933
+Epoch 238/300
+1200/1200 [==============================] - 0s 80us/sample - loss: 1.7936 - accuracy: 0.2233 - val_loss: 1.9287 - val_accuracy: 0.2000
+Epoch 239/300
+1200/1200 [==============================] - 0s 71us/sample - loss: 1.7892 - accuracy: 0.2242 - val_loss: 1.9807 - val_accuracy: 0.1933
+Epoch 240/300
+1200/1200 [==============================] - 0s 82us/sample - loss: 1.8068 - accuracy: 0.2233 - val_loss: 1.9606 - val_accuracy: 0.1900
+Epoch 241/300
+1200/1200 [==============================] - 0s 92us/sample - loss: 1.7884 - accuracy: 0.2242 - val_loss: 1.9497 - val_accuracy: 0.1933
+Epoch 242/300
+1200/1200 [==============================] - 0s 90us/sample - loss: 1.7857 - accuracy: 0.2242 - val_loss: 1.9479 - val_accuracy: 0.1933
+Epoch 243/300
+1200/1200 [==============================] - 0s 96us/sample - loss: 1.7858 - accuracy: 0.2242 - val_loss: 1.9485 - val_accuracy: 0.1933
+Epoch 244/300
+1200/1200 [==============================] - 0s 91us/sample - loss: 1.7861 - accuracy: 0.2242 - val_loss: 1.9502 - val_accuracy: 0.1933
+Epoch 245/300
+1200/1200 [==============================] - 0s 97us/sample - loss: 1.7855 - accuracy: 0.2242 - val_loss: 1.9506 - val_accuracy: 0.1933
+Epoch 246/300
+1200/1200 [==============================] - 0s 116us/sample - loss: 1.7857 - accuracy: 0.2167 - val_loss: 1.9504 - val_accuracy: 0.1933
+Epoch 247/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 1.7856 - accuracy: 0.2242 - val_loss: 1.9512 - val_accuracy: 0.1933
+Epoch 248/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 1.7857 - accuracy: 0.2242 - val_loss: 1.9511 - val_accuracy: 0.1933
+Epoch 249/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.7857 - accuracy: 0.2242 - val_loss: 1.9519 - val_accuracy: 0.1933
+Epoch 250/300
+1200/1200 [==============================] - 0s 79us/sample - loss: 1.7855 - accuracy: 0.2175 - val_loss: 1.9524 - val_accuracy: 0.2100
+Epoch 251/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 1.7856 - accuracy: 0.2083 - val_loss: 1.9506 - val_accuracy: 0.1933
+Epoch 252/300
+1200/1200 [==============================] - 0s 100us/sample - loss: 1.7854 - accuracy: 0.2242 - val_loss: 1.9521 - val_accuracy: 0.1933
+Epoch 253/300
+1200/1200 [==============================] - 0s 83us/sample - loss: 1.7856 - accuracy: 0.2100 - val_loss: 1.9528 - val_accuracy: 0.1933
+Epoch 254/300
+1200/1200 [==============================] - 0s 102us/sample - loss: 1.7851 - accuracy: 0.2242 - val_loss: 1.9531 - val_accuracy: 0.1933
+Epoch 255/300
+1200/1200 [==============================] - 0s 92us/sample - loss: 1.7990 - accuracy: 0.2100 - val_loss: 1.9645 - val_accuracy: 0.2067
+Epoch 256/300
+1200/1200 [==============================] - 0s 89us/sample - loss: 1.7981 - accuracy: 0.2200 - val_loss: 1.9391 - val_accuracy: 0.2067
+Epoch 257/300
+1200/1200 [==============================] - 0s 83us/sample - loss: 1.8239 - accuracy: 0.2200 - val_loss: 1.9560 - val_accuracy: 0.1867
+Epoch 258/300
+1200/1200 [==============================] - 0s 75us/sample - loss: 1.7985 - accuracy: 0.2225 - val_loss: 1.9522 - val_accuracy: 0.1967
+Epoch 259/300
+1200/1200 [==============================] - 0s 132us/sample - loss: 1.7975 - accuracy: 0.2083 - val_loss: 1.9604 - val_accuracy: 0.1900
+Epoch 260/300
+1200/1200 [==============================] - 0s 100us/sample - loss: 1.8004 - accuracy: 0.2150 - val_loss: 1.9494 - val_accuracy: 0.1900
+Epoch 261/300
+1200/1200 [==============================] - 0s 84us/sample - loss: 1.7985 - accuracy: 0.2225 - val_loss: 1.9628 - val_accuracy: 0.1933
+Epoch 262/300
+1200/1200 [==============================] - 0s 84us/sample - loss: 1.8268 - accuracy: 0.2217 - val_loss: 1.9613 - val_accuracy: 0.1867
+Epoch 263/300
+1200/1200 [==============================] - 0s 77us/sample - loss: 1.8105 - accuracy: 0.2142 - val_loss: 1.9457 - val_accuracy: 0.2067
+Epoch 264/300
+1200/1200 [==============================] - 0s 72us/sample - loss: 1.8163 - accuracy: 0.2150 - val_loss: 1.9445 - val_accuracy: 0.1933
+Epoch 265/300
+1200/1200 [==============================] - 0s 85us/sample - loss: 1.8061 - accuracy: 0.2217 - val_loss: 1.9320 - val_accuracy: 0.1967
+Epoch 266/300
+1200/1200 [==============================] - 0s 82us/sample - loss: 1.8033 - accuracy: 0.2217 - val_loss: 1.9521 - val_accuracy: 0.1933
+Epoch 267/300
+1200/1200 [==============================] - 0s 83us/sample - loss: 1.8047 - accuracy: 0.2075 - val_loss: 1.9632 - val_accuracy: 0.1933
+Epoch 268/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.8015 - accuracy: 0.2142 - val_loss: 1.9484 - val_accuracy: 0.1933
+Epoch 269/300
+1200/1200 [==============================] - 0s 82us/sample - loss: 1.7872 - accuracy: 0.2242 - val_loss: 1.9366 - val_accuracy: 0.1933
+Epoch 270/300
+1200/1200 [==============================] - 0s 94us/sample - loss: 1.7893 - accuracy: 0.2233 - val_loss: 1.9600 - val_accuracy: 0.1900
+Epoch 271/300
+1200/1200 [==============================] - 0s 90us/sample - loss: 1.7906 - accuracy: 0.2233 - val_loss: 1.9821 - val_accuracy: 0.1867
+Epoch 272/300
+1200/1200 [==============================] - 0s 105us/sample - loss: 1.8062 - accuracy: 0.2225 - val_loss: 1.9810 - val_accuracy: 0.1867
+Epoch 273/300
+1200/1200 [==============================] - 0s 114us/sample - loss: 1.7946 - accuracy: 0.2150 - val_loss: 1.9593 - val_accuracy: 0.2033
+Epoch 274/300
+1200/1200 [==============================] - 0s 124us/sample - loss: 1.7894 - accuracy: 0.2233 - val_loss: 1.9460 - val_accuracy: 0.1900
+Epoch 275/300
+1200/1200 [==============================] - 0s 105us/sample - loss: 1.8107 - accuracy: 0.2233 - val_loss: 1.9457 - val_accuracy: 0.1967
+Epoch 276/300
+1200/1200 [==============================] - 0s 87us/sample - loss: 1.7970 - accuracy: 0.2075 - val_loss: 1.9547 - val_accuracy: 0.1933
+Epoch 277/300
+1200/1200 [==============================] - 0s 75us/sample - loss: 1.7941 - accuracy: 0.2150 - val_loss: 1.9811 - val_accuracy: 0.2000
+Epoch 278/300
+1200/1200 [==============================] - 0s 87us/sample - loss: 1.7874 - accuracy: 0.2217 - val_loss: 1.9615 - val_accuracy: 0.1900
+Epoch 279/300
+1200/1200 [==============================] - 0s 102us/sample - loss: 1.7846 - accuracy: 0.2092 - val_loss: 1.9728 - val_accuracy: 0.1900
+Epoch 280/300
+1200/1200 [==============================] - 0s 98us/sample - loss: 1.7919 - accuracy: 0.2250 - val_loss: 1.9762 - val_accuracy: 0.1867
+Epoch 281/300
+1200/1200 [==============================] - 0s 85us/sample - loss: 1.7869 - accuracy: 0.2242 - val_loss: 1.9412 - val_accuracy: 0.1900
+Epoch 282/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 1.7851 - accuracy: 0.2133 - val_loss: 1.9423 - val_accuracy: 0.1967
+Epoch 283/300
+1200/1200 [==============================] - 0s 105us/sample - loss: 1.7862 - accuracy: 0.2242 - val_loss: 1.9481 - val_accuracy: 0.1900
+Epoch 284/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 1.7846 - accuracy: 0.2242 - val_loss: 1.9711 - val_accuracy: 0.1900
+Epoch 285/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 1.7848 - accuracy: 0.2242 - val_loss: 1.9689 - val_accuracy: 0.1900
+Epoch 286/300
+1200/1200 [==============================] - 0s 83us/sample - loss: 1.7858 - accuracy: 0.2242 - val_loss: 1.9693 - val_accuracy: 0.1900
+Epoch 287/300
+1200/1200 [==============================] - 0s 80us/sample - loss: 1.7857 - accuracy: 0.2242 - val_loss: 1.9684 - val_accuracy: 0.1900
+Epoch 288/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.7858 - accuracy: 0.2108 - val_loss: 1.9677 - val_accuracy: 0.2067
+Epoch 289/300
+1200/1200 [==============================] - 0s 85us/sample - loss: 1.7857 - accuracy: 0.2258 - val_loss: 1.9702 - val_accuracy: 0.1900
+Epoch 290/300
+1200/1200 [==============================] - 0s 95us/sample - loss: 1.7857 - accuracy: 0.2242 - val_loss: 1.9766 - val_accuracy: 0.1900
+Epoch 291/300
+1200/1200 [==============================] - 0s 88us/sample - loss: 1.7846 - accuracy: 0.2092 - val_loss: 1.9757 - val_accuracy: 0.1900
+Epoch 292/300
+1200/1200 [==============================] - 0s 115us/sample - loss: 1.7847 - accuracy: 0.2117 - val_loss: 1.9762 - val_accuracy: 0.1900
+Epoch 293/300
+1200/1200 [==============================] - 0s 81us/sample - loss: 1.7843 - accuracy: 0.2075 - val_loss: 1.9763 - val_accuracy: 0.1900
+Epoch 294/300
+1200/1200 [==============================] - 0s 70us/sample - loss: 1.7847 - accuracy: 0.2242 - val_loss: 1.9765 - val_accuracy: 0.1900
+Epoch 295/300
+1200/1200 [==============================] - 0s 78us/sample - loss: 1.7842 - accuracy: 0.2242 - val_loss: 1.9724 - val_accuracy: 0.1900
+Epoch 296/300
+1200/1200 [==============================] - 0s 75us/sample - loss: 1.7827 - accuracy: 0.2242 - val_loss: 1.9740 - val_accuracy: 0.1900
+Epoch 297/300
+1200/1200 [==============================] - 0s 86us/sample - loss: 1.7841 - accuracy: 0.2125 - val_loss: 1.9607 - val_accuracy: 0.1900
+Epoch 298/300
+1200/1200 [==============================] - 0s 83us/sample - loss: 1.7826 - accuracy: 0.2242 - val_loss: 1.9601 - val_accuracy: 0.1900
+Epoch 299/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.7823 - accuracy: 0.2242 - val_loss: 1.9614 - val_accuracy: 0.1900
+Epoch 300/300
+1200/1200 [==============================] - 0s 76us/sample - loss: 1.7827 - accuracy: 0.2242 - val_loss: 1.9612 - val_accuracy: 0.1900
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;tensorflow.python.keras.callbacks.History at 0x7fb4259a4550&gt;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="experiment-observations-on-tensorboard">
+<h2>Experiment observations, on Tensorboard<a class="headerlink" href="#experiment-observations-on-tensorboard" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>What is the distribution of the weights observed as we move from the output layer to the input layer for each experiment?</p></li>
+<li><p>Look in <a class="reference external" href="http://localhost:6006">Tensorboard</a> at distributions or histograms charts named <code class="docutils literal notranslate"><span class="pre">Layer_00_Input/kernel_0</span></code>, <code class="docutils literal notranslate"><span class="pre">Layer_01_Hidden/kernel_0</span></code>, etc. for different layers. You should see:</p>
+<ul>
+<li><p>Gradients are usually higher at the output layer and tend to decrease as you move backwards in the network.</p></li>
+<li><p>With sigmoid activations gradients are always low and rapidly decay from the output layer all the way to the input layer.</p></li>
+<li><p>Relu might still have some vanishing gradient when weights are &lt;0.</p></li>
+<li><p>Leaky Relu would probably have constant gradients across layers.</p></li>
+</ul>
+</li>
+<li><p>Recall that, in the backpropagation algorithm, the gradient of the loss function <span class="math notranslate nohighlight">\(L\)</span> with respect to the weights at a certain layer <span class="math notranslate nohighlight">\(W_l\)</span> is proportional to the derivatives and the weights of previous layers:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\frac{\partial L}{\partial W_l} \propto f'(z^{(l)})\cdot W_l \cdot f'(z^{(l+1)})\cdot W_{l+1} \cdot f'(z^{(l+2)})\cdot W_{l+2}...\]</div>
+<p>where <span class="math notranslate nohighlight">\(f'\)</span> is the derivative of the activation function and <span class="math notranslate nohighlight">\(z^{(l)}\)</span> is the output at layer <span class="math notranslate nohighlight">\(l\)</span>.</p>
+<ul class="simple">
+<li><p>Do you think the sigmoid longrun would reach levels comparable to Relu or Leaky Relu? At what computational cost?</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> tensorboard
+<span class="o">%</span><span class="k">tensorboard</span> --logdir log
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">
+      <iframe id="tensorboard-frame-bb539473bd24d780" width="100%" height="800" frameborder="0">
+      </iframe>
+      <script>
+        (function() {
+          const frame = document.getElementById("tensorboard-frame-bb539473bd24d780");
+          const url = new URL("/", window.location);
+          url.port = 6006;
+          frame.src = url;
+        })();
+      </script>
+  </div></div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="U2.06%20-%20Network%20Architectures%20-%20Multimodal%20information.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">2.6 - Multimodal architectures</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="U2.08%20-%20Weights%20initialization.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">2.8 - Weights initialization</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualizing-and-understanding-vanishing-gradients">Visualizing and understanding vanishing gradients</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sigmoid">sigmoid</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tanh">tanh</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relu-rectified-linear-unit">ReLU (Rectified Linear Unit)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#leaky-relu-rectified-linear-unit">Leaky ReLU (Rectified Linear Unit)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#load-sample-mnist-data-as-customary">load sample MNIST data as customary</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-basic-multi-layered-dense-model">A basic multi layered dense model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sigmoid-activation">SIGMOID activation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relu-activation">RELU activation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#leaky-relu-activation">Leaky RELU activation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sigmoid-activation-but-longer-run-epochs">SIGMOID activation but longer run (epochs)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-observations-on-tensorboard">Experiment observations, on Tensorboard</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Raúl Ramos, Julián Arias / Universidad de Antioquia
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
