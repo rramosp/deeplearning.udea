@@ -4,7 +4,7 @@ author: Raúl Ramos, Julián Arias / Universidad de Antioquia
 logo: content/local/imgs/fudea.jpg
 
 repository:
-   url: https://github.com/rramosp/2021.deeplearning
+   url: https://github.com/rramosp/deeplearning.udea
    branch: master
 
 launch_buttons:

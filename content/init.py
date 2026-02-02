@@ -1,6 +1,6 @@
 # ------ COURSE PARAMS ------
 course_id = '\S*deeplearning\S*'
-github_repo = 'rramosp/2021.deeplearning'
+github_repo = 'rramosp/deeplearning.udea'
 endpoint = 'https://m5knaekxo6.execute-api.us-west-2.amazonaws.com/dev-v0001/rlxmooc'
 # ------ COURSE PARAMS ------
 
