@@ -18,9 +18,7 @@ https://rramosp.github.io/deeplearning.udea/
 
 ### 5. Transformers in practice (2 semanas de teoría + 1.5 laboratorio)
 
-
 ### total: 10 semanas de teoría y 6 de laboratorios
-
 
 ### Topics for outreach sessions
 - Non-gradable talks
