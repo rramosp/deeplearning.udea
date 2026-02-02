@@ -6,6 +6,7 @@ For full interactive content access
 
 https://rramosp.github.io/deeplearning.udea/
 
+
 ## Course outline
 
 ### 1. Introduction (2 semanas teoría + 1 semana de laboratorio)
