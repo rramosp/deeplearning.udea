@@ -10,10 +10,10 @@ sections:
   - file: content/U01.03 - Convolutions.ipynb
   - file: content/U01.04 - Computational Graphs.ipynb
 - file: content/M02
-  sections:
+#  sections:
 - file: content/M03
-  sections:
+#  sections:
 - file: content/M04
-  sections:
+#  sections:
 - file: content/M05
-  sections:
+#  sections:
